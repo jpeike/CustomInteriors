@@ -62,3 +62,4 @@ TestResults/
 *.temp
 *.swp
 *.lock
+/Database/Database.jfm
