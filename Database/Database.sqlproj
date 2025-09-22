@@ -67,7 +67,6 @@
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Users.sql" />
-    <Build Include="Tables\Customer.sql" />
-    <Build Include="Tables\Phone.sql" />
+    <Build Include="Tables\Customers.sql" />
   </ItemGroup>
 </Project>
