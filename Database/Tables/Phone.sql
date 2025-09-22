@@ -1,0 +1,7 @@
+﻿CREATE TABLE [dbo].[Phone](
+	[phoneID] INT IDENTITY (1,1) NOT NULL PRIMARY KEY,
+	[customerID] INT NOT NULL FOREIGN KEY REFERENCES Customer(customerID),
+	[phoneNumber] NVARCHAR(100) NOT NULL,	
+	[phoneType] NVARCHAR(100) NOT NULL
+);
+GO
