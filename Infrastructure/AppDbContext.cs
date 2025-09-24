@@ -12,12 +12,14 @@ public class AppDbContext : DbContext
     }
 
     public DbSet<User> Users => Set<User>();
+    public DbSet<Email> Emails => Set<Email>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<User>(ConfigureUser);
+        modelBuilder.Entity<Email>(ConfigureEmail);
     }
 
     private void ConfigureUser(EntityTypeBuilder<User> builder)
@@ -35,7 +37,7 @@ public class AppDbContext : DbContext
                .HasMaxLength(255)
                .IsRequired();
 
-        // PasswordHash
+        // PasswordHash 
         builder.Property(u => u.PasswordHash)
                .HasMaxLength(512)
                .IsRequired();
@@ -49,4 +51,39 @@ public class AppDbContext : DbContext
         builder.HasIndex(u => u.Username).IsUnique();
         builder.HasIndex(u => u.Email).IsUnique();
     }
+
+    private void ConfigureEmail(EntityTypeBuilder<Email> builder)
+    {
+        // Primary key
+        builder.HasKey(e => e.EmailID);
+
+        // CustomerID (FK)
+        builder.Property(e => e.CustomerID)
+               .IsRequired();
+
+        builder.HasOne<Customer>()                  // assumes you have a Customer entity
+               .WithMany()                          // one Customer -> many Emails
+               .HasForeignKey(e => e.CustomerID)
+               .OnDelete(DeleteBehavior.Cascade); 
+
+        // EmailAddress
+        builder.Property(e => e.EmailAddress)
+               .HasMaxLength(255)
+               .IsRequired();
+
+        // EmailType
+        builder.Property(e => e.EmailType)
+               .HasMaxLength(100)
+               .IsRequired();
+
+        // CreatedOn
+        builder.Property(e => e.CreatedOn)
+               .HasDefaultValueSql("GETDATE()")
+               .IsRequired();
+
+        // Unique index to prevent duplicate email addresses for the same customer
+        builder.HasIndex(e => new { e.CustomerID, e.EmailAddress })
+               .IsUnique();
+    }
+
 }
