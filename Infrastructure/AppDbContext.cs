@@ -1,4 +1,5 @@
 ﻿using Core;
+using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,12 +13,14 @@ public class AppDbContext : DbContext
     }
 
     public DbSet<User> Users => Set<User>();
+    public DbSet<Employee> Employees => Set<Employee>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<User>(ConfigureUser);
+        modelBuilder.Entity<Employee>(ConfigureEmployee);
     }
 
     private void ConfigureUser(EntityTypeBuilder<User> builder)
@@ -48,5 +51,29 @@ public class AppDbContext : DbContext
         // Optional: Index on Username or Email
         builder.HasIndex(u => u.Username).IsUnique();
         builder.HasIndex(u => u.Email).IsUnique();
+    }
+    
+    private static void ConfigureEmployee(EntityTypeBuilder<Employee> builder)
+    {
+        // Primary key
+        builder.HasKey(u => u.EmployeeId);
+
+        // Username
+        builder.Property(u => u.AccountId)
+            .IsRequired();
+
+        // Email
+        builder.Property(u => u.EmailId)
+            .IsRequired();
+
+        // PasswordHash
+        builder.Property(u => u.Name)
+            .HasMaxLength(255)
+            .IsRequired();
+
+        // CreatedAt
+        builder.Property(u => u.Role)
+            .HasMaxLength(255)
+            .IsRequired();
     }
 }
