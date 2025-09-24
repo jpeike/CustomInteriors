@@ -3,6 +3,7 @@ using Core.Entities;
 using Core.Helpers;
 using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
+using Core.Models;
 
 namespace Infrastructure.Services;
 
