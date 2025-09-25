@@ -67,5 +67,10 @@
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Users.sql" />
+<<<<<<< Updated upstream
+=======
+    <Build Include="Tables\Addresses.sql" />
+    <Build Include="Tables\Customers.sql" />
+>>>>>>> Stashed changes
   </ItemGroup>
 </Project>
