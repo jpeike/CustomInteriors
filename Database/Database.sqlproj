@@ -67,11 +67,15 @@
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Users.sql" />
+<<<<<<< HEAD
     <Build Include="Tables\Addresses.sql" />
     <Build Include="Tables\Customers.sql" />
 =======
     <Build Include="Tables\Address.sql" />
     <Build Include="Tables\DummyCustomer.sql" />
 >>>>>>> Stashed changes
+=======
+    <Build Include="Tables\Customers.sql" />
+>>>>>>> develop
   </ItemGroup>
 </Project>
