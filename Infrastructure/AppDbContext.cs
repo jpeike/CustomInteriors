@@ -20,10 +20,10 @@ public class AppDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<User>(ConfigureUser);
-        modelBuilder.Entity<Customer>(ConfigureUser);
+        modelBuilder.Entity<Customer>(ConfigureCustomer);
     }
 
-    private void ConfigureUser(EntityTypeBuilder<Customer> builder)
+    private void ConfigureCustomer(EntityTypeBuilder<Customer> builder)
     {
         // Primary key
         builder.HasKey(u => u.CustomerId);
