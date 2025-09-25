@@ -40,6 +40,11 @@ const items = ref([
     icon: 'pi pi-wallet',
     command: () => router.push('/billing'),
   },
+  {
+    label: 'Customers',
+    icon: 'pi pi-wallet',
+    command: () => router.push('/customers'),
+  },
 ])
 </script>
 
