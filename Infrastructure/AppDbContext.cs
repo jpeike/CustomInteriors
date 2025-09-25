@@ -12,22 +12,16 @@ public class AppDbContext : DbContext
     }
 
     public DbSet<User> Users => Set<User>();
-<<<<<<< Updated upstream
-=======
     public DbSet<Customer> Customers => Set<Customer>();
     public DbSet<Address> Addresses => Set<Address>();
->>>>>>> Stashed changes
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<User>(ConfigureUser);
-<<<<<<< Updated upstream
-=======
         modelBuilder.Entity<Address>(ConfigureAddress);
         modelBuilder.Entity<Customer>(ConfigureCustomer);
->>>>>>> Stashed changes
     }
 
     private void ConfigureUser(EntityTypeBuilder<User> builder)
@@ -59,8 +53,6 @@ public class AppDbContext : DbContext
         builder.HasIndex(u => u.Username).IsUnique();
         builder.HasIndex(u => u.Email).IsUnique();
     }
-<<<<<<< Updated upstream
-=======
 
     private void ConfigureAddress(EntityTypeBuilder<Address> builder)
     {
@@ -97,5 +89,4 @@ public class AppDbContext : DbContext
                .HasMaxLength(255)
                .IsRequired();
     }
->>>>>>> Stashed changes
 }
