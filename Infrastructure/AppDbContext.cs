@@ -11,7 +11,9 @@ public class AppDbContext : DbContext
     {
     }
 
+
     public DbSet<User> Users => Set<User>();
+    public DbSet<Customer> Customers => Set<Customer>();
     public DbSet<Email> Emails => Set<Email>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -20,8 +22,46 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<User>(ConfigureUser);
         modelBuilder.Entity<Email>(ConfigureEmail);
+        modelBuilder.Entity<Customer>(ConfigureCustomer);
     }
 
+    private void ConfigureCustomer(EntityTypeBuilder<Customer> builder)
+    {
+        // Primary key
+        builder.HasKey(u => u.CustomerId);
+
+        // FirstName
+        builder.Property(u => u.FirstName)
+               .HasMaxLength(100)
+               .IsRequired();
+
+        // LastName
+        builder.Property(u => u.LastName)
+               .HasMaxLength(100)
+               .IsRequired();
+
+        // CustomerType
+        builder.Property(u => u.CustomerType)
+               .HasMaxLength(100);
+
+        // PrefferedContactMethod
+        builder.Property(u => u.PrefferedContactMethod)
+               .HasMaxLength(100);
+
+        // CompanyName
+        builder.Property(u => u.CompanyName)
+               .HasMaxLength(100);
+
+        // Status
+        builder.Property(u => u.Status)
+               .HasMaxLength(100);
+
+        // Status
+        builder.Property(u => u.CustomerNotes);
+
+        // Optional: Index on Username or Email
+        builder.HasIndex(u => u.CustomerId).IsUnique();
+    }
     private void ConfigureUser(EntityTypeBuilder<User> builder)
     {
         // Primary key
