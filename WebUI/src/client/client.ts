@@ -4,6 +4,7 @@
 // </auto-generated>
 //----------------------
 
+/* tslint:disable */
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
@@ -20,8 +21,8 @@ export class Client {
     /**
      * @return OK
      */
-    employeeAll(): Promise<EmployeeModel[]> {
-        let url_ = this.baseUrl + "/api/Employee";
+    customersAll(): Promise<CustomerModel[]> {
+        let url_ = this.baseUrl + "/api/Customers";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -32,11 +33,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processEmployeeAll(_response);
+            return this.processCustomersAll(_response);
         });
     }
 
-    protected processEmployeeAll(response: Response): Promise<EmployeeModel[]> {
+    protected processCustomersAll(response: Response): Promise<CustomerModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -46,7 +47,7 @@ export class Client {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(EmployeeModel.fromJS(item));
+                    result200!.push(CustomerModel.fromJS(item));
             }
             else {
                 result200 = null as any;
@@ -58,14 +59,14 @@ export class Client {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<EmployeeModel[]>(null as any);
+        return Promise.resolve<CustomerModel[]>(null as any);
     }
 
     /**
      * @return OK
      */
-    employee(id: number): Promise<EmployeeModel> {
-        let url_ = this.baseUrl + "/api/Employee/{id}";
+    customers(id: number): Promise<CustomerModel> {
+        let url_ = this.baseUrl + "/api/Customers/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -79,18 +80,18 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processEmployee(_response);
+            return this.processCustomers(_response);
         });
     }
 
-    protected processEmployee(response: Response): Promise<EmployeeModel> {
+    protected processCustomers(response: Response): Promise<CustomerModel> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = EmployeeModel.fromJS(resultData200);
+            result200 = CustomerModel.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -98,15 +99,15 @@ export class Client {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<EmployeeModel>(null as any);
+        return Promise.resolve<CustomerModel>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return OK
      */
-    create(body?: Employee | undefined): Promise<EmployeeModel> {
-        let url_ = this.baseUrl + "/api/Employee/Create";
+    create(body?: Customer | undefined): Promise<CustomerModel> {
+        let url_ = this.baseUrl + "/api/Customers/Create";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -125,14 +126,14 @@ export class Client {
         });
     }
 
-    protected processCreate(response: Response): Promise<EmployeeModel> {
+    protected processCreate(response: Response): Promise<CustomerModel> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = EmployeeModel.fromJS(resultData200);
+            result200 = CustomerModel.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -140,15 +141,15 @@ export class Client {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<EmployeeModel>(null as any);
+        return Promise.resolve<CustomerModel>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return OK
      */
-    update(body?: EmployeeModel | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/Employee/Update";
+    update(body?: CustomerModel | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/Customers/Update";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -185,7 +186,7 @@ export class Client {
      * @return OK
      */
     delete(id: number): Promise<boolean> {
-        let url_ = this.baseUrl + "/api/Employee/Delete/{id}";
+        let url_ = this.baseUrl + "/api/Customers/Delete/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -211,7 +212,7 @@ export class Client {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : null as any;
-    
+
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -307,7 +308,7 @@ export class Client {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return OK
      */
     create2(body?: User | undefined): Promise<UserModel> {
@@ -349,7 +350,7 @@ export class Client {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return OK
      */
     update2(body?: UserModel | undefined): Promise<void> {
@@ -416,7 +417,7 @@ export class Client {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : null as any;
-    
+
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -426,6 +427,134 @@ export class Client {
         }
         return Promise.resolve<boolean>(null as any);
     }
+}
+
+export class Customer implements ICustomer {
+    customerId?: number;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    customerType?: string | undefined;
+    prefferedContactMethod?: string | undefined;
+    companyName?: string | undefined;
+    status?: string | undefined;
+    customerNotes?: string | undefined;
+
+    constructor(data?: ICustomer) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.customerId = _data["customerId"];
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+            this.customerType = _data["customerType"];
+            this.prefferedContactMethod = _data["prefferedContactMethod"];
+            this.companyName = _data["companyName"];
+            this.status = _data["status"];
+            this.customerNotes = _data["customerNotes"];
+        }
+    }
+
+    static fromJS(data: any): Customer {
+        data = typeof data === 'object' ? data : {};
+        let result = new Customer();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["customerId"] = this.customerId;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["customerType"] = this.customerType;
+        data["prefferedContactMethod"] = this.prefferedContactMethod;
+        data["companyName"] = this.companyName;
+        data["status"] = this.status;
+        data["customerNotes"] = this.customerNotes;
+        return data;
+    }
+}
+
+export interface ICustomer {
+    customerId?: number;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    customerType?: string | undefined;
+    prefferedContactMethod?: string | undefined;
+    companyName?: string | undefined;
+    status?: string | undefined;
+    customerNotes?: string | undefined;
+}
+
+export class CustomerModel implements ICustomerModel {
+    customerId?: number;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    customerType?: string | undefined;
+    prefferedContactMethod?: string | undefined;
+    companyName?: string | undefined;
+    status?: string | undefined;
+    customerNotes?: string | undefined;
+
+    constructor(data?: ICustomerModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.customerId = _data["customerId"];
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+            this.customerType = _data["customerType"];
+            this.prefferedContactMethod = _data["prefferedContactMethod"];
+            this.companyName = _data["companyName"];
+            this.status = _data["status"];
+            this.customerNotes = _data["customerNotes"];
+        }
+    }
+
+    static fromJS(data: any): CustomerModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new CustomerModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["customerId"] = this.customerId;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["customerType"] = this.customerType;
+        data["prefferedContactMethod"] = this.prefferedContactMethod;
+        data["companyName"] = this.companyName;
+        data["status"] = this.status;
+        data["customerNotes"] = this.customerNotes;
+        return data;
+    }
+}
+
+export interface ICustomerModel {
+    customerId?: number;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    customerType?: string | undefined;
+    prefferedContactMethod?: string | undefined;
+    companyName?: string | undefined;
+    status?: string | undefined;
+    customerNotes?: string | undefined;
 }
 
 export class Employee implements IEmployee {
