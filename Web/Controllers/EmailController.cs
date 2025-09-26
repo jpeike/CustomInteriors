@@ -35,7 +35,7 @@ public class EmailsController : ControllerBase
 
     [HttpPut("Update")]
     public async Task UpdateEmail([FromBody] EmailModel emailModel)
-    {
+    { 
         await _emailService.UpdateEmail(emailModel);
     }
 
