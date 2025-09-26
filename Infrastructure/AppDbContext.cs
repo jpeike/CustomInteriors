@@ -14,20 +14,14 @@ public class AppDbContext : DbContext
 
     public DbSet<User> Users => Set<User>();
     public DbSet<Customer> Customers => Set<Customer>();
-<<<<<<< HEAD
     public DbSet<Address> Addresses => Set<Address>();
-=======
->>>>>>> develop
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<User>(ConfigureUser);
-<<<<<<< HEAD
         modelBuilder.Entity<Address>(ConfigureAddress);
-=======
->>>>>>> develop
         modelBuilder.Entity<Customer>(ConfigureCustomer);
     }
 

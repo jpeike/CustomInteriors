@@ -28,7 +28,6 @@ public class CustomersController : ControllerBase
     }
 
     [HttpPost("Create")]
-<<<<<<< HEAD
     public async Task<CustomerModel> CreateCustomer([FromBody] CustomerModel customerModel)
     {
         var customer = new Customer
@@ -43,11 +42,6 @@ public class CustomersController : ControllerBase
         };
 
         return await _customerService.CreateCustomer(customer);
-=======
-    public async Task<CustomerModel> CreateCustomer([FromBody] Customer customerModel)
-    {
-        return await _customerService.CreateCustomer(customerModel);
->>>>>>> develop
     }
 
     [HttpPut("Update")]
