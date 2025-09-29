@@ -12,6 +12,7 @@ namespace Core;
             City = address.City,
             State = address.State,
             PostalCode = address.PostalCode,
+            Country = address.Country,
             AddressType = address.AddressType,
         };
 

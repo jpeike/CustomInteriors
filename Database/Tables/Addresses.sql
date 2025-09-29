@@ -5,6 +5,7 @@ CREATE TABLE [dbo].[Addresses] (
 	[City] NVARCHAR(255) NOT NULL,
 	[State] NVARCHAR(255) NOT NULL,
 	[PostalCode] INT NOT NULL,
+	[Country] NVARCHAR(255),
 	[AddressType] NVARCHAR(255) NOT NULL,
 
 	FOREIGN KEY(CustomerId) REFERENCES Customers(CustomerId) ON DELETE CASCADE,

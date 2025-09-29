@@ -38,6 +38,7 @@ public class AddressController : ControllerBase
             City = addressModel.City,
             State = addressModel.State,
             PostalCode = addressModel.PostalCode,
+            Country = addressModel.Country,
             AddressType = addressModel.AddressType
         };
 

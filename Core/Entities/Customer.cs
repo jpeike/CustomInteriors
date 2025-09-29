@@ -10,6 +10,5 @@ public class Customer
     public string? CompanyName { get; set; }
     public string? Status { get; set; }
     public string? CustomerNotes { get; set; }
-
     public ICollection<Address> Addresses { get; set; } = null!;
 }

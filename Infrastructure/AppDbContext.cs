@@ -10,8 +10,6 @@ public class AppDbContext : DbContext
         : base(options)
     {
     }
-
-
     public DbSet<User> Users => Set<User>();
     public DbSet<Customer> Customers => Set<Customer>();
     public DbSet<Address> Addresses => Set<Address>();
@@ -121,6 +119,9 @@ public class AppDbContext : DbContext
         // PostalCode
         builder.Property(a => a.PostalCode)
                 .IsRequired();
+
+        // Country
+        builder.Property(a => a.Country);
 
         // Address Type
         builder.Property(a => a.AddressType)
