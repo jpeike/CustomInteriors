@@ -121,7 +121,8 @@ public class AppDbContext : DbContext
                 .IsRequired();
 
         // Country
-        builder.Property(a => a.Country);
+        builder.Property(a => a.Country)
+                .IsRequired(false);
 
         // Address Type
         builder.Property(a => a.AddressType)

@@ -29,6 +29,7 @@ namespace Core;
             City = model.City,
             State = model.State,
             PostalCode = model.PostalCode,
+            Country = model.Country,
             AddressType = model.AddressType,
         };
     }
