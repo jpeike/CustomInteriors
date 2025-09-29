@@ -1,8 +1,5 @@
 ﻿<template>
-  <div>
-    <h1>Employee Page</h1>
-    <p>This is the user page.</p>
-  </div>
+  <CrudHeader title="Employees"></CrudHeader>
   <div v-if="!state.loading">
     <Card v-for="employee in state.employees" :key="employee.id" class="mb-3">
       <template #title>{{ employee.id }}: {{ employee.username }}</template>
@@ -22,6 +19,7 @@
 import Card from 'primevue/card'
 import { Client, UserModel } from '../client/client'
 import { onMounted, reactive } from 'vue'
+import CrudHeader from '../components/CrudHeader.vue'
 
 const client = new Client(import.meta.env.VITE_API_BASE_URL)
 

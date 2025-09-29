@@ -10,6 +10,7 @@
 import { ref } from 'vue'
 import Menubar from 'primevue/menubar'
 import { useRouter } from 'vue-router'
+import 'primeicons/primeicons.css'
 
 const router = useRouter()
 
