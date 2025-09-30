@@ -1,21 +1,25 @@
 <template>
-    <div class="scrollBar">
-        <div class = "customerInfoWindow">
-            <div class="customerInfoBar">
-                <div class = "customerInfoTitle">
-                    <h2 style="margin: 0;">Edit Customer</h2>
-                    <p style="margin: 0;">Update customer information and contact details.</p>
+    <div class="flex row scrollBar">
+        <div class = "flex column customerInfoWindow">
+            <div class="flex row customerInfoBar">
+                <div class = "flex column customerInfoTitle">
+                    <h2 style="margin: 0;">{{title}}</h2>
+                    <p style="margin: 0;">{{description}}</p>
                 </div>
             </div>
-            <div class = "multipleFields">
+            <div class = "flex row multipleFields">
                 <div>
-                    <h3 class="fieldTitle">First Name</h3>
+                    <h3 class="fieldTitle">First Name*</h3>
                     <InputText v-model="customer.firstName" type="text" class="inputValue" :placeholder="currentCustomerInformation?.firstName"></InputText>
                 </div>
                 <div>
-                    <h3 class="fieldTitle">Last Name</h3>
+                    <h3 class="fieldTitle">Last Name*</h3>
                     <InputText v-model="customer.lastName" type="text" class="inputValue" :placeholder="currentCustomerInformation?.lastName"></InputText>
                 </div>
+            </div>
+            <div>
+                <h3 class="fieldTitle">Customer Type*</h3>
+                <InputText v-model="customer.customerType" type="text" class="inputValue" :placeholder="currentCustomerInformation?.customerType"></InputText>
             </div>
             <div>
                 <h3 class="fieldTitle">Email</h3>
@@ -25,7 +29,20 @@
                 <h3 class="fieldTitle">Phone</h3>
                 <InputText v-model="newPhone" type="text" class="inputValue" placeholder="placeholder phone"></InputText>
             </div>
-            <div class="multipleFields">
+            <div>
+                <h3 class="fieldTitle">Preffered Contact Method</h3>
+                <div class="contactMethod">                    
+                    <div>
+                        <input :checked="currentCustomerInformation?.prefferedContactMethod == 'Email'" type="radio" class = "contactMethodRadio" v-model="customer.prefferedContactMethod" id = "Email" name="contactMethod" value ="Email" variant="filled"/>
+                        <label for="Email">Email</label>
+                    </div>
+                    <div>
+                        <input :checked="currentCustomerInformation?.prefferedContactMethod == 'Phone'" type="radio" class = "contactMethodRadio" v-model="customer.prefferedContactMethod" id = "Phone" name="contactMethod" value ="Phone"/>
+                        <label for="Phone">Phone</label>
+                    </div>
+                </div>
+            </div>
+            <div class="flex row multipleFields">
                 <div class="tripleField">
                     <h3 class="fieldTitle">City</h3>
                     <InputText type="text" class="inputValue" placeholder="City"></InputText>
@@ -39,16 +56,24 @@
                     <InputText type="text" class="inputValue" placeholder="Zip"></InputText>
                 </div>
             </div>
+            <div>
+                <h3 class="fieldTitle">Company Name</h3>
+                <InputText v-model="customer.companyName" type="text" class="inputValue" :placeholder="currentCustomerInformation?.companyName"></InputText>
+            </div>
+            <div>
+                <h3 class="fieldTitle">Status</h3>
+                <InputText v-model="customer.status" type="text" class="inputValue" :placeholder="currentCustomerInformation?.status"></InputText>
+            </div>
             <div class="notesField">
                 <h3 class="fieldTitle">Notes</h3>
                 <textarea v-model="customer.customerNotes" type="text" class="p-inputtext p-component inputValue notes" :placeholder="currentCustomerInformation?.customerNotes"></textarea>
             </div>
-            <div class="buttons">
+            <div class="flex row buttons">
                 <button class = "cancelUpdateButton" @click="$emit('closePage')">
                     <p style="margin: 0; text-align: center; color: black;">Cancel</p>
                 </button>  
                 <button class = "updateInfoButton" @click="$emit('updateCustomerInformation', currentCustomerInformation?.customerId, customer)">
-                    <p style="margin: 0; text-align: center; color: white;">Update</p>
+                    <p style="margin: 0; text-align: center; color: white;">{{buttonDesctipnion}}</p>
                 </button>
             </div>
         </div>
@@ -62,21 +87,36 @@
     import InputText from 'primevue/inputtext';
     import { ref } from 'vue'
 
-
-    defineProps({
-       currentCustomerInformation: CustomerModel
+    const props = defineProps({
+       currentCustomerInformation: CustomerModel,
+       title: String,
+       description: String,
+       buttonDesctipnion: String
     });
-
-    const customer = ref(new CustomerModel);
+    
+    let customer;
+    if (props.currentCustomerInformation != undefined){
+        customer =ref(props.currentCustomerInformation);
+}
+    else{
+        customer = ref(new CustomerModel);
+    }
+    
     const newEmail = ref('');
     const newPhone = ref('');
-
 </script>
 
 <style scoped>
-    .scrollBar{
+    .flex{
         display: flex;
+    }
+    .row {
         flex-direction: row;
+    }
+    .column{
+        flex-direction: column;
+    }
+    .scrollBar{
         padding: 4%;
         width: 50vw;
         height: 80vh;  
@@ -87,8 +127,6 @@
     }
     
     .customerInfoWindow{
-        display: flex;
-        flex-direction: column;
         background-color: rgb(255, 255, 255);
         overflow: scroll;
         height: 100%;
@@ -96,13 +134,9 @@
         padding-right: 5%;
     }
     .customerInfoBar{
-        display: flex;
-        flex-direction: row;
         justify-content: space-between;
     }
     .customerInfoTitle{
-        display: flex;
-        flex-direction: column;
         margin-bottom: 2vh;
     }
     .exitButton{
@@ -111,8 +145,6 @@
         height: fit-content;
     }
     .multipleFields{
-        display: flex;
-        flex-direction: row;
         justify-content: space-between;
     }
     .fieldTitle{
@@ -120,7 +152,7 @@
         margin-bottom: 1vh;
     }
     .inputValue{
-        margin-bottom: 3vh;
+        margin-bottom: 2vh;
         width: 100%;
     }
     .tripleField{
@@ -131,8 +163,6 @@
         resize: none;
     }
     .buttons{
-        display: flex;
-        flex-direction: row;
         width: 100%;
         justify-content: end;
         gap: 5%;
@@ -153,4 +183,11 @@
         align-content: center;
         border-radius: 7px;
     }
+    .contactMethod{
+        display: flex;
+        justify-content:start;
+        gap: 5%;
+        margin-bottom: 2vh;
+    }
+    
 </style>
