@@ -5,7 +5,7 @@ public static class EmailExtensions
     public static EmailModel ToModel(this Email email) => new EmailModel
     {
         EmailID = email.EmailID,
-        CustomerID = email.CustomerID,
+        CustomerId = email.CustomerId,
         EmailAddress = email.EmailAddress,
         EmailType = email.EmailType,
         CreatedOn = email.CreatedOn
@@ -19,7 +19,7 @@ public static class EmailExtensions
     public static Email ToEntity(this EmailModel model) => new Email
     {
         EmailID = model.EmailID,
-        CustomerID = model.CustomerID,
+        CustomerId = model.CustomerId,
         EmailAddress = model.EmailAddress,
         EmailType = model.EmailType,
         CreatedOn = model.CreatedOn

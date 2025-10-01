@@ -61,6 +61,12 @@ public class AppDbContext : DbContext
 
         // Optional: Index on Username or Email
         builder.HasIndex(u => u.CustomerId).IsUnique();
+
+        // One-to-many: Customer has many Emails
+        builder.HasMany(c => c.Emails)
+               .WithOne(e => e.Customer)
+               .HasForeignKey(e => e.CustomerId)
+               .OnDelete(DeleteBehavior.Cascade);
     }
     private void ConfigureUser(EntityTypeBuilder<User> builder)
     {
@@ -97,14 +103,14 @@ public class AppDbContext : DbContext
         // Primary key
         builder.HasKey(e => e.EmailID);
 
-        // CustomerID (FK)
-        builder.Property(e => e.CustomerID)
+        // CustomerId (FK)
+        builder.Property(e => e.CustomerId)
                .IsRequired();
 
-        builder.HasOne<Customer>()                  // assumes you have a Customer entity
-               .WithMany()                          // one Customer -> many Emails
-               .HasForeignKey(e => e.CustomerID)
-               .OnDelete(DeleteBehavior.Cascade); 
+        //builder.HasOne<Customer>()                  // assumes you have a Customer entity
+        //       .WithMany()                          // one Customer -> many Emails
+        //       .HasForeignKey(e => e.CustomerId)
+        //       .OnDelete(DeleteBehavior.Cascade); 
 
         // EmailAddress
         builder.Property(e => e.EmailAddress)
@@ -122,7 +128,7 @@ public class AppDbContext : DbContext
                .IsRequired();
 
         // Unique index to prevent duplicate email addresses for the same customer
-        builder.HasIndex(e => new { e.CustomerID, e.EmailAddress })
+        builder.HasIndex(e => new { e.CustomerId, e.EmailAddress })
                .IsUnique();
     }
 
