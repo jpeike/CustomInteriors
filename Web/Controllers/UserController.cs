@@ -1,4 +1,5 @@
 ﻿using Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web;
@@ -21,6 +22,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
+    [Authorize(Policy = "AdminOnly")]
 
     public async Task<UserModel?> GetUserById(int id)
     {

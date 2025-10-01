@@ -7,6 +7,8 @@ import { definePreset } from '@primeuix/themes'
 import App from './App.vue'
 import router from './router'
 
+import { useAuthStore } from './stores/auth' // <-- make sure to import
+
 const app = createApp(App)
 
 const MyPreset = definePreset(Aura, {
@@ -33,7 +35,13 @@ app.use(PrimeVue, {
   },
 })
 
-app.use(createPinia())
+// Register Pinia first
+const pinia = createPinia()
+app.use(pinia)
+
 app.use(router)
+
+const authStore = useAuthStore()
+authStore.init()
 
 app.mount('#app')

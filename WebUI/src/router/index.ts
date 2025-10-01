@@ -19,6 +19,12 @@ const router = createRouter({
       name: 'users',
       component: () => import('../views/UserPage.vue'),
     },
+    // ... your other routes
+    {
+      path: '/callback',
+      name: 'Callback',
+      component: () => import('../views/CallbackPage.vue'),
+    },
     {
       path: '/:pathMatch(.*)*',
       name: 'notfound',

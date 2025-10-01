@@ -20,10 +20,9 @@
 
 <script setup lang="ts">
 import Card from 'primevue/card'
-import { Client, UserModel } from '../client/client'
+import { UserModel } from '../client/client'
+import { proxiedApi as Client } from '@/client/apiClient'
 import { onMounted, reactive } from 'vue'
-
-const client = new Client(import.meta.env.VITE_API_BASE_URL)
 
 const state = reactive({
   users: [] as UserModel[],
@@ -39,8 +38,7 @@ onMounted(() => {
 function fetchUsers() {
   state.loading = true
   state.error = null
-  client
-    .usersAll()
+  Client.usersAll()
     .then((response) => {
       state.users = response
     })
