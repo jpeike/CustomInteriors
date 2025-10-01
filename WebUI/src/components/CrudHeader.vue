@@ -12,11 +12,11 @@ defineProps(['title']);
       <div class="header">
         <h2>{{ title }}</h2>
       </div>
-      <div class="crud-buttons">
-        <Button label="Add" icon="pi pi-plus" severity="secondary"/>
-        <Button label="Edit" icon="pi pi-pencil" severity="secondary"/>
-        <Button label="Delete" icon="pi pi-trash" severity="secondary"/>
-      </div>
+<!--      <div class="crud-buttons">-->
+<!--        <Button label="Add" icon="pi pi-plus" severity="secondary"/>-->
+<!--        <Button label="Edit" icon="pi pi-pencil" severity="secondary"/>-->
+<!--        <Button label="Delete" icon="pi pi-trash" severity="secondary"/>-->
+<!--      </div>-->
     </div>
   </Fluid>
 </template>
