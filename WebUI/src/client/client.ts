@@ -225,8 +225,8 @@ export class Client {
     /**
      * @return OK
      */
-    employeeAll(): Promise<EmployeeModel[]> {
-        let url_ = this.baseUrl + "/api/Employee";
+    getEmployees(): Promise<EmployeeModel[]> {
+        let url_ = this.baseUrl + "/api/Employee/GetEmployees";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -237,11 +237,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processEmployeeAll(_response);
+            return this.processGetEmployees(_response);
         });
     }
 
-    protected processEmployeeAll(response: Response): Promise<EmployeeModel[]> {
+    protected processGetEmployees(response: Response): Promise<EmployeeModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -269,8 +269,8 @@ export class Client {
     /**
      * @return OK
      */
-    employee(id: number): Promise<EmployeeModel> {
-        let url_ = this.baseUrl + "/api/Employee/{id}";
+    getEmployee(id: number): Promise<EmployeeModel> {
+        let url_ = this.baseUrl + "/api/Employee/GetEmployee/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -284,11 +284,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processEmployee(_response);
+            return this.processGetEmployee(_response);
         });
     }
 
-    protected processEmployee(response: Response): Promise<EmployeeModel> {
+    protected processGetEmployee(response: Response): Promise<EmployeeModel> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -310,8 +310,8 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    create2(body?: Employee | undefined): Promise<EmployeeModel> {
-        let url_ = this.baseUrl + "/api/Employee/Create";
+    createEmployee(body?: Employee | undefined): Promise<EmployeeModel> {
+        let url_ = this.baseUrl + "/api/Employee/CreateEmployee";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -326,11 +326,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreate2(_response);
+            return this.processCreateEmployee(_response);
         });
     }
 
-    protected processCreate2(response: Response): Promise<EmployeeModel> {
+    protected processCreateEmployee(response: Response): Promise<EmployeeModel> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -352,8 +352,8 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    update2(body?: EmployeeModel | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/Employee/Update";
+    updateEmployee(body?: EmployeeModel | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/Employee/UpdateEmployee";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -367,11 +367,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processUpdate2(_response);
+            return this.processUpdateEmployee(_response);
         });
     }
 
-    protected processUpdate2(response: Response): Promise<void> {
+    protected processUpdateEmployee(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -389,8 +389,8 @@ export class Client {
     /**
      * @return OK
      */
-    delete2(id: number): Promise<boolean> {
-        let url_ = this.baseUrl + "/api/Employee/Delete/{id}";
+    deleteEmployee(id: number): Promise<boolean> {
+        let url_ = this.baseUrl + "/api/Employee/DeleteEmployee/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -404,11 +404,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDelete2(_response);
+            return this.processDeleteEmployee(_response);
         });
     }
 
-    protected processDelete2(response: Response): Promise<boolean> {
+    protected processDeleteEmployee(response: Response): Promise<boolean> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -515,7 +515,7 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    create3(body?: User | undefined): Promise<UserModel> {
+    create2(body?: User | undefined): Promise<UserModel> {
         let url_ = this.baseUrl + "/api/Users/Create";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -531,11 +531,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreate3(_response);
+            return this.processCreate2(_response);
         });
     }
 
-    protected processCreate3(response: Response): Promise<UserModel> {
+    protected processCreate2(response: Response): Promise<UserModel> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -557,7 +557,7 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    update3(body?: UserModel | undefined): Promise<void> {
+    update2(body?: UserModel | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/Users/Update";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -572,11 +572,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processUpdate3(_response);
+            return this.processUpdate2(_response);
         });
     }
 
-    protected processUpdate3(response: Response): Promise<void> {
+    protected processUpdate2(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -594,7 +594,7 @@ export class Client {
     /**
      * @return OK
      */
-    delete3(id: number): Promise<boolean> {
+    delete2(id: number): Promise<boolean> {
         let url_ = this.baseUrl + "/api/Users/Delete/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -609,11 +609,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDelete3(_response);
+            return this.processDelete2(_response);
         });
     }
 
-    protected processDelete3(response: Response): Promise<boolean> {
+    protected processDelete2(response: Response): Promise<boolean> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {

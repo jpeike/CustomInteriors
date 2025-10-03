@@ -24,7 +24,7 @@ function fetchEmployees() {
   state.loading = true
   state.error = null
   client
-    .employeeAll()
+    .getEmployees()
     .then((response) => {
       state.employees = response
     })
@@ -34,6 +34,46 @@ function fetchEmployees() {
     .finally(() => {
       state.loading = false
     })
+}
+
+function addDefaultEmployee() {
+  state.loading = true;
+  console.log('Adding new employee');
+
+  let newEmployee = new EmployeeModel();
+  newEmployee.employeeId = 99;
+  newEmployee.accountId = 99;
+  newEmployee.emailId = 99;
+  newEmployee.name = 'NEW EMPLOYEE';
+  newEmployee.role = 'NEW EMPLOYEE';
+
+  // create employee
+  client.createEmployee(newEmployee)
+    .catch((error) => {
+      state.error = error.message || 'An error occurred';
+    })
+    .finally(() => {
+      state.loading = false;
+    })
+}
+
+function updateEmployeeInformation(currentID: number, updatedEmployee: EmployeeModel){
+  const tempType = state.employees[currentEmployeeId.value - 1].customerType;
+  state.employees[currentEmployeeId.value - 1] = updatedEmployee;
+  state.employees[currentEmployeeId.value - 1].customerType = tempType;
+  state.employees[currentEmployeeId.value - 1].customerId = currentID;
+
+  state.loading = true
+  state.error = null
+  client
+    .update(state.employees[currentEmployeeId.value - 1])
+    .catch((error) => {
+      state.error = error.message || 'An error occurred'
+    })
+    .finally(() => {
+      state.loading = false
+    })
+  showEmployeeModal = ref(false);
 }
 </script>
 
@@ -49,7 +89,7 @@ function fetchEmployees() {
         <p>Role: {{ employee.role }}</p>
       </template>
     </Card>
-    <Card class="empCard">
+    <Card class="empCard" @click="addDefaultEmployee()">
       <template #title>Add</template>
     </Card>
   </div>
@@ -59,7 +99,7 @@ function fetchEmployees() {
   </div>
 
   <div v-if="showEmployeeModal" class="modalBlur">
-    <EmployeeModal></EmployeeModal>
+    <EmployeeModal @closePage="showEmployeeModal = !showEmployeeModal" @updateFunction="updateEmployeeInformation"></EmployeeModal>
   </div>
 </template>
 

@@ -1,70 +1,42 @@
 ﻿<script setup lang="ts">
 import 'primeicons/primeicons.css';
-import { Client, CustomerModel } from '../client/client'
+import { Client, EmployeeModel } from '../client/client'
 import InputText from 'primevue/inputtext';
 import { ref } from 'vue'
 
 
 defineProps({
-  currentCustomerInformation: CustomerModel
+  selectedEmployee: EmployeeModel
 });
 
-const customer = ref(new CustomerModel);
-const newEmail = ref('');
-const newPhone = ref('');
+const employee = ref(new EmployeeModel);
 
 </script>
 
 <template>
-  <div class="scrollBar">
-    <div class = "customerInfoWindow">
+  <div class="modalBorder">
+    <div class = "infoDiv">
       <div class="customerInfoBar">
         <div class = "customerInfoTitle">
-          <h2 style="margin: 0;">Edit Customer</h2>
-          <p style="margin: 0;">Update customer information and contact details.</p>
+          <h2 style="margin: 0;">Edit employee</h2>
+          <p style="margin: 0;">Update employee information.</p>
         </div>
       </div>
       <div class = "multipleFields">
         <div>
           <h3 class="fieldTitle">First Name</h3>
-          <InputText v-model="customer.firstName" type="text" class="inputValue" :placeholder="currentCustomerInformation?.firstName"></InputText>
-        </div>
-        <div>
-          <h3 class="fieldTitle">Last Name</h3>
-          <InputText v-model="customer.lastName" type="text" class="inputValue" :placeholder="currentCustomerInformation?.lastName"></InputText>
+          <InputText v-model="employee.name" type="text" class="inputValue" :placeholder="selectedEmployee?.name"></InputText>
         </div>
       </div>
       <div>
-        <h3 class="fieldTitle">Email</h3>
-        <InputText v-model="newEmail" type="text" class="inputValue" placeholder="placeholder email"></InputText>
-      </div>
-      <div>
-        <h3 class="fieldTitle">Phone</h3>
-        <InputText v-model="newPhone" type="text" class="inputValue" placeholder="placeholder phone"></InputText>
-      </div>
-      <div class="multipleFields">
-        <div class="tripleField">
-          <h3 class="fieldTitle">City</h3>
-          <InputText type="text" class="inputValue" placeholder="City"></InputText>
-        </div>
-        <div class="tripleField">
-          <h3 class="fieldTitle">State</h3>
-          <InputText type="text" class="inputValue" placeholder="State"></InputText>
-        </div>
-        <div class="tripleField">
-          <h3 class="fieldTitle">Zip</h3>
-          <InputText type="text" class="inputValue" placeholder="Zip"></InputText>
-        </div>
-      </div>
-      <div class="notesField">
-        <h3 class="fieldTitle">Notes</h3>
-        <textarea v-model="customer.customerNotes" type="text" class="p-inputtext p-component inputValue notes" :placeholder="currentCustomerInformation?.customerNotes"></textarea>
+        <h3 class="fieldTitle">Email Id</h3>
+        <InputText v-model="employee.emailId" type="text" class="inputValue" :placeholder="selectedEmployee?.emailId.toString()"></InputText>
       </div>
       <div class="buttons">
         <button class = "cancelUpdateButton" @click="$emit('closePage')">
           <p style="margin: 0; text-align: center; color: black;">Cancel</p>
         </button>
-        <button class = "updateInfoButton" @click="$emit('updateCustomerInformation', currentCustomerInformation?.customerId, customer)">
+        <button class = "updateInfoButton" @click="$emit('updateFunction', selectedEmployee?.employeeId, employee)">
           <p style="margin: 0; text-align: center; color: white;">Update</p>
         </button>
       </div>
@@ -74,22 +46,22 @@ const newPhone = ref('');
 </template>
 
 <style scoped>
-.scrollBar{
+.modalBorder{
   display: flex;
   flex-direction: row;
   padding: 4%;
   width: 50vw;
   height: 80vh;
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(0, 0, 0);
   margin-left: 25vw;
   margin-top: 10vh;
   border-radius: 5vh;
 }
 
-.customerInfoWindow{
+.infoDiv{
   display: flex;
   flex-direction: column;
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(0, 0, 0);
   overflow: scroll;
   height: 100%;
   width: 100%;
@@ -140,7 +112,6 @@ const newPhone = ref('');
 .updateInfoButton{
   width: 20%;
   height: 5vh;
-  background-color: rgb(0, 0, 0);
   border: none;
   align-content: center;
   border-radius: 7px;
@@ -148,7 +119,6 @@ const newPhone = ref('');
 .cancelUpdateButton{
   width: 20%;
   height: 5vh;
-  background-color: rgb(233, 233, 233);
   border: none;
   align-content: center;
   border-radius: 7px;

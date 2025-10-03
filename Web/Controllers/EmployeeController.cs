@@ -17,32 +17,32 @@ public class EmployeeController : ControllerBase
         _employeeService = employeeService;
     }
 
-    [HttpGet()]
+    [HttpGet("GetEmployees")]
     public async Task<IEnumerable<EmployeeModel>> GetAllEmployees()
     {
         return await _employeeService.GetAllEmployees();
     }
 
-    [HttpGet("{id:int}")]
+    [HttpGet("GetEmployee/{id:int}")]
     public async Task<EmployeeModel?> GetEmployeeById(int id)
     {
         return await _employeeService.GetEmployeeById(id);
     }
 
-    [HttpPost("Create")]
+    [HttpPost("CreateEmployee")]
     public async Task<EmployeeModel> CreateEmployee([FromBody] Employee employeeModel)
     {
         return await _employeeService.AddEmployee(employeeModel);
     }
 
-    [HttpPut("Update")]
-    public async Task UpdateUser([FromBody] EmployeeModel employeeModel)
+    [HttpPut("UpdateEmployee")]
+    public async Task UpdateEmployee([FromBody] EmployeeModel employeeModel)
     {
         await _employeeService.UpdateEmployee(employeeModel);
     }
 
-    [HttpDelete("Delete/{id:int}")]
-    public async Task<bool> DeleteUser(int id)
+    [HttpDelete("DeleteEmployee/{id:int}")]
+    public async Task<bool> DeleteEmployee(int id)
     {
         return await _employeeService.DeleteEmployee(id);
     }
