@@ -20,6 +20,218 @@ export class Client {
     /**
      * @return OK
      */
+    address(): Promise<AddressModel[]> {
+        let url_ = this.baseUrl + "/api/Address";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAddress(_response);
+        });
+    }
+
+    protected processAddress(response: Response): Promise<AddressModel[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(AddressModel.fromJS(item));
+            }
+            else {
+                result200 = null as any;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AddressModel[]>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    customer(customerId: number): Promise<AddressModel[]> {
+        let url_ = this.baseUrl + "/api/Address/customer/{customerId}";
+        if (customerId === undefined || customerId === null)
+            throw new globalThis.Error("The parameter 'customerId' must be defined.");
+        url_ = url_.replace("{customerId}", encodeURIComponent("" + customerId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCustomer(_response);
+        });
+    }
+
+    protected processCustomer(response: Response): Promise<AddressModel[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(AddressModel.fromJS(item));
+            }
+            else {
+                result200 = null as any;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AddressModel[]>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    create(body?: AddressModel | undefined): Promise<AddressModel> {
+        let url_ = this.baseUrl + "/api/Address/Create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreate(_response);
+        });
+    }
+
+    protected processCreate(response: Response): Promise<AddressModel> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AddressModel.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AddressModel>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    update(body?: AddressModel | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/Address/Update";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdate(_response);
+        });
+    }
+
+    protected processUpdate(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    delete(addressId: number): Promise<boolean> {
+        let url_ = this.baseUrl + "/api/Address/Delete/{addressId}";
+        if (addressId === undefined || addressId === null)
+            throw new globalThis.Error("The parameter 'addressId' must be defined.");
+        url_ = url_.replace("{addressId}", encodeURIComponent("" + addressId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDelete(_response);
+        });
+    }
+
+    protected processDelete(response: Response): Promise<boolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : null as any;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     customersAll(): Promise<CustomerModel[]> {
         let url_ = this.baseUrl + "/api/Customers";
         url_ = url_.replace(/[?&]$/, "");
@@ -102,10 +314,50 @@ export class Client {
     }
 
     /**
+     * @return OK
+     */
+    withChildren(id: number): Promise<CustomerWithFKsModel> {
+        let url_ = this.baseUrl + "/api/Customers/withChildren/{id}";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processWithChildren(_response);
+        });
+    }
+
+    protected processWithChildren(response: Response): Promise<CustomerWithFKsModel> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CustomerWithFKsModel.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CustomerWithFKsModel>(null as any);
+    }
+
+    /**
      * @param body (optional) 
      * @return OK
      */
-    create(body?: Customer | undefined): Promise<CustomerModel> {
+    create2(body?: CustomerModel | undefined): Promise<CustomerModel> {
         let url_ = this.baseUrl + "/api/Customers/Create";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -121,11 +373,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreate(_response);
+            return this.processCreate2(_response);
         });
     }
 
-    protected processCreate(response: Response): Promise<CustomerModel> {
+    protected processCreate2(response: Response): Promise<CustomerModel> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -147,7 +399,7 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    update(body?: CustomerModel | undefined): Promise<void> {
+    update2(body?: CustomerModel | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/Customers/Update";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -162,11 +414,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processUpdate(_response);
+            return this.processUpdate2(_response);
         });
     }
 
-    protected processUpdate(response: Response): Promise<void> {
+    protected processUpdate2(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -184,7 +436,7 @@ export class Client {
     /**
      * @return OK
      */
-    delete(id: number): Promise<boolean> {
+    delete2(id: number): Promise<boolean> {
         let url_ = this.baseUrl + "/api/Customers/Delete/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -199,11 +451,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDelete(_response);
+            return this.processDelete2(_response);
         });
     }
 
-    protected processDelete(response: Response): Promise<boolean> {
+    protected processDelete2(response: Response): Promise<boolean> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -310,7 +562,7 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    create2(body?: User | undefined): Promise<UserModel> {
+    create3(body?: User | undefined): Promise<UserModel> {
         let url_ = this.baseUrl + "/api/Users/Create";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -326,11 +578,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreate2(_response);
+            return this.processCreate3(_response);
         });
     }
 
-    protected processCreate2(response: Response): Promise<UserModel> {
+    protected processCreate3(response: Response): Promise<UserModel> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -352,7 +604,7 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    update2(body?: UserModel | undefined): Promise<void> {
+    update3(body?: UserModel | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/Users/Update";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -367,11 +619,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processUpdate2(_response);
+            return this.processUpdate3(_response);
         });
     }
 
-    protected processUpdate2(response: Response): Promise<void> {
+    protected processUpdate3(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -389,7 +641,7 @@ export class Client {
     /**
      * @return OK
      */
-    delete2(id: number): Promise<boolean> {
+    delete3(id: number): Promise<boolean> {
         let url_ = this.baseUrl + "/api/Users/Delete/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -404,11 +656,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDelete2(_response);
+            return this.processDelete3(_response);
         });
     }
 
-    protected processDelete2(response: Response): Promise<boolean> {
+    protected processDelete3(response: Response): Promise<boolean> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -428,17 +680,17 @@ export class Client {
     }
 }
 
-export class Customer implements ICustomer {
+export class Address implements IAddress {
+    addressId?: number;
     customerId?: number;
-    firstName?: string | undefined;
-    lastName?: string | undefined;
-    customerType?: string | undefined;
-    prefferedContactMethod?: string | undefined;
-    companyName?: string | undefined;
-    status?: string | undefined;
-    customerNotes?: string | undefined;
+    street?: string | undefined;
+    city?: string | undefined;
+    state?: string | undefined;
+    postalCode?: number;
+    country?: string | undefined;
+    addressType?: string | undefined;
 
-    constructor(data?: ICustomer) {
+    constructor(data?: IAddress) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -449,47 +701,111 @@ export class Customer implements ICustomer {
 
     init(_data?: any) {
         if (_data) {
+            this.addressId = _data["addressId"];
             this.customerId = _data["customerId"];
-            this.firstName = _data["firstName"];
-            this.lastName = _data["lastName"];
-            this.customerType = _data["customerType"];
-            this.prefferedContactMethod = _data["prefferedContactMethod"];
-            this.companyName = _data["companyName"];
-            this.status = _data["status"];
-            this.customerNotes = _data["customerNotes"];
+            this.street = _data["street"];
+            this.city = _data["city"];
+            this.state = _data["state"];
+            this.postalCode = _data["postalCode"];
+            this.country = _data["country"];
+            this.addressType = _data["addressType"];
         }
     }
 
-    static fromJS(data: any): Customer {
+    static fromJS(data: any): Address {
         data = typeof data === 'object' ? data : {};
-        let result = new Customer();
+        let result = new Address();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["addressId"] = this.addressId;
         data["customerId"] = this.customerId;
-        data["firstName"] = this.firstName;
-        data["lastName"] = this.lastName;
-        data["customerType"] = this.customerType;
-        data["prefferedContactMethod"] = this.prefferedContactMethod;
-        data["companyName"] = this.companyName;
-        data["status"] = this.status;
-        data["customerNotes"] = this.customerNotes;
+        data["street"] = this.street;
+        data["city"] = this.city;
+        data["state"] = this.state;
+        data["postalCode"] = this.postalCode;
+        data["country"] = this.country;
+        data["addressType"] = this.addressType;
         return data;
     }
 }
 
-export interface ICustomer {
+export interface IAddress {
+    addressId?: number;
     customerId?: number;
-    firstName?: string | undefined;
-    lastName?: string | undefined;
-    customerType?: string | undefined;
-    prefferedContactMethod?: string | undefined;
-    companyName?: string | undefined;
-    status?: string | undefined;
-    customerNotes?: string | undefined;
+    street?: string | undefined;
+    city?: string | undefined;
+    state?: string | undefined;
+    postalCode?: number;
+    country?: string | undefined;
+    addressType?: string | undefined;
+}
+
+export class AddressModel implements IAddressModel {
+    addressId?: number;
+    customerId?: number;
+    street?: string | undefined;
+    city?: string | undefined;
+    state?: string | undefined;
+    postalCode?: number;
+    country?: string | undefined;
+    addressType?: string | undefined;
+
+    constructor(data?: IAddressModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.addressId = _data["addressId"];
+            this.customerId = _data["customerId"];
+            this.street = _data["street"];
+            this.city = _data["city"];
+            this.state = _data["state"];
+            this.postalCode = _data["postalCode"];
+            this.country = _data["country"];
+            this.addressType = _data["addressType"];
+        }
+    }
+
+    static fromJS(data: any): AddressModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddressModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["addressId"] = this.addressId;
+        data["customerId"] = this.customerId;
+        data["street"] = this.street;
+        data["city"] = this.city;
+        data["state"] = this.state;
+        data["postalCode"] = this.postalCode;
+        data["country"] = this.country;
+        data["addressType"] = this.addressType;
+        return data;
+    }
+}
+
+export interface IAddressModel {
+    addressId?: number;
+    customerId?: number;
+    street?: string | undefined;
+    city?: string | undefined;
+    state?: string | undefined;
+    postalCode?: number;
+    country?: string | undefined;
+    addressType?: string | undefined;
 }
 
 export class CustomerModel implements ICustomerModel {
@@ -554,6 +870,82 @@ export interface ICustomerModel {
     companyName?: string | undefined;
     status?: string | undefined;
     customerNotes?: string | undefined;
+}
+
+export class CustomerWithFKsModel implements ICustomerWithFKsModel {
+    customerId?: number;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    customerType?: string | undefined;
+    prefferedContactMethod?: string | undefined;
+    companyName?: string | undefined;
+    status?: string | undefined;
+    customerNotes?: string | undefined;
+    addresses?: Address[] | undefined;
+
+    constructor(data?: ICustomerWithFKsModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.customerId = _data["customerId"];
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+            this.customerType = _data["customerType"];
+            this.prefferedContactMethod = _data["prefferedContactMethod"];
+            this.companyName = _data["companyName"];
+            this.status = _data["status"];
+            this.customerNotes = _data["customerNotes"];
+            if (Array.isArray(_data["addresses"])) {
+                this.addresses = [] as any;
+                for (let item of _data["addresses"])
+                    this.addresses!.push(Address.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): CustomerWithFKsModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new CustomerWithFKsModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["customerId"] = this.customerId;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["customerType"] = this.customerType;
+        data["prefferedContactMethod"] = this.prefferedContactMethod;
+        data["companyName"] = this.companyName;
+        data["status"] = this.status;
+        data["customerNotes"] = this.customerNotes;
+        if (Array.isArray(this.addresses)) {
+            data["addresses"] = [];
+            for (let item of this.addresses)
+                data["addresses"].push(item ? item.toJSON() : undefined as any);
+        }
+        return data;
+    }
+}
+
+export interface ICustomerWithFKsModel {
+    customerId?: number;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    customerType?: string | undefined;
+    prefferedContactMethod?: string | undefined;
+    companyName?: string | undefined;
+    status?: string | undefined;
+    customerNotes?: string | undefined;
+    addresses?: Address[] | undefined;
 }
 
 export class User implements IUser {
