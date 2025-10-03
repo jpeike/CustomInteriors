@@ -1,5 +1,6 @@
 ﻿using Core;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Web;
 
@@ -14,20 +15,20 @@ public class AddressController : ControllerBase
         _addressService = addressService;
     }
 
-    [HttpGet()]
+    [HttpGet("")]
     public async Task<IEnumerable<AddressModel>> GetAllAddresses()
     {
         return await _addressService.GetAllAddresses();
     }
 
-    [HttpGet("customer/{customerId:int}")]
+    [HttpGet("{customerId:int}")]
 
     public async Task<IEnumerable<AddressModel>> GetAddressesByCustomerId(int customerId)
     {
         return await _addressService.GetAddressesByCustomerId(customerId);
     }
 
-    [HttpPost("Create")]
+    [HttpPost("CreateAddress")]
     public async Task<AddressModel> CreateAddress([FromBody] AddressModel addressModel)
     {
 
@@ -45,13 +46,14 @@ public class AddressController : ControllerBase
         return await _addressService.CreateAddress(address);
     }
 
-    [HttpPut("Update")]
-    public async Task UpdateAddress([FromBody] AddressModel addressModel)
+    [HttpPut("UpdateAddress")]
+
+public async Task UpdateAddress([FromBody] AddressModel addressModel)
     {
         await _addressService.UpdateAddress(addressModel);
     }
 
-    [HttpDelete("Delete/{addressId:int}")]
+    [HttpDelete("DeleteAddress/{addressId:int}")]
     public async Task<bool> DeleteAddress(int addressId)
     {
         return await _addressService.DeleteAddress(addressId);
