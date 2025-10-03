@@ -1,5 +1,5 @@
 <template>
-    <div class="flex row scrollBar">
+    <div class="flex row defaultColor scrollBar">
         <div class = "flex column customerInfoWindow">
             <div class="flex row customerInfoBar">
                 <div class = "flex column customerInfoTitle">
@@ -70,10 +70,10 @@
             </div>
             <div class="flex row buttons">
                 <button class = "cancelUpdateButton" @click="$emit('closePage')">
-                    <p style="margin: 0; text-align: center; color: black;">Cancel</p>
+                    <p style="margin: 0; text-align: center;">Cancel</p>
                 </button>  
                 <button class = "updateInfoButton" @click="$emit('updateCustomerInformation', currentCustomerInformation?.customerId, customer)">
-                    <p style="margin: 0; text-align: center; color: white;">{{buttonDesctipnion}}</p>
+                    <p style="margin: 0; text-align: center;">{{buttonDesctipnion}}</p>
                 </button>
             </div>
         </div>
@@ -120,14 +120,10 @@
         padding: 4%;
         width: 50vw;
         height: 80vh;  
-        background-color: rgb(255, 255, 255);
-        margin-left: 25vw;
-        margin-top: 10vh;    
         border-radius: 5vh;
     }
-    
+
     .customerInfoWindow{
-        background-color: rgb(255, 255, 255);
         overflow: scroll;
         height: 100%;
         width: 100%;
@@ -170,7 +166,6 @@
     .updateInfoButton{
         width: 20%;
         height: 5vh;
-        background-color: rgb(0, 0, 0);
         border: none;
         align-content: center;
         border-radius: 7px;
@@ -178,7 +173,6 @@
     .cancelUpdateButton{
         width: 20%;
         height: 5vh;
-        background-color: rgb(233, 233, 233);
         border: none;
         align-content: center;
         border-radius: 7px;
@@ -189,5 +183,26 @@
         gap: 5%;
         margin-bottom: 2vh;
     }
+    
+    .defaultColor{
+        background-color: rgb(255, 255, 255);
+        color: black;
+    }
+    .invertColor{
+        background-color: rgb(0, 0, 0);  
+        color: white;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .defaultColor{
+            background-color: rgb(16, 16, 16);   
+            color: white;
+        }
+        .invertColor{
+            background-color: rgb(255, 255, 255);
+            color: black;
+        }
+    }
+    
     
 </style>
