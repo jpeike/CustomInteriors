@@ -15,8 +15,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidAudience = "574mvan5pjeoifpt063t473se6",
+            ValidateAudience = false,
             ValidateLifetime = true
         };
     });
@@ -77,7 +76,7 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowFrontend");
 
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

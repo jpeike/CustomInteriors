@@ -20,7 +20,17 @@ export const useAuthStore = defineStore('auth', {
         response_type: 'code',
         scope: 'openid profile email',
         post_logout_redirect_uri: window.location.origin,
-        automaticSilentRenew: true,
+        metadata: {
+          issuer: 'https://us-east-1jpmu56ifb.auth.us-east-1.amazoncognito.com',
+          authorization_endpoint:
+            'https://us-east-1jpmu56ifb.auth.us-east-1.amazoncognito.com/oauth2/authorize',
+          token_endpoint:
+            'https://us-east-1jpmu56ifb.auth.us-east-1.amazoncognito.com/oauth2/token',
+          userinfo_endpoint:
+            'https://us-east-1jpmu56ifb.auth.us-east-1.amazoncognito.com/oauth2/userInfo',
+          jwks_uri:
+            'https://cognito-idp.us-east-1.amazonaws.com/us-east-1_JPMU56Ifb/.well-known/jwks.json',
+        },
       })
 
       // Subscribe to events

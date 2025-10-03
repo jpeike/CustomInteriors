@@ -16,6 +16,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet()]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IEnumerable<UserModel>> GetAllUsers()
     {
         return await _userService.GetAllUsers();
