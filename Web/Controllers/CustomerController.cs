@@ -27,6 +27,14 @@ public class CustomersController : ControllerBase
         return await _customerService.GetCustomerById(id);
     }
 
+    [HttpGet("withChildren/{id:int}")]
+
+    public async Task<CustomerWithFKsModel?> GetCustomerWithAddress(int id)
+    {
+        return await _customerService.GetCustomerWithAddress(id);
+    }
+
+
     [HttpPost("Create")]
     public async Task<CustomerModel> CreateCustomer([FromBody] CustomerModel customerModel)
     {
