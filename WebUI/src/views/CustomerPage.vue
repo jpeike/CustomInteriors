@@ -115,24 +115,24 @@ function openAddressListModal(customerId: number) {
 }
 
 function openCreateAddressModal() {
-  showAddressList.value = false 
-  showCreateAddressModal.value = true 
+  showAddressList.value = false
+  showCreateAddressModal.value = true
 }
 
 function closeCreateModal() {
   showCreateAddressModal.value = false
-  showAddressList.value = true 
+  showAddressList.value = true
 }
 
 function openUpdateAddressModal(address: AddressModel) {
   selectedAddress.value = address
-  showAddressList.value = false 
-  showUpdateAddressModal.value = true 
+  showAddressList.value = false
+  showUpdateAddressModal.value = true
 }
 
 function closeUpdateModal() {
   showUpdateAddressModal.value = false
-  showAddressList.value = true 
+  showAddressList.value = true
 }
 
 async function deleteAddress(addressId: number) {
@@ -168,5 +168,5 @@ async function updateaddress(address: AddressModel) {
 </script>
 
 <style scoped>
-  
+
 </style>

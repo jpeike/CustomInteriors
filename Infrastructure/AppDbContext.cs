@@ -1,4 +1,5 @@
 ﻿using Core;
+using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,6 +13,7 @@ public class AppDbContext : DbContext
     }
     public DbSet<User> Users => Set<User>();
     public DbSet<Customer> Customers => Set<Customer>();
+    public DbSet<Employee> Employees => Set<Employee>();
     public DbSet<Address> Addresses => Set<Address>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -21,6 +23,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<User>(ConfigureUser);
         modelBuilder.Entity<Address>(ConfigureAddress);
         modelBuilder.Entity<Customer>(ConfigureCustomer);
+        modelBuilder.Entity<Employee>(ConfigureEmployee);
     }
 
     private void ConfigureCustomer(EntityTypeBuilder<Customer> builder)
@@ -88,6 +91,30 @@ public class AppDbContext : DbContext
         // Optional: Index on Username or Email
         builder.HasIndex(u => u.Username).IsUnique();
         builder.HasIndex(u => u.Email).IsUnique();
+    }
+    
+    private static void ConfigureEmployee(EntityTypeBuilder<Employee> builder)
+    {
+        // Primary key
+        builder.HasKey(u => u.EmployeeId);
+
+        // Username
+        builder.Property(u => u.AccountId)
+            .IsRequired();
+
+        // Email
+        builder.Property(u => u.EmailId)
+            .IsRequired();
+
+        // PasswordHash
+        builder.Property(u => u.Name)
+            .HasMaxLength(255)
+            .IsRequired();
+
+        // CreatedAt
+        builder.Property(u => u.Role)
+            .HasMaxLength(255)
+            .IsRequired();
     }
 
     private void ConfigureAddress(EntityTypeBuilder<Address> builder)

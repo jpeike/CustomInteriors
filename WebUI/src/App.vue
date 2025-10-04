@@ -7,3 +7,9 @@ import AppHeader from './components/AppHeader.vue'
   <AppHeader />
   <RouterView />
 </template>
+
+<style scoped>
+:global(body) {
+  font-family: 'Roboto', sans-serif;
+}
+</style>
