@@ -4,10 +4,11 @@ import { Client, EmployeeModel } from '../client/client'
 import { onMounted, reactive, ref } from 'vue'
 import CrudHeader from '../components/CrudHeader.vue'
 import EmployeeModal from '../components/EmployeeModal.vue'
+import 'primeicons/primeicons.css'
 
 const client = new Client(import.meta.env.VITE_API_BASE_URL)
 let showEmployeeModal = ref(false)
-const currentEmployeeId = ref(0)
+const selectedEmployee = ref(new EmployeeModel);
 
 const state = reactive({
   employees: [] as EmployeeModel[],
@@ -20,6 +21,7 @@ onMounted(() => {
   fetchEmployees()
 })
 
+// reload employee list
 function fetchEmployees() {
   state.loading = true
   state.error = null
@@ -38,14 +40,14 @@ function fetchEmployees() {
 
 function addDefaultEmployee() {
   state.loading = true;
-  console.log('Adding new employee');
+  const newEmployee = new EmployeeModel();
 
-  let newEmployee = new EmployeeModel();
-  newEmployee.employeeId = 99;
-  newEmployee.accountId = 99;
-  newEmployee.emailId = 99;
-  newEmployee.name = 'NEW EMPLOYEE';
-  newEmployee.role = 'NEW EMPLOYEE';
+  // use 0 as the identity to signal to ef core you want it to be a new row
+  newEmployee.employeeId = 0;
+  newEmployee.accountId = 999;
+  newEmployee.emailId = 999;
+  newEmployee.name = 'New Employee';
+  newEmployee.role = 'New Employee';
 
   // create employee
   client.createEmployee(newEmployee)
@@ -53,34 +55,49 @@ function addDefaultEmployee() {
       state.error = error.message || 'An error occurred';
     })
     .finally(() => {
+      fetchEmployees();
       state.loading = false;
     })
 }
 
 function updateEmployeeInformation(currentID: number, updatedEmployee: EmployeeModel){
-  const tempType = state.employees[currentEmployeeId.value - 1].customerType;
-  state.employees[currentEmployeeId.value - 1] = updatedEmployee;
-  state.employees[currentEmployeeId.value - 1].customerType = tempType;
-  state.employees[currentEmployeeId.value - 1].customerId = currentID;
+  updatedEmployee.employeeId = currentID;
 
-  state.loading = true
-  state.error = null
+  state.loading = true;
+  state.error = null;
   client
-    .update(state.employees[currentEmployeeId.value - 1])
+    .updateEmployee(updatedEmployee)
     .catch((error) => {
-      state.error = error.message || 'An error occurred'
+      state.error = error.message || 'An error occurred';
     })
     .finally(() => {
-      state.loading = false
+      fetchEmployees();
+      state.loading = false;
     })
   showEmployeeModal = ref(false);
+}
+
+function deleteEmployee(id: number) {
+state.loading = true;
+  state.error = null;
+
+  client
+    .deleteEmployee(id)
+    .catch((error) => {
+      state.error = error.message || 'An error occurred';
+    })
+    .finally(() => {
+      fetchEmployees();
+      state.loading = false;
+    })
+    showEmployeeModal = ref(false);
 }
 </script>
 
 <template>
   <CrudHeader title="Employees"></CrudHeader>
   <div v-if="!state.loading">
-    <Card v-for="employee in state.employees" :key="employee.employeeId" class="empCard" @click="showEmployeeModal = !showEmployeeModal; currentEmployeeId = employee.employeeId ?? 0">
+    <Card v-for="employee in state.employees" :key="employee.employeeId" class="empCard" @click="showEmployeeModal = !showEmployeeModal; selectedEmployee = employee"> 
       <template #title>{{ employee.employeeId }}: {{ employee.name }}</template>
       <template #subtitle></template>
       <template #content>
@@ -99,7 +116,7 @@ function updateEmployeeInformation(currentID: number, updatedEmployee: EmployeeM
   </div>
 
   <div v-if="showEmployeeModal" class="modalBlur">
-    <EmployeeModal @closePage="showEmployeeModal = !showEmployeeModal" @updateFunction="updateEmployeeInformation"></EmployeeModal>
+    <EmployeeModal :selectedEmployee="selectedEmployee" @closePage="showEmployeeModal = !showEmployeeModal" @updateFunction="updateEmployeeInformation" @deleteFunction="deleteEmployee"></EmployeeModal>
   </div>
 </template>
 
@@ -107,7 +124,6 @@ function updateEmployeeInformation(currentID: number, updatedEmployee: EmployeeM
 .empCard{
   border: solid;
   border-width: 1px;
-  border-color: rgb(222, 222, 222);
   border-radius: 10px;
   margin-bottom: 2%;
 }

@@ -1,15 +1,20 @@
 ﻿<script setup lang="ts">
 import 'primeicons/primeicons.css';
-import { Client, EmployeeModel } from '../client/client'
+import { EmployeeModel } from '../client/client'
 import InputText from 'primevue/inputtext';
-import { ref } from 'vue'
+import Button from 'primevue/button';
 
 
-defineProps({
+defineEmits(['closePage', 'updateFunction', 'deleteFunction']);
+const props = defineProps({
   selectedEmployee: EmployeeModel
 });
 
-const employee = ref(new EmployeeModel);
+
+// make copy of passed in employee data so when you change the fields it doesnt
+// change the card data (until you save)
+let employee = new EmployeeModel;
+if (props.selectedEmployee) employee = new EmployeeModel(props.selectedEmployee);
 
 </script>
 
@@ -22,26 +27,28 @@ const employee = ref(new EmployeeModel);
           <p style="margin: 0;">Update employee information.</p>
         </div>
       </div>
-      <div class = "multipleFields">
-        <div>
-          <h3 class="fieldTitle">First Name</h3>
-          <InputText v-model="employee.name" type="text" class="inputValue" :placeholder="selectedEmployee?.name"></InputText>
-        </div>
+      <div>
+        <h3 class="fieldTitle">Name</h3>
+        <InputText v-model="employee.name" type="text" class="inputValue"></InputText>
+      </div>
+      <div>
+        <h3 class="fieldTitle">Role</h3>
+        <InputText v-model="employee.role" type="text" class="inputValue"></InputText>
       </div>
       <div>
         <h3 class="fieldTitle">Email Id</h3>
-        <InputText v-model="employee.emailId" type="text" class="inputValue" :placeholder="selectedEmployee?.emailId.toString()"></InputText>
+        <InputText v-model="employee.emailId" type="number" class="inputValue"></InputText>
+      </div>
+      <div>
+        <h3 class="fieldTitle">Account Id</h3>
+        <InputText v-model="employee.accountId" type="number" class="inputValue"></InputText>
       </div>
       <div class="buttons">
-        <button class = "cancelUpdateButton" @click="$emit('closePage')">
-          <p style="margin: 0; text-align: center; color: black;">Cancel</p>
-        </button>
-        <button class = "updateInfoButton" @click="$emit('updateFunction', selectedEmployee?.employeeId, employee)">
-          <p style="margin: 0; text-align: center; color: white;">Update</p>
-        </button>
+        <Button label="Close" @click="$emit('closePage')"></Button>
+        <Button label="Update" @click="$emit('updateFunction', selectedEmployee?.employeeId, employee)"></Button>
+        <Button label="Delete" @click="$emit('deleteFunction', selectedEmployee?.employeeId)" severity="danger"></Button>
       </div>
     </div>
-    <button class = "exitButton" @click="$emit('closePage')"><h4 style="margin: 0;">X</h4></button>
   </div>
 </template>
 
@@ -52,7 +59,7 @@ const employee = ref(new EmployeeModel);
   padding: 4%;
   width: 50vw;
   height: 80vh;
-  background-color: rgb(0, 0, 0);
+  background-color: var(--p-overlay-modal-background);
   margin-left: 25vw;
   margin-top: 10vh;
   border-radius: 5vh;
@@ -61,8 +68,9 @@ const employee = ref(new EmployeeModel);
 .infoDiv{
   display: flex;
   flex-direction: column;
-  background-color: rgb(0, 0, 0);
-  overflow: scroll;
+
+  overflow-x: hidden;
+  overflow-y: auto;
   height: 100%;
   width: 100%;
   padding-right: 5%;
@@ -77,16 +85,6 @@ const employee = ref(new EmployeeModel);
   flex-direction: column;
   margin-bottom: 2vh;
 }
-.exitButton{
-  background: none;
-  border: none;
-  height: fit-content;
-}
-.multipleFields{
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
 .fieldTitle{
   margin: 0vh;
   margin-bottom: 1vh;
@@ -95,32 +93,11 @@ const employee = ref(new EmployeeModel);
   margin-bottom: 3vh;
   width: 100%;
 }
-.tripleField{
-  width: 30%;
-}
-.notes{
-  height: 10vh;
-  resize: none;
-}
 .buttons{
   display: flex;
   flex-direction: row;
   width: 100%;
   justify-content: end;
   gap: 5%;
-}
-.updateInfoButton{
-  width: 20%;
-  height: 5vh;
-  border: none;
-  align-content: center;
-  border-radius: 7px;
-}
-.cancelUpdateButton{
-  width: 20%;
-  height: 5vh;
-  border: none;
-  align-content: center;
-  border-radius: 7px;
 }
 </style>

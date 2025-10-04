@@ -25,6 +25,9 @@ public class EmployeeRepository : IEmployeeRepository
 
     public async Task<Employee> AddEmployee(Employee employee)
     {
+        // set to 0 so ef core treats it as a new row
+        employee.EmployeeId = 0;
+        
         _dbContext.Employees.Add(employee);
         await _dbContext.SaveChangesAsync();
         return employee;
