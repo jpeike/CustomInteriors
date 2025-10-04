@@ -106,7 +106,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import { Client, AddressModel } from '../../client/client'
+import { AddressModel } from '../../client/client'
 
 const props = defineProps<{
   isOpen: boolean
@@ -118,8 +118,6 @@ const emit = defineEmits<{
   close: []
   created: [address: AddressModel]
 }>()
-
-const client = new Client(import.meta.env.VITE_API_BASE_URL)
 
 const street = ref('')
 const city = ref('')
