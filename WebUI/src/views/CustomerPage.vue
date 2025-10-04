@@ -1,5 +1,36 @@
 
 <template>
+  <div>
+    <AddressListModal
+      :isOpen="showAddressList"
+      :customerId="selectedCustomerId"
+      :addresses="state.addresses"
+      @close="showAddressList = false"
+      @create="openCreateAddressModal"
+      @edit="openUpdateAddressModal"
+      @delete="deleteAddress"
+    />
+
+    <CreateAddressModal
+      :isOpen="showCreateAddressModal"
+      :customerId="selectedCustomerId"
+      :errorMessage="createError"
+      @close="closeCreateModal"
+      @created="createAddress"
+    />
+
+    <UpdateAddressModal
+      :isOpen="showUpdateAddressModal"
+      :customerId="selectedCustomerId"
+      :address="selectedAddress"
+      :errorMessage="updateError"
+      @close="closeUpdateModal"
+      @updated="updateaddress"
+    />
+  </div>
+  
+  
+  
   <div class="flex column customerBody">
     <div class="flex row pageHeader">
         <div class = "flex column leftPanel">
@@ -45,7 +76,7 @@
             </div>
           </div>
           
-          <br/><p style="margin: 0;">Address: (temp)</p>
+          <br/><p style="margin: 0;"> Address: {{ getAddressString(customer.customerId!)}}</p>
           <br/>
           <p style="margin: 0;">Type: {{ customer.customerType }}</p>
           <br/>
@@ -64,7 +95,7 @@
   </div>
 
   <div v-if="displayCustomerDetails" class="flex row customerWindowBlur">
-    <CustomerInformation :currentCustomerInformation="state.customer[currentCustomerIndex]" :title="customerTitle" :description="customerDescription" :buttonDesctipnion="customerButtonDesc" @closePage="displayCustomerDetails = !displayCustomerDetails" @updateCustomerInformation="updateCustomerInformation"></CustomerInformation>
+    <CustomerInformation :currentCustomerInformation="state.customer[currentCustomerIndex]" :title="customerTitle" :description="customerDescription" :buttonDesctipnion="customerButtonDesc" @closePage="displayCustomerDetails = !displayCustomerDetails" @updateCustomerInformation="updateCustomerInformation" @openAddressListModal="openAddressListModal"></CustomerInformation>
   </div>
 
   <div v-if="deleteConfirmation" class="flex row customerWindowBlur">
@@ -80,13 +111,23 @@
 import CustomerInformation from '../components/CustomerInformation.vue';
 import DeleteConfirmation from '../components/DeleteConfirmation.vue';
 import Card from 'primevue/card'
+import { Client, CustomerModel, AddressModel, Address } from '../client/client'
 import { ref } from 'vue'
-import { Client, CustomerModel } from '../client/client'
 import { onMounted, reactive } from 'vue'
+import AddressListModal from '../components/modals/AddressListModal.vue'
+import CreateAddressModal from '../components/modals/CreateAddressModal.vue'
+import UpdateAddressModal from '../components/modals/UpdateAddressModal.vue'
 import InputText from 'primevue/inputtext';
 import 'primeicons/primeicons.css'
 
 const client = new Client(import.meta.env.VITE_API_BASE_URL)
+const showAddressList = ref(false)
+const showCreateAddressModal = ref(false)
+const showUpdateAddressModal = ref(false)
+const createError = ref<string | null>(null)
+const updateError = ref<string | null>(null)
+let selectedCustomerId = ref<number | null>(null)
+const selectedAddress = ref<AddressModel | null>(null)
 
 let displayCustomerDetails = ref(false);
 let deleteConfirmation = ref(false);
@@ -99,6 +140,7 @@ let searchValue = ref('');
 
 const state = reactive({
   customer: [] as CustomerModel[],
+  addresses: [] as AddressModel[],
   loading: false,
   error: null as string | null,
 })
@@ -106,6 +148,7 @@ const state = reactive({
 onMounted(() => {
   console.log('AboutView mounted')
   fetchCustomers()
+  fetchAddresses()
 })
 
 function getCustomerIndex(customerID: number){
@@ -113,7 +156,15 @@ function getCustomerIndex(customerID: number){
     if (state.customer[i].customerId == customerID){
       currentCustomerIndex = ref(i);
     }
-  }
+  }  
+}
+
+function getAddressString(customerID: number){
+  for (let i = 0; i < state.addresses.length; i++){
+    if (state.addresses[i].customerId == customerID){
+      return state.addresses[i].street + " " + state.addresses[i].city + ", " + state.addresses[i].state;
+    }
+  }  
 }
 
 function fetchCustomers() {
@@ -132,8 +183,98 @@ function fetchCustomers() {
     })
 }
 
+function fetchAddresses() {
+  state.loading = true
+  state.error = null
+  client
+    .address()
+    .then((response) => {
+      state.addresses = response
+    })
+    .catch((error) => {
+      state.error = error.message || 'An error occurred'
+    })
+    .finally(() => {
+      state.loading = false
+    })
+}
+
+function fetchAddressesByCustomerId(customerId: number) {
+  state.loading = true
+  state.error = null
+  client
+    .address2(customerId)
+    .then((response) => {
+      state.addresses = response
+    })
+    .catch((error) => {
+      state.error = error.message || 'An error occurred'
+    })
+    .finally(() => {
+      state.loading = false
+    })
+}
+
+function openAddressListModal(customerId: number) {
+  fetchAddressesByCustomerId(customerId)
+  selectedCustomerId.value = customerId
+  showAddressList.value = true
+}
+
+function openCreateAddressModal() {
+  showAddressList.value = false 
+  showCreateAddressModal.value = true 
+}
+
+function closeCreateModal() {
+  showCreateAddressModal.value = false
+  showAddressList.value = true 
+}
+
+function openUpdateAddressModal(address: AddressModel) {
+  selectedAddress.value = address
+  showAddressList.value = false 
+  showUpdateAddressModal.value = true 
+}
+
+function closeUpdateModal() {
+  showUpdateAddressModal.value = false
+  showAddressList.value = true 
+}
+
+async function deleteAddress(addressId: number) {
+  try {
+    await client.deleteAddress(addressId)
+    fetchAddressesByCustomerId(selectedCustomerId.value!)
+  } catch (error) {
+    console.error('Delete failed:', error)
+  }
+}
+
+async function createAddress(address: AddressModel) {
+  try {
+    createError.value = null
+    await client.createAddress(address)
+    fetchAddressesByCustomerId(currentCustomerIndex.value!)
+  } catch (error) {
+    console.error('Create failed:', error)
+    createError.value = 'Failed To Create Address'
+  }
+}
+
+async function updateaddress(address: AddressModel) {
+  try {
+    updateError.value = null
+    await client.updateAddress(address)
+    fetchAddressesByCustomerId(selectedCustomerId.value!)
+  } catch (error) {
+    updateError.value = 'Failed To Create Address'
+    console.error('Update failed:', error)
+  }
+}
+
 function updateCustomerInformation(currentID: number, updatedCustomer: CustomerModel){
-  if(currentID == null){
+  if(currentID == null){ //create new
     updatedCustomer.customerId = 0;
     state.loading = true;
     state.error = null;
@@ -150,17 +291,13 @@ function updateCustomerInformation(currentID: number, updatedCustomer: CustomerM
   else{
     state.customer[currentCustomerIndex.value - 1] = updatedCustomer;
     state.customer[currentCustomerIndex.value - 1].customerId = currentID;
-    
+
     state.loading = true
     state.error = null
     client
     .updateCustomer(state.customer[currentCustomerIndex.value - 1])
     .catch((error) => {
       state.error = error.message || 'An error occurred'
-    })
-    .finally(() => {
-      fetchCustomers();
-      state.loading = false
     })
   }
   displayCustomerDetails = ref(false); 

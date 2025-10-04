@@ -42,20 +42,10 @@
                     </div>
                 </div>
             </div>
-            <div class="flex row multipleFields">
-                <div class="tripleField">
-                    <h3 class="fieldTitle">City</h3>
-                    <InputText type="text" class="inputValue" placeholder="City"></InputText>
-                </div>
-                <div class="tripleField">
-                    <h3 class="fieldTitle">State</h3>
-                    <InputText type="text" class="inputValue" placeholder="State"></InputText>
-                </div>
-                <div class="tripleField">
-                    <h3 class="fieldTitle">Zip</h3>
-                    <InputText type="text" class="inputValue" placeholder="Zip"></InputText>
-                </div>
+            <div class="addressField">
+                <button class ="addressButton" @click="$emit('openAddressListModal', customer.customerId!)">View Addresses</button>
             </div>
+
             <div>
                 <h3 class="fieldTitle">Company Name</h3>
                 <InputText v-model="customer.companyName" type="text" class="inputValue" :placeholder="currentCustomerInformation?.companyName"></InputText>
@@ -83,8 +73,9 @@
 
 <script setup lang="ts">
     import 'primeicons/primeicons.css';
-    import { Client, CustomerModel } from '../client/client'
+    import { Client, CustomerModel, AddressModel } from '../client/client'
     import InputText from 'primevue/inputtext';
+    import InputNumber from 'primevue/inputnumber';
     import { ref } from 'vue'
 
     const props = defineProps({
@@ -97,7 +88,7 @@
     let customer;
     if (props.currentCustomerInformation != undefined){
         customer =ref(props.currentCustomerInformation);
-}
+    }
     else{
         customer = ref(new CustomerModel);
     }
@@ -151,6 +142,9 @@
         margin-bottom: 2vh;
         width: 100%;
     }
+    .p-inputnumber-input{
+        width: 25px;
+    }
     .tripleField{
         width: 30%;
     }
@@ -172,6 +166,18 @@
     }
     .cancelUpdateButton{
         width: 20%;
+        height: 5vh;
+        border: none;
+        align-content: center;
+        border-radius: 7px;
+    }
+    .addressField{
+        margin-top: 5%;  
+        margin-bottom: 5%;
+        height: 100vh;    
+    }
+    .addressButton{
+        width: 25%;
         height: 5vh;
         border: none;
         align-content: center;

@@ -27,10 +27,29 @@ public class CustomersController : ControllerBase
         return await _customerService.GetCustomerById(id);
     }
 
+    [HttpGet("withChildren/{id:int}")]
+
+    public async Task<CustomerWithFKsModel?> GetCustomerWithAddress(int id)
+    {
+        return await _customerService.GetCustomerWithAddress(id);
+    }
+
+
     [HttpPost("CreateCustomer")]
     public async Task<CustomerModel> CreateCustomer([FromBody] Customer customerModel)
     {
-        return await _customerService.CreateCustomer(customerModel);
+        var customer = new Customer
+        {
+            FirstName = customerModel.FirstName,
+            LastName = customerModel.LastName,
+            CustomerType = customerModel.CustomerType,
+            PrefferedContactMethod = customerModel.PrefferedContactMethod,
+            CompanyName = customerModel.CompanyName,
+            Status = customerModel.Status,
+            CustomerNotes = customerModel.CustomerNotes
+        };
+
+        return await _customerService.CreateCustomer(customer);
     }
 
     [HttpPut("UpdateCustomer")]
