@@ -255,7 +255,7 @@ async function createAddress(address: AddressModel) {
   try {
     createError.value = null
     await client.createAddress(address)
-    fetchAddressesByCustomerId(currentCustomerIndex.value!)
+    fetchAddressesByCustomerId(selectedCustomerId.value!)
   } catch (error) {
     console.error('Create failed:', error)
     createError.value = 'Failed To Create Address'
@@ -298,6 +298,10 @@ function updateCustomerInformation(currentID: number, updatedCustomer: CustomerM
     .updateCustomer(state.customer[currentCustomerIndex.value - 1])
     .catch((error) => {
       state.error = error.message || 'An error occurred'
+    })
+    .finally(() => {
+      fetchCustomers();
+      state.loading = false
     })
   }
   displayCustomerDetails = ref(false); 
