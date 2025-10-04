@@ -7,4 +7,5 @@ public interface ICustomerRepository
     Task<Customer> AddCustomer(Customer customer);
     Task UpdateCustomer(Customer customer);
     Task<bool> DeleteCustomer(int id);
+    Task<Customer?> GetCustomerWithAddress(int id);
 }

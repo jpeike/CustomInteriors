@@ -8,5 +8,7 @@ public interface ICustomerService
     Task<CustomerModel> CreateCustomer(Customer customer);
     Task UpdateCustomer(CustomerModel customerModel);
     Task<bool> DeleteCustomer(int id);
+
+    Task<CustomerWithFKsModel?> GetCustomerWithAddress(int customerId);
 }
 
