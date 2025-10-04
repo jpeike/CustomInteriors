@@ -1,0 +1,214 @@
+<template>
+    <div class="flex row defaultColor scrollBar">
+        <div class = "flex column customerInfoWindow">
+            <div class="flex row customerInfoBar">
+                <div class = "flex column customerInfoTitle">
+                    <h2 style="margin: 0;">{{title}}</h2>
+                    <p style="margin: 0;">{{description}}</p>
+                </div>
+            </div>
+            <div class = "flex row multipleFields">
+                <div>
+                    <h3 class="fieldTitle">First Name*</h3>
+                    <InputText v-model="customer.firstName" type="text" class="inputValue" :placeholder="currentCustomerInformation?.firstName"></InputText>
+                </div>
+                <div>
+                    <h3 class="fieldTitle">Last Name*</h3>
+                    <InputText v-model="customer.lastName" type="text" class="inputValue" :placeholder="currentCustomerInformation?.lastName"></InputText>
+                </div>
+            </div>
+            <div>
+                <h3 class="fieldTitle">Customer Type*</h3>
+                <InputText v-model="customer.customerType" type="text" class="inputValue" :placeholder="currentCustomerInformation?.customerType"></InputText>
+            </div>
+            <div>
+                <h3 class="fieldTitle">Email</h3>
+                <InputText v-model="newEmail" type="text" class="inputValue" placeholder="placeholder email"></InputText>
+            </div>
+            <div>
+                <h3 class="fieldTitle">Phone</h3>
+                <InputText v-model="newPhone" type="text" class="inputValue" placeholder="placeholder phone"></InputText>
+            </div>
+            <div>
+                <h3 class="fieldTitle">Preffered Contact Method</h3>
+                <div class="contactMethod">                    
+                    <div>
+                        <input :checked="currentCustomerInformation?.prefferedContactMethod == 'Email'" type="radio" class = "contactMethodRadio" v-model="customer.prefferedContactMethod" id = "Email" name="contactMethod" value ="Email" variant="filled"/>
+                        <label for="Email">Email</label>
+                    </div>
+                    <div>
+                        <input :checked="currentCustomerInformation?.prefferedContactMethod == 'Phone'" type="radio" class = "contactMethodRadio" v-model="customer.prefferedContactMethod" id = "Phone" name="contactMethod" value ="Phone"/>
+                        <label for="Phone">Phone</label>
+                    </div>
+                </div>
+            </div>
+            <div class="addressField">
+                <button class ="addressButton" @click="$emit('openAddressListModal', customer.customerId!)">View Addresses</button>
+            </div>
+
+            <div>
+                <h3 class="fieldTitle">Company Name</h3>
+                <InputText v-model="customer.companyName" type="text" class="inputValue" :placeholder="currentCustomerInformation?.companyName"></InputText>
+            </div>
+            <div>
+                <h3 class="fieldTitle">Status</h3>
+                <InputText v-model="customer.status" type="text" class="inputValue" :placeholder="currentCustomerInformation?.status"></InputText>
+            </div>
+            <div class="notesField">
+                <h3 class="fieldTitle">Notes</h3>
+                <textarea v-model="customer.customerNotes" type="text" class="p-inputtext p-component inputValue notes" :placeholder="currentCustomerInformation?.customerNotes"></textarea>
+            </div>
+            <div class="flex row buttons">
+                <button class = "cancelUpdateButton" @click="$emit('closePage')">
+                    <p style="margin: 0; text-align: center;">Cancel</p>
+                </button>  
+                <button class = "updateInfoButton" @click="$emit('updateCustomerInformation', currentCustomerInformation?.customerId, customer)">
+                    <p style="margin: 0; text-align: center;">{{buttonDesctipnion}}</p>
+                </button>
+            </div>
+        </div>
+        <button class = "exitButton" @click="$emit('closePage')"><h4 style="margin: 0;">X</h4></button>
+    </div>
+</template>
+
+<script setup lang="ts">
+    import 'primeicons/primeicons.css';
+    import { Client, CustomerModel, AddressModel } from '../client/client'
+    import InputText from 'primevue/inputtext';
+    import InputNumber from 'primevue/inputnumber';
+    import { ref } from 'vue'
+
+    const props = defineProps({
+       currentCustomerInformation: CustomerModel,
+       title: String,
+       description: String,
+       buttonDesctipnion: String
+    });
+    
+    let customer;
+    if (props.currentCustomerInformation != undefined){
+        customer =ref(props.currentCustomerInformation);
+    }
+    else{
+        customer = ref(new CustomerModel);
+    }
+    
+    const newEmail = ref('');
+    const newPhone = ref('');
+</script>
+
+<style scoped>
+    .flex{
+        display: flex;
+    }
+    .row {
+        flex-direction: row;
+    }
+    .column{
+        flex-direction: column;
+    }
+    .scrollBar{
+        padding: 4%;
+        width: 50vw;
+        height: 80vh;  
+        border-radius: 5vh;
+    }
+
+    .customerInfoWindow{
+        overflow: scroll;
+        height: 100%;
+        width: 100%;
+        padding-right: 5%;
+    }
+    .customerInfoBar{
+        justify-content: space-between;
+    }
+    .customerInfoTitle{
+        margin-bottom: 2vh;
+    }
+    .exitButton{
+        background: none;
+        border: none;
+        height: fit-content;
+    }
+    .multipleFields{
+        justify-content: space-between;
+    }
+    .fieldTitle{
+        margin: 0vh;
+        margin-bottom: 1vh;
+    }
+    .inputValue{
+        margin-bottom: 2vh;
+        width: 100%;
+    }
+    .p-inputnumber-input{
+        width: 25px;
+    }
+    .tripleField{
+        width: 30%;
+    }
+    .notes{
+        height: 10vh;
+        resize: none;
+    }
+    .buttons{
+        width: 100%;
+        justify-content: end;
+        gap: 5%;
+    }
+    .updateInfoButton{
+        width: 20%;
+        height: 5vh;
+        border: none;
+        align-content: center;
+        border-radius: 7px;
+    }
+    .cancelUpdateButton{
+        width: 20%;
+        height: 5vh;
+        border: none;
+        align-content: center;
+        border-radius: 7px;
+    }
+    .addressField{
+        margin-top: 5%;  
+        margin-bottom: 5%;
+        height: 100vh;    
+    }
+    .addressButton{
+        width: 25%;
+        height: 5vh;
+        border: none;
+        align-content: center;
+        border-radius: 7px;
+    }
+    .contactMethod{
+        display: flex;
+        justify-content:start;
+        gap: 5%;
+        margin-bottom: 2vh;
+    }
+    
+    .defaultColor{
+        background-color: rgb(255, 255, 255);
+        color: black;
+    }
+    .invertColor{
+        background-color: rgb(0, 0, 0);  
+        color: white;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .defaultColor{
+            background-color: rgb(16, 16, 16);   
+            color: white;
+        }
+        .invertColor{
+            background-color: rgb(255, 255, 255);
+            color: black;
+        }
+    }
+    
+    
+</style>

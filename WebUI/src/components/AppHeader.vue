@@ -42,7 +42,7 @@ const items = ref([
   },
   {
     label: 'Customers',
-    icon: 'pi pi-wallet',
+    icon: 'pi pi-address-book',
     command: () => router.push('/customers'),
   },
 ])
