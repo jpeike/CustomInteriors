@@ -11,17 +11,17 @@ public class AppDbContext : DbContext
         : base(options)
     {
     }
-
-
     public DbSet<User> Users => Set<User>();
     public DbSet<Customer> Customers => Set<Customer>();
     public DbSet<Employee> Employees => Set<Employee>();
+    public DbSet<Address> Addresses => Set<Address>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<User>(ConfigureUser);
+        modelBuilder.Entity<Address>(ConfigureAddress);
         modelBuilder.Entity<Customer>(ConfigureCustomer);
         modelBuilder.Entity<Employee>(ConfigureEmployee);
     }
@@ -115,5 +115,45 @@ public class AppDbContext : DbContext
         builder.Property(u => u.Role)
             .HasMaxLength(255)
             .IsRequired();
+    }
+
+    private void ConfigureAddress(EntityTypeBuilder<Address> builder)
+    {
+        // Primary key
+        builder.HasKey(a => a.AddressId);
+
+        // Customer foreign key
+        builder.HasOne(a => a.Customer)           // each Address has one Customer
+               .WithMany(c => c.Addresses)        // a Customer can have many Addresses
+               .HasForeignKey(a => a.CustomerId)  // the FK column on Address
+               .OnDelete(DeleteBehavior.Cascade); // cascade delete
+
+        // Street
+        builder.Property(a => a.Street)
+               .HasMaxLength(255)
+               .IsRequired();
+
+        // City
+        builder.Property(a => a.City)
+               .HasMaxLength(255)
+               .IsRequired();
+
+        // State
+        builder.Property(a => a.State)
+               .HasMaxLength(255)
+               .IsRequired();
+
+        // PostalCode
+        builder.Property(a => a.PostalCode)
+                .IsRequired();
+
+        // Country
+        builder.Property(a => a.Country)
+                .IsRequired(false);
+
+        // Address Type
+        builder.Property(a => a.AddressType)
+               .HasMaxLength(255)
+               .IsRequired();
     }
 }

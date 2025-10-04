@@ -68,6 +68,7 @@
   <ItemGroup>
     <Build Include="Tables\Employees.sql" />
     <Build Include="Tables\Users.sql" />
+    <Build Include="Tables\Addresses.sql" />
     <Build Include="Tables\Customers.sql" />
   </ItemGroup>
 </Project>
