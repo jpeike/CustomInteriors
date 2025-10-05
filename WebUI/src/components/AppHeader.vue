@@ -10,6 +10,7 @@
 import { ref } from 'vue'
 import Menubar from 'primevue/menubar'
 import { useRouter } from 'vue-router'
+import 'primeicons/primeicons.css'
 
 const router = useRouter()
 
@@ -42,8 +43,13 @@ const items = ref([
   },
   {
     label: 'Customers',
-    icon: 'pi pi-wallet',
+    icon: 'pi pi-address-book',
     command: () => router.push('/customers'),
+  },
+  {
+    label: 'Employees',
+    icon: 'pi pi-sitemap',
+    command: () => router.push('/employees'),
   },
 ])
 </script>

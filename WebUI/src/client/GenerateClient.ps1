@@ -5,8 +5,8 @@
   # Output directly into this folder (where the script lives)
   $outputFile = Join-Path $PSScriptRoot "client.ts"
 
-  Write-Host "🔄 Fetching Swagger from $swaggerUrl..."
-  Write-Host "🛠️  Generating TypeScript client to $outputFile..."
+  Write-Host "Fetching Swagger from $swaggerUrl..."
+  Write-Host "Generating TypeScript client to $outputFile..."
 
   nswag openapi2tsclient `
     /input:$swaggerUrl `
@@ -16,8 +16,5 @@
     /useGetBaseUrlMethod:false `
     /generateClientClasses:true `
     /generateOptionalParameters:true `
-    /typeScriptVersion:4.5 `
-    /useRequestInterceptor:true `           # <-- ADDED
-    /useTransformOptionsMethod:true 
-
-  Write-Host "`n✅ TypeScript API client generated successfully!"
+    /typeScriptVersion:4.5 
+  Write-Host "`nTypeScript API client generated successfully!"
