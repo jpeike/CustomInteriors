@@ -1,4 +1,3 @@
-
 <template>
   <div>
     <AddressListModal
@@ -101,8 +100,9 @@
   <div v-if="deleteConfirmation" class="flex row customerWindowBlur">
     <deleteConfirmation :currentCustomerInformation="state.customer[currentCustomerIndex]" :title="(state.customer[currentCustomerIndex].firstName + ' ' + state.customer[currentCustomerIndex].lastName)" @closePage="deleteConfirmation = !deleteConfirmation" @deleteCustomer="deleteCustomer"></deleteConfirmation>
   </div>
+  <div v-else-if="state.error">{{ state.error }}</div>
   <div v-else>
-
+    <p>Loading...</p>
   </div>
 </template>
 
@@ -222,24 +222,24 @@ function openAddressListModal(customerId: number) {
 }
 
 function openCreateAddressModal() {
-  showAddressList.value = false 
-  showCreateAddressModal.value = true 
+  showAddressList.value = false
+  showCreateAddressModal.value = true
 }
 
 function closeCreateModal() {
   showCreateAddressModal.value = false
-  showAddressList.value = true 
+  showAddressList.value = true
 }
 
 function openUpdateAddressModal(address: AddressModel) {
   selectedAddress.value = address
-  showAddressList.value = false 
-  showUpdateAddressModal.value = true 
+  showAddressList.value = false
+  showUpdateAddressModal.value = true
 }
 
 function closeUpdateModal() {
   showUpdateAddressModal.value = false
-  showAddressList.value = true 
+  showAddressList.value = true
 }
 
 async function deleteAddress(addressId: number) {
