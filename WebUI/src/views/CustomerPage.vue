@@ -161,7 +161,7 @@ async function updateaddress(address: AddressModel) {
     await client.updateAddress(address)
     fetchAddressesByCustomerId(selectedCustomerId.value!)
   } catch (error) {
-    updateError.value = 'Failed To Create Address'
+    updateError.value = 'Failed To Update Address'
     console.error('Update failed:', error)
   }
 }
