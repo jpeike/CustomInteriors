@@ -57,7 +57,7 @@
   <ItemGroup>
     <Folder Include="Properties" />
     <Folder Include="Scripts" />
-    <Folder Include="Tables" />
+    <Folder Include="Tables\" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="PostDeployment.sql" />
@@ -66,6 +66,9 @@
     <None Include="Scripts\2025.001.sql" />
   </ItemGroup>
   <ItemGroup>
+    <Build Include="Tables\Employees.sql" />
     <Build Include="Tables\Users.sql" />
+    <Build Include="Tables\Addresses.sql" />
+    <Build Include="Tables\Customers.sql" />
   </ItemGroup>
 </Project>

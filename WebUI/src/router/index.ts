@@ -19,6 +19,22 @@ const router = createRouter({
       name: 'users',
       component: () => import('../views/UserPage.vue'),
     },
+    // ... your other routes
+    {
+      path: '/callback',
+      name: 'Callback',
+      component: () => import('../views/CallbackPage.vue'),
+    },
+    {
+      path: '/customers',
+      name: 'customers',
+      component: () => import('../views/CustomerPage.vue'),
+    },
+    {
+      path: '/employees',
+      name: 'employees',
+      component: () => import('../views/EmployeePage.vue'),
+    },
     {
       path: '/:pathMatch(.*)*',
       name: 'notfound',
