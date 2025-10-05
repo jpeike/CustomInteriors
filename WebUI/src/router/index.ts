@@ -25,6 +25,11 @@ const router = createRouter({
       component: () => import('../views/CustomerPage.vue'),
     },
     {
+      path: '/emails',
+      name: 'emails',
+      component: () => import('../views/EmailPage.vue'),
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'notfound',
       component: () => import('../views/Error/NotFound.vue'),
