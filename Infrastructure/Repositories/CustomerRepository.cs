@@ -21,8 +21,8 @@ public class CustomerRepository : ICustomerRepository
     public async Task<Customer?> GetCustomerWithAddress(int customerId)
     {
         return await _dbContext.Customers
-                       .Include(c => c.Addresses)   // navigates automatically
-                       .FirstOrDefaultAsync(c => c.CustomerId == 1);
+                       .Include(c => c.Addresses)  
+                       .FirstOrDefaultAsync(c => c.CustomerId == customerId);
     }
 
     public async Task<IEnumerable<Customer>> GetAllCustomers()
