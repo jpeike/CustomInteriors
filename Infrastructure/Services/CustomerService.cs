@@ -38,6 +38,16 @@ public class CustomerService : ICustomerService
         return customer.ToModel();
     }
 
+    public async Task<CustomerWithFKsModel?> GetCustomerWithAddress(int id)
+    {
+        Customer? customer = await _customerRepository.GetCustomerWithAddress(id);
+        if (customer == null)
+        {
+            return null;
+        }
+        return customer.FKsToModel();
+    }
+
     public async Task UpdateCustomer(CustomerModel customerModel)
     {
         await _customerRepository.UpdateCustomer(customerModel.ToEntity());

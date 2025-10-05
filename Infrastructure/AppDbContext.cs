@@ -1,4 +1,5 @@
 ﻿using Core;
+using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,10 +11,10 @@ public class AppDbContext : DbContext
         : base(options)
     {
     }
-
-
     public DbSet<User> Users => Set<User>();
     public DbSet<Customer> Customers => Set<Customer>();
+    public DbSet<Employee> Employees => Set<Employee>();
+    public DbSet<Address> Addresses => Set<Address>();
     public DbSet<Email> Emails => Set<Email>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -21,8 +22,9 @@ public class AppDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<User>(ConfigureUser);
-        modelBuilder.Entity<Email>(ConfigureEmail);
+        modelBuilder.Entity<Address>(ConfigureAddress);
         modelBuilder.Entity<Customer>(ConfigureCustomer);
+        modelBuilder.Entity<Employee>(ConfigureEmployee);
     }
 
     private void ConfigureCustomer(EntityTypeBuilder<Customer> builder)
@@ -97,39 +99,68 @@ public class AppDbContext : DbContext
         builder.HasIndex(u => u.Username).IsUnique();
         builder.HasIndex(u => u.Email).IsUnique();
     }
-
-    private void ConfigureEmail(EntityTypeBuilder<Email> builder)
+    
+    private static void ConfigureEmployee(EntityTypeBuilder<Employee> builder)
     {
         // Primary key
-        builder.HasKey(e => e.EmailID);
+        builder.HasKey(u => u.EmployeeId);
 
-        // CustomerId (FK)
-        builder.Property(e => e.CustomerId)
-               .IsRequired();
+        // Username
+        builder.Property(u => u.AccountId)
+            .IsRequired();
 
-        //builder.HasOne<Customer>()                  // assumes you have a Customer entity
-        //       .WithMany()                          // one Customer -> many Emails
-        //       .HasForeignKey(e => e.CustomerId)
-        //       .OnDelete(DeleteBehavior.Cascade); 
+        // Email
+        builder.Property(u => u.EmailId)
+            .IsRequired();
 
-        // EmailAddress
-        builder.Property(e => e.EmailAddress)
+        // PasswordHash
+        builder.Property(u => u.Name)
+            .HasMaxLength(255)
+            .IsRequired();
+
+        // CreatedAt
+        builder.Property(u => u.Role)
+            .HasMaxLength(255)
+            .IsRequired();
+    }
+
+    private void ConfigureAddress(EntityTypeBuilder<Address> builder)
+    {
+        // Primary key
+        builder.HasKey(a => a.AddressId);
+
+        // Customer foreign key
+        builder.HasOne(a => a.Customer)           // each Address has one Customer
+               .WithMany(c => c.Addresses)        // a Customer can have many Addresses
+               .HasForeignKey(a => a.CustomerId)  // the FK column on Address
+               .OnDelete(DeleteBehavior.Cascade); // cascade delete
+
+        // Street
+        builder.Property(a => a.Street)
                .HasMaxLength(255)
                .IsRequired();
 
-        // EmailType
-        builder.Property(e => e.EmailType)
-               .HasMaxLength(100)
+        // City
+        builder.Property(a => a.City)
+               .HasMaxLength(255)
                .IsRequired();
 
-        // CreatedOn
-        builder.Property(e => e.CreatedOn)
-               .HasDefaultValueSql("GETDATE()")
+        // State
+        builder.Property(a => a.State)
+               .HasMaxLength(255)
                .IsRequired();
 
-        // Unique index to prevent duplicate email addresses for the same customer
-        builder.HasIndex(e => new { e.CustomerId, e.EmailAddress })
-               .IsUnique();
+        // PostalCode
+        builder.Property(a => a.PostalCode)
+                .IsRequired();
+
+        // Country
+        builder.Property(a => a.Country)
+                .IsRequired(false);
+
+        // Address Type
+        builder.Property(a => a.AddressType)
+               .HasMaxLength(255)
+               .IsRequired();
     }
-
 }
