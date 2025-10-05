@@ -49,7 +49,7 @@
 <script setup lang="ts">
 import Card from 'primevue/card'
 import { ref } from 'vue'
-import { Client, CustomerModel, AddressModel } from '../client/client'
+import { Client, CustomerModel, AddressModel } from '../client/client.ts'
 import { onMounted, reactive } from 'vue'
 import AddressListModal from '../components/modals/AddressListModal.vue'
 import CreateAddressModal from '../components/modals/CreateAddressModal.vue'

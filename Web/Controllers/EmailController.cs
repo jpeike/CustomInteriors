@@ -14,25 +14,23 @@ public class EmailsController : ControllerBase
         _emailService = emailService;
     }
 
-    [HttpGet]
-    [ActionName("GetAllEmails")]
+    [HttpGet()]
     public async Task<IEnumerable<EmailModel>> GetAllEmails()
     {
         return await _emailService.GetAllEmails();
     }
 
     [HttpGet("{id:int}")]
-    [ActionName("GetEmailById")]
+
     public async Task<EmailModel?> GetEmailById(int id)
     {
         return await _emailService.GetEmailById(id);
     }
 
-    [HttpPost]
-    [ActionName("CreateEmail")]
+    [HttpPost("Create")]
     public async Task<EmailModel> CreateEmail([FromBody] CreateEmailRequest emailModel)
     {
-        var email = new Email
+        Email email = new Email
         {
             EmailAddress = emailModel.EmailAddress,
             EmailType = emailModel.EmailType,
@@ -43,23 +41,17 @@ public class EmailsController : ControllerBase
         return await _emailService.CreateEmail(email);
     }
 
-    [HttpPut("{id:int}")]
-    [ActionName("UpdateEmail")]
-    public async Task UpdateEmail(int id, [FromBody] EmailModel emailModel)
-    {
-        // you can enforce id match here if desired:
-        if (emailModel.EmailID != null && emailModel.EmailID != id)
-        {
-            throw new ArgumentException("Email ID mismatch between route and body");
-        }
-
+    [HttpPut("Update")]
+    public async Task UpdateEmail([FromBody] EmailModel emailModel)
+    { 
         await _emailService.UpdateEmail(emailModel);
     }
 
-    [HttpDelete("{id:int}")]
-    [ActionName("DeleteEmail")]
+    [HttpDelete("Delete/{id:int}")]
     public async Task<bool> DeleteEmail(int id)
     {
         return await _emailService.DeleteEmail(id);
     }
+
 }
+

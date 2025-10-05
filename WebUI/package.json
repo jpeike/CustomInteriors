@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "@primeuix/themes": "^1.2.3",
-    "nswag": "^14.6.1",
     "bootstrap": "^5.3.8",
     "dotenv": "^17.2.3",
     "pinia": "^3.0.3",

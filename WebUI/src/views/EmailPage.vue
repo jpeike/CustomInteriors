@@ -37,7 +37,9 @@
 
 <script setup lang="ts">
 import Card from 'primevue/card'
+
 import { Client, EmailModel } from '../client/client'
+// If the file does not exist, create it or correct the path as needed.
 import { onMounted, reactive, computed } from 'vue'
 
 const client = new Client(import.meta.env.VITE_API_BASE_URL)
