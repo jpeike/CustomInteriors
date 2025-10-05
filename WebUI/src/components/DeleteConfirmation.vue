@@ -1,14 +1,14 @@
 <template>
-    <div class = "flex row deleteWindow">
+    <div class = "flex row defaultColor deleteWindow">
         <div class="flex column deleteWindowBody">
             <p style="margin: 0;">Are you sure you want to delete <span class="title">{{title}}</span>?</p>
             
             <div class="flex row buttons">
                 <button class = "cancelUpdateButton" @click="$emit('closePage')">
-                    <p style="margin: 0; text-align: center; color: black;">Cancel</p>
+                    <p style="margin: 0; text-align: center;">Cancel</p>
                 </button>  
                 <button class = "updateInfoButton" @click="$emit('deleteCustomer', currentCustomerInformation?.customerId)">
-                    <p style="margin: 0; text-align: center; color: white;">Delete</p>
+                    <p style="margin: 0; text-align: center;">Delete</p>
                 </button>
             </div>
         </div>
@@ -44,7 +44,6 @@
         gap: 5%;
         width: 30vw;
         height: 30vh; 
-        background-color: rgb(255, 255, 255);   
         border-radius: 5vh;
         justify-content: space-between;
     }
@@ -62,7 +61,6 @@
     .updateInfoButton{
         width: 50%;
         height: 5vh;
-        background-color: rgb(0, 0, 0);
         border: none;
         align-content: center;
         border-radius: 7px;
@@ -70,7 +68,6 @@
     .cancelUpdateButton{
         width: 50%;
         height: 5vh;
-        background-color: rgb(233, 233, 233);
         border: none;
         align-content: center;
         border-radius: 7px;
@@ -79,5 +76,25 @@
         background: none;
         border: none;
         height: fit-content;
+    }
+
+    .defaultColor{
+        background-color: rgb(255, 255, 255);
+        color: black;
+    }
+    .invertColor{
+        background-color: rgb(0, 0, 0);  
+        color: white;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .defaultColor{
+            background-color: rgb(16, 16, 16);   
+            color: white;
+        }
+        .invertColor{
+            background-color: rgb(255, 255, 255);
+            color: black;
+        }
     }
 </style>
