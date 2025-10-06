@@ -10,6 +10,8 @@ public class CustomerModel
     public string? CompanyName { get; set; }
     public string? Status { get; set; }
     public string? CustomerNotes { get; set; }
+    public List<EmailModel> Emails { get; set; } = new();
+
 
 }
 

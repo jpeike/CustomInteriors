@@ -15,6 +15,7 @@ public class AppDbContext : DbContext
     public DbSet<Customer> Customers => Set<Customer>();
     public DbSet<Employee> Employees => Set<Employee>();
     public DbSet<Address> Addresses => Set<Address>();
+    public DbSet<Email> Emails => Set<Email>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -62,6 +63,12 @@ public class AppDbContext : DbContext
 
         // Optional: Index on Username or Email
         builder.HasIndex(u => u.CustomerId).IsUnique();
+
+        // One-to-many: Customer has many Emails
+        builder.HasMany(c => c.Emails)
+               .WithOne(e => e.Customer)
+               .HasForeignKey(e => e.CustomerId)
+               .OnDelete(DeleteBehavior.Cascade);
     }
     private void ConfigureUser(EntityTypeBuilder<User> builder)
     {
@@ -78,7 +85,7 @@ public class AppDbContext : DbContext
                .HasMaxLength(255)
                .IsRequired();
 
-        // PasswordHash
+        // PasswordHash 
         builder.Property(u => u.PasswordHash)
                .HasMaxLength(512)
                .IsRequired();

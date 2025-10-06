@@ -70,5 +70,6 @@
     <Build Include="Tables\Users.sql" />
     <Build Include="Tables\Addresses.sql" />
     <Build Include="Tables\Customers.sql" />
+    <Build Include="Tables\Emails.sql" />
   </ItemGroup>
 </Project>
