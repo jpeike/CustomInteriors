@@ -1,4 +1,4 @@
-﻿namespace Core.Models;
+﻿namespace Core;
 
 /// <summary>
 /// model used for the front end. Any info not to be used for the front end should be omitted.

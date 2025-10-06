@@ -1,7 +1,4 @@
-﻿using Core.Entities;
-using Core.Models;
-
-namespace Core.Interfaces.Services;
+﻿namespace Core;
 
 public interface IEmployeeService
 {

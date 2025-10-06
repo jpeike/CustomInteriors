@@ -1,12 +1,36 @@
 using Core;
-using Core.Interfaces.Repositories;
-using Core.Interfaces.Services;
 using Infrastructure;
-using Infrastructure.Repositories;
-using Infrastructure.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.IdentityModel.Tokens;
+using Web;
 var builder = WebApplication.CreateBuilder(args);
+
+
+// 1. Add JWT bearer authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_JPMU56Ifb";
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = false,
+            ValidateLifetime = true
+        };
+    });
+
+// 2. Add role-based authorization policies
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(Policies.AdminOnly, policy =>
+        policy.RequireClaim("cognito:groups", Roles.Admin));
+    options.AddPolicy(Policies.ManagerOrAdmin, policy =>
+        policy.RequireAssertion(context =>
+            context.User.HasClaim("cognito:groups", Roles.Admin) ||
+            context.User.HasClaim("cognito:groups", Roles.Manager)));
+});
+
 
 // Add services to the container.
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -62,7 +86,7 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowFrontend");
 
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

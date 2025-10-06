@@ -1,8 +1,7 @@
-﻿using Core.Entities;
-using Core.Interfaces.Repositories;
+﻿using Core;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repositories;
+namespace Infrastructure;
 
 public class EmployeeRepository : IEmployeeRepository
 {

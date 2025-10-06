@@ -1,7 +1,4 @@
-﻿using Core.Entities;
-using Core.Models;
-
-namespace Core.Helpers;
+﻿namespace Core;
 
 public static class EmployeeExtensions
 {

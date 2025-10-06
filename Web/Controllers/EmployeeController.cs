@@ -1,7 +1,4 @@
 ﻿using Core;
-using Core.Entities;
-using Core.Interfaces.Services;
-using Core.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Controllers;
