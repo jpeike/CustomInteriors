@@ -11,7 +11,8 @@ public static class CustomerExtensions
         PrefferedContactMethod = customer.PrefferedContactMethod,
         CompanyName = customer.CompanyName,
         Status = customer.Status,
-        CustomerNotes = customer.CustomerNotes
+        CustomerNotes = customer.CustomerNotes,
+        Emails = customer.Emails.Select(x =>x.ToModel()).ToList()
     };
 
     public static IEnumerable<CustomerModel> ToModels(this IEnumerable<Customer> customer)

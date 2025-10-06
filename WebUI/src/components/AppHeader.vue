@@ -47,6 +47,11 @@ const items = ref([
     command: () => router.push('/customers'),
   },
   {
+    label: 'Emails',
+    icon: 'pi pi-wallet',
+    command: () => router.push('/emails'),
+  },
+  {
     label: 'Employees',
     icon: 'pi pi-sitemap',
     command: () => router.push('/employees'),
