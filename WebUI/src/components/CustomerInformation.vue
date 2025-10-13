@@ -10,16 +10,16 @@
             <div class = "flex row multipleFields">
                 <div>
                     <h3 class="fieldTitle">First Name*</h3>
-                    <InputText v-model="customer.firstName" type="text" class="inputValue" :placeholder="currentCustomerInformation?.firstName"></InputText>
+                    <InputText v-model="customer.firstName" required="true" type="text" class="inputValue" :placeholder="currentCustomerInformation?.firstName"></InputText>
                 </div>
                 <div>
                     <h3 class="fieldTitle">Last Name*</h3>
-                    <InputText v-model="customer.lastName" type="text" class="inputValue" :placeholder="currentCustomerInformation?.lastName"></InputText>
+                    <InputText v-model="customer.lastName" required="true" type="text" class="inputValue" :placeholder="currentCustomerInformation?.lastName"></InputText>
                 </div>
             </div>
             <div>
                 <h3 class="fieldTitle">Customer Type*</h3>
-                <InputText v-model="customer.customerType" type="text" class="inputValue" :placeholder="currentCustomerInformation?.customerType"></InputText>
+                <InputText v-model="customer.customerType" required="true" type="text" class="inputValue" :placeholder="currentCustomerInformation?.customerType"></InputText>
             </div>
             <div>
                 <h3 class="fieldTitle">Email</h3>
@@ -29,7 +29,8 @@
                 <h3 class="fieldTitle">Phone</h3>
                 <InputText v-model="newPhone" type="text" class="inputValue" placeholder="placeholder phone"></InputText>
             </div>
-            <div>
+        <!--Contact-->
+            <div style="margin-bottom: 5%;">
                 <h3 class="fieldTitle">Preffered Contact Method</h3>
                 <div class="contactMethod">                    
                     <div>
@@ -42,10 +43,39 @@
                     </div>
                 </div>
             </div>
-            <div class="addressField">
-                <button class ="addressButton" @click="$emit('openAddressListModal', customer.customerId!)">View Addresses</button>
+            
+        <!--Address Section-->
+            <div class="addressField" v-for="(address, index) in listOfAddresses">
+                <h2 style="margin-top: 0; margin-bottom: 2%;">Address {{ index + 1 }}</h2>
+                <div>
+                    <h3 class="fieldTitle">Street Address</h3>
+                    <InputText v-model="address.street" required="true" type="text" class="inputValue" :placeholder="address.street ?? 'Street'"></InputText>
+                </div>
+                <div>
+                    <h3 class="fieldTitle">Country</h3>
+                    <InputText v-model="address.country" required="true" type="text" class="inputValue" :placeholder="address.country ?? 'Country'"></InputText>
+                </div>
+                <div class="flex row multipleFields">
+                    <div class="tripleField">
+                        <h3 class="fieldTitle">City</h3>
+                        <InputText v-model="address.city" required="true" type="text" class="inputValue" :placeholder="address.city ?? 'City'"></InputText>
+                    </div>
+                    <div class="tripleField">
+                        <h3 class="fieldTitle">State</h3>
+                        <InputText v-model="address.state" required="true" type="text" class="inputValue" :placeholder="address.state ?? 'State'"></InputText>
+                    </div>
+                    <div class="tripleField">
+                        <h3 class="fieldTitle">Zip</h3>
+                        <input v-model="address.postalCode" required="true" class="p-inputtext p-component inputValue" :placeholder="address.postalCode?.toString()"></input>
+                    </div>
+                </div>                
             </div>
 
+            <div class="addAddress">
+                <button @click="addAdress" class="cancelUpdateButton"> <p style="margin: 0; text-align: center;">Add Address</p></button>
+            </div>
+
+        <!--Company Name-->
             <div>
                 <h3 class="fieldTitle">Company Name</h3>
                 <InputText v-model="customer.companyName" type="text" class="inputValue" :placeholder="currentCustomerInformation?.companyName"></InputText>
@@ -62,7 +92,7 @@
                 <button class = "cancelUpdateButton" @click="$emit('closePage')">
                     <p style="margin: 0; text-align: center;">Cancel</p>
                 </button>  
-                <button class = "updateInfoButton" @click="$emit('updateCustomerInformation', currentCustomerInformation?.customerId, customer)">
+                <button class = "updateInfoButton" @click="$emit('updateCustomerInformation', currentCustomerInformation?.customerId, customer, listOfAddresses)">
                     <p style="margin: 0; text-align: center;">{{buttonDesctipnion}}</p>
                 </button>
             </div>
@@ -73,7 +103,7 @@
 
 <script setup lang="ts">
     import 'primeicons/primeicons.css';
-    import { Client, CustomerModel, AddressModel } from '../client/client'
+    import { Client, CustomerModel, AddressModel, Address } from '../client/client'
     import InputText from 'primevue/inputtext';
     import InputNumber from 'primevue/inputnumber';
     import { ref } from 'vue'
@@ -84,6 +114,11 @@
        description: String,
        buttonDesctipnion: String
     });
+
+    const newEmail = ref('');
+    const newPhone = ref('');
+
+    var listOfAddresses = ref([new AddressModel]);
     
     let customer;
     if (props.currentCustomerInformation != undefined){
@@ -92,9 +127,10 @@
     else{
         customer = ref(new CustomerModel);
     }
-    
-    const newEmail = ref('');
-    const newPhone = ref('');
+
+    function addAdress(){
+        listOfAddresses.value.push(new AddressModel);
+    }
 </script>
 
 <style scoped>
@@ -172,16 +208,12 @@
         border-radius: 7px;
     }
     .addressField{
-        margin-top: 5%;  
         margin-bottom: 5%;
         height: 100vh;    
     }
-    .addressButton{
-        width: 25%;
+    .addAddress{
         height: 5vh;
-        border: none;
-        align-content: center;
-        border-radius: 7px;
+        margin-bottom: 5%;
     }
     .contactMethod{
         display: flex;

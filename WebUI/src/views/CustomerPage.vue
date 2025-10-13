@@ -100,10 +100,6 @@
   <div v-if="deleteConfirmation" class="flex row customerWindowBlur">
     <deleteConfirmation :currentCustomerInformation="state.customer[currentCustomerIndex]" :title="(state.customer[currentCustomerIndex].firstName + ' ' + state.customer[currentCustomerIndex].lastName)" @closePage="deleteConfirmation = !deleteConfirmation" @deleteCustomer="deleteCustomer"></deleteConfirmation>
   </div>
-  <div v-else-if="state.error">{{ state.error }}</div>
-  <div v-else>
-    <p>Loading...</p>
-  </div>
 </template>
 
 <script setup lang="ts">
@@ -273,13 +269,26 @@ async function updateaddress(address: AddressModel) {
   }
 }
 
-function updateCustomerInformation(currentID: number, updatedCustomer: CustomerModel){
-  if(currentID == null){ //create new
-    updatedCustomer.customerId = 0;
+function updateCustomerInformation(currentID: number, newCustomer: CustomerModel, newAddress: AddressModel[]){
+
+  //create new customer
+  if(currentID == null){
+    createCustomer(newCustomer, newAddress);
+  }
+  //update existing customer
+  else{
+    updateCustomer(currentID, newCustomer)
+  }
+    
+  displayCustomerDetails = ref(false); 
+}
+
+function createCustomer(newCustomer: CustomerModel, newAddress: AddressModel[]){
+  newCustomer.customerId = 0;
     state.loading = true;
     state.error = null;
     client
-    .createCustomer(updatedCustomer)
+    .createCustomer(newCustomer)
     .catch((error) => {
       state.error = error.message || 'An error occurred'
     })
@@ -287,9 +296,18 @@ function updateCustomerInformation(currentID: number, updatedCustomer: CustomerM
       fetchCustomers();
       state.loading = false
     })
-  }
-  else{
-    state.customer[currentCustomerIndex.value - 1] = updatedCustomer;
+
+    for (let i = 0; i < newAddress.length; i++){
+      newAddress[i].addressType = "delete later";
+      newAddress[i].customerId = state.customer[state.customer.length - 1].customerId;
+      console.log(state.customer[state.customer.length - 1].customerId);
+      console.log(newAddress[i]);
+      createAddress(newAddress[i]);
+    }
+}
+
+function updateCustomer(currentID: number, newCustomer: CustomerModel){
+    state.customer[currentCustomerIndex.value - 1] = newCustomer;
     state.customer[currentCustomerIndex.value - 1].customerId = currentID;
 
     state.loading = true
@@ -303,8 +321,6 @@ function updateCustomerInformation(currentID: number, updatedCustomer: CustomerM
       fetchCustomers();
       state.loading = false
     })
-  }
-  displayCustomerDetails = ref(false); 
 }
 
 function deleteCustomer(currentID: number){
