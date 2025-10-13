@@ -1,6 +1,7 @@
 ﻿using Core;
+using Core.Interfaces.Services;
 
-namespace Infrastructure;
+namespace Infrastructure.Services;
 
 public class EmployeeService :  IEmployeeService
 {
@@ -28,9 +29,9 @@ public class EmployeeService :  IEmployeeService
         return employees.ToModels();
     }
 
-    public async Task<EmployeeModel> AddEmployee(Employee employee)
+    public async Task<EmployeeModel> CreateEmployee(EmployeeModel employee)
     {
-        Employee toReturn = await _employeeRepository.AddEmployee(employee);
+        Employee toReturn = await _employeeRepository.AddEmployee(employee.ToEntity());
         return toReturn.ToModel();
     }
 

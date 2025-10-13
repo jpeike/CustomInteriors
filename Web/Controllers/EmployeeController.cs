@@ -1,4 +1,5 @@
 ﻿using Core;
+using Core.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Controllers;
@@ -27,9 +28,9 @@ public class EmployeeController : ControllerBase
     }
 
     [HttpPost("CreateEmployee")]
-    public async Task<EmployeeModel> CreateEmployee([FromBody] Employee employeeModel)
+    public async Task<EmployeeModel> CreateEmployee([FromBody] EmployeeModel employeeModel)
     {
-        return await _employeeService.AddEmployee(employeeModel);
+        return await _employeeService.CreateEmployee(employeeModel);
     }
 
     [HttpPut("UpdateEmployee")]
