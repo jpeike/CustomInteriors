@@ -1,6 +1,6 @@
 ﻿using Core;
 
-namespace Infrastructure;
+namespace Infrastructure.Services;
 
 public class AddressService : IAddressService
 {
@@ -11,9 +11,9 @@ public class AddressService : IAddressService
         _addressRepository = addressRepository;
     }
 
-    public async Task<AddressModel> CreateAddress(Address address)
+    public async Task<AddressModel> CreateAddress(AddressModel address)
     {
-        Address toReturn = await _addressRepository.AddAddress(address);
+        Address toReturn = await _addressRepository.AddAddress(address.ToEntity());
         return toReturn.ToModel();
     }
 

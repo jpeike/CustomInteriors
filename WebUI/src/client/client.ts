@@ -972,7 +972,7 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    create2(body?: User | undefined): Promise<UserModel> {
+    create2(body?: UserModel | undefined): Promise<UserModel> {
         let url_ = this.baseUrl + "/api/Users/Create";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1516,54 +1516,6 @@ export interface IEmployeeModel {
     emailId: number;
     name: string | undefined;
     role: string | undefined;
-}
-
-export class User implements IUser {
-    id?: number;
-    username?: string | undefined;
-    email?: string | undefined;
-    createdOn?: Date;
-
-    constructor(data?: IUser) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.username = _data["username"];
-            this.email = _data["email"];
-            this.createdOn = _data["createdOn"] ? new Date(_data["createdOn"].toString()) : undefined as any;
-        }
-    }
-
-    static fromJS(data: any): User {
-        data = typeof data === 'object' ? data : {};
-        let result = new User();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["username"] = this.username;
-        data["email"] = this.email;
-        data["createdOn"] = this.createdOn ? this.createdOn.toISOString() : undefined as any;
-        return data;
-    }
-}
-
-export interface IUser {
-    id?: number;
-    username?: string | undefined;
-    email?: string | undefined;
-    createdOn?: Date;
 }
 
 export class UserModel implements IUserModel {
