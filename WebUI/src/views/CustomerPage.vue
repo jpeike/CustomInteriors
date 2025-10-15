@@ -75,7 +75,7 @@
             </div>
           </div>
           
-          <br/><p style="margin: 0;"> Address: {{ getAddressString(customer.customerId!)}}</p>
+          <br/><p style="margin: 0;"> Address: {{getAddressText(customer.customerId!)}}</p>
           <br/>
           <p style="margin: 0;">Type: {{ customer.customerType }}</p>
           <br/>
@@ -101,9 +101,6 @@
     <deleteConfirmation :currentCustomerInformation="state.customer[currentCustomerIndex]" :title="(state.customer[currentCustomerIndex].firstName + ' ' + state.customer[currentCustomerIndex].lastName)" @closePage="deleteConfirmation = !deleteConfirmation" @deleteCustomer="deleteCustomer"></deleteConfirmation>
   </div>
   <div v-else-if="state.error">{{ state.error }}</div>
-  <div v-else>
-    <p>Loading...</p>
-  </div>
 </template>
 
 <script setup lang="ts">
@@ -111,7 +108,7 @@
 import CustomerInformation from '../components/CustomerInformation.vue';
 import DeleteConfirmation from '../components/DeleteConfirmation.vue';
 import Card from 'primevue/card'
-import { Client, CustomerModel, AddressModel, Address } from '../client/client'
+import { Client, CustomerModel, AddressModel} from '../client/client'
 import { ref } from 'vue'
 import { onMounted, reactive } from 'vue'
 import AddressListModal from '../components/modals/AddressListModal.vue'
@@ -137,6 +134,7 @@ let customerDescription = ref('');
 let customerButtonDesc = ref('');
 let currentCustomerIndex = ref(0);
 let searchValue = ref('');
+let customerAddress = ref('');
 
 const state = reactive({
   customer: [] as CustomerModel[],
@@ -162,9 +160,14 @@ function getCustomerIndex(customerID: number){
 function getAddressString(customerID: number){
   for (let i = 0; i < state.addresses.length; i++){
     if (state.addresses[i].customerId == customerID){
-      return state.addresses[i].street + " " + state.addresses[i].city + ", " + state.addresses[i].state;
+      customerAddress.value = state.addresses[i].street + " " + state.addresses[i].city + ", " + state.addresses[i].state;
     }
   }  
+}
+
+function getAddressText(customerID: number){
+  getAddressString(customerID);
+  return customerAddress.value;
 }
 
 function fetchCustomers() {
