@@ -1,7 +1,6 @@
 ﻿using Core;
-using Core.Interfaces.Services;
 
-namespace Infrastructure.Services;
+namespace Infrastructure;
 
 public class EmployeeService :  IEmployeeService
 {

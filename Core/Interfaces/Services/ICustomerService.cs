@@ -1,4 +1,4 @@
-﻿namespace Core.Interfaces.Services;
+﻿namespace Core;
 
 
 public interface ICustomerService

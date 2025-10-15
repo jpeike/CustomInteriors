@@ -1,6 +1,6 @@
 ﻿using Core;
 
-namespace Infrastructure.Services;
+namespace Infrastructure;
 
 public class UserService : IUserService
 {

@@ -1,4 +1,4 @@
-﻿namespace Core.Interfaces.Services;
+﻿namespace Core;
 
 /// <summary>
 /// services get called from the controller. they should contain the business logic and interact with repositories
