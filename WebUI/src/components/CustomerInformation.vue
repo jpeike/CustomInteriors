@@ -106,28 +106,37 @@
     import { Client, CustomerModel, AddressModel, Address } from '../client/client'
     import InputText from 'primevue/inputtext';
     import InputNumber from 'primevue/inputnumber';
-    import { ref } from 'vue'
+    import { ref, type Ref } from 'vue'
 
-    const props = defineProps({
-       currentCustomerInformation: CustomerModel,
-       title: String,
-       description: String,
-       buttonDesctipnion: String
-    });
+    const props = defineProps<{
+        currentCustomerInformation: CustomerModel | undefined,
+        currentAddresses: AddressModel[] | undefined,
+        title: String,
+        description: String,
+        buttonDesctipnion: String
+    }>();
 
     const newEmail = ref('');
     const newPhone = ref('');
 
-    var listOfAddresses = ref([new AddressModel]);
+    let listOfAddresses: Ref<{ addressId?: number | undefined; customerId?: number | undefined; street?: string | undefined | undefined; city?: string | undefined | undefined; state?: string | undefined | undefined; postalCode?: number | undefined; country?: string | undefined | undefined; addressType?: string | undefined | undefined; init: (_data?: any) => void; toJSON: (data?: any) => any; }[], AddressModel[] | { addressId?: number | undefined; customerId?: number | undefined; street?: string | undefined | undefined; city?: string | undefined | undefined; state?: string | undefined | undefined; postalCode?: number | undefined; country?: string | undefined | undefined; addressType?: string | undefined | undefined; init: (_data?: any) => void; toJSON: (data?: any) => any; }[]>;
     
     let customer;
+    
     if (props.currentCustomerInformation != undefined){
-        customer =ref(props.currentCustomerInformation);
+        customer = ref(props.currentCustomerInformation);
     }
     else{
         customer = ref(new CustomerModel);
     }
 
+    if (props.currentAddresses != undefined){
+        listOfAddresses = ref(props.currentAddresses);
+    }
+    else {
+        listOfAddresses = ref([new AddressModel]);
+    }
+    
     function addAdress(){
         listOfAddresses.value.push(new AddressModel);
     }
