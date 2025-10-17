@@ -1,86 +1,48 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomePage from '../views/HomePage.vue'
+import { RoutePaths } from '@/enums/RoutePaths'
+import { RouteNames } from '@/enums/RouteNames'
+
+import HomePage from '@/views/HomePage.vue'
+import NotFoundPage from '@/views/Error/NotFound.vue'
+
+const routes = [
+  { path: RoutePaths.HOME, name: RouteNames.HOME, component: HomePage },
+  {
+    path: RoutePaths.ABOUT,
+    name: RouteNames.ABOUT,
+    component: () => import('@/views/AboutPage.vue'),
+  },
+  {
+    path: RoutePaths.USERS,
+    name: RouteNames.USERS,
+    component: () => import('@/views/UserPage.vue'),
+  },
+  {
+    path: RoutePaths.EMPLOYEES,
+    name: RouteNames.EMPLOYEES,
+    component: () => import('@/views/EmployeePage.vue'),
+  },
+  {
+    path: RoutePaths.CUSTOMERS,
+    name: RouteNames.CUSTOMERS,
+    component: () => import('@/views/CustomerPage.vue'),
+  },
+  {
+    path: RoutePaths.EMAILS,
+    name: RouteNames.EMAILS,
+    component: () => import('@/views/EmailPage.vue'),
+  },
+  {
+    path: RoutePaths.CALLBACK,
+    name: RouteNames.CALLBACK,
+    component: () => import('@/views/CallbackPage.vue'),
+  },
+  { path: RoutePaths.NOT_FOUND, name: RouteNames.NOT_FOUND, component: NotFoundPage },
+]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: HomePage,
-    },
-    {
-      path: '/about',
-      name: 'about',
-      component: () => import('../views/AboutPage.vue'),
-    },
-    {
-      path: '/users',
-      name: 'users',
-      component: () => import('../views/UserPage.vue'),
-    },
-    // ... your other routes
-    {
-      path: '/callback',
-      name: 'Callback',
-      component: () => import('../views/CallbackPage.vue'),
-    },
-    {
-      path: '/customers',
-      name: 'customers',
-      component: () => import('../views/CustomerPage.vue'),
-    },
-    {
-      path: '/employees',
-      name: 'employees',
-      component: () => import('../views/EmployeePage.vue'),
-    },
-    {
-      path: '/emails',
-      name: 'emails',
-      component: () => import('../views/EmailPage.vue'),
-    },
-    {
-      path: '/:pathMatch(.*)*',
-      name: 'notfound',
-      component: () => import('../views/Error/NotFound.vue'),
-    },
-    {
-      path: '/forbidden',
-      name: 'forbidden',
-      component: () => import('../views/Error/Forbidden.vue'),
-    },
-    {
-      path: '/unauthorized',
-      name: 'unauthorized',
-      component: () => import('../views/Error/Unauthorized.vue'),
-    },
-    {
-      path: '/generalError',
-      name: 'generalError',
-      component: () => import('../views/Error/GeneralError.vue'),
-    },
-    {
-      path: '/internalServerError',
-      name: 'internalServerError',
-      component: () => import('../views/Error/InternalServerError.vue'),
-    },
-    {
-      path: '/badGateway',
-      name: 'badGateway',
-      component: () => import('../views/Error/BadGateway.vue'),
-    },
-    {
-      path: '/requestTimeout',
-      name: 'requestTimeout',
-      component: () => import('../views/Error/RequestTimeout.vue'),
-    },
-    {
-      path: '/serviceUnavailable',
-      name: 'serviceUnavailable',
-      component: () => import('../views/Error/ServiceUnavailable.vue'),
-    },
-  ],
+  routes,
 })
 
 export default router

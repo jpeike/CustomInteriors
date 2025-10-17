@@ -3,7 +3,7 @@
     <AddressListModal
       :isOpen="showAddressList"
       :customerId="selectedCustomerId"
-      :addresses="state.addresses"
+      :addresses="state.modalAddresses"
       @close="showAddressList = false"
       @create="openCreateAddressModal"
       @edit="openUpdateAddressModal"
@@ -75,7 +75,7 @@
             </div>
           </div>
           
-          <br/><p style="margin: 0;"> Address: {{ getAddressString(customer.customerId!)}}</p>
+          <br/><p style="margin: 0;"> Address: {{getAddressString(customer.customerId!)}}</p>
           <br/>
           <p style="margin: 0;">Type: {{ customer.customerType }}</p>
           <br/>
@@ -101,9 +101,6 @@
     <deleteConfirmation :currentCustomerInformation="state.customer[currentCustomerIndex]" :title="(state.customer[currentCustomerIndex].firstName + ' ' + state.customer[currentCustomerIndex].lastName)" @closePage="deleteConfirmation = !deleteConfirmation" @deleteCustomer="deleteCustomer"></deleteConfirmation>
   </div>
   <div v-else-if="state.error">{{ state.error }}</div>
-  <div v-else>
-    <p>Loading...</p>
-  </div>
 </template>
 
 <script setup lang="ts">
@@ -111,7 +108,7 @@
 import CustomerInformation from '../components/CustomerInformation.vue';
 import DeleteConfirmation from '../components/DeleteConfirmation.vue';
 import Card from 'primevue/card'
-import { Client, CustomerModel, AddressModel, Address } from '../client/client'
+import { Client, CustomerModel, AddressModel} from '../client/client'
 import { ref } from 'vue'
 import { onMounted, reactive } from 'vue'
 import AddressListModal from '../components/modals/AddressListModal.vue'
@@ -143,6 +140,7 @@ let searchValue = ref('');
 const state = reactive({
   customer: [] as CustomerModel[],
   addresses: [] as AddressModel[],
+  modalAddresses: [] as AddressModel[],
   loading: false,
   error: null as string | null,
 })
@@ -212,7 +210,7 @@ function fetchAddressesByCustomerId(customerId: number) {
   client
     .address2(customerId)
     .then((response) => {
-      state.addresses = response
+      state.modalAddresses = response
     })
     .catch((error) => {
       state.error = error.message || 'An error occurred'

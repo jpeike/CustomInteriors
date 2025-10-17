@@ -11,9 +11,9 @@ public class EmailService : IEmailService
         _emailRepository = emailRepository;
     }
 
-    public async Task<EmailModel> CreateEmail(Email email)
+    public async Task<EmailModel> CreateEmail(EmailModel email)
     {
-        Email toReturn = await _emailRepository.AddEmail(email);
+        Email toReturn = await _emailRepository.AddEmail(email.ToEntity());
         return toReturn.ToModel();
     }
 

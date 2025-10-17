@@ -11,51 +11,26 @@ import { ref } from 'vue'
 import Menubar from 'primevue/menubar'
 import { useRouter } from 'vue-router'
 import 'primeicons/primeicons.css'
+import { RouteNames } from '@/enums/RouteNames'
+import { RoutePaths } from '@/enums/RoutePaths'
 
 const router = useRouter()
 
 // Define your navigation items
+// Define your navigation items using enums
 const items = ref([
-  {
-    label: 'Home',
-    icon: 'pi pi-home',
-    command: () => router.push('/'),
-  },
-  {
-    label: 'About',
-    icon: 'pi pi-info-circle',
-    command: () => router.push('/about'),
-  },
-  {
-    label: 'Users',
-    icon: 'pi pi-info-circle',
-    command: () => router.push('/users'),
-  },
-  {
-    label: 'Jobs',
-    icon: 'pi pi-briefcase',
-    command: () => router.push('/jobs'),
-  },
-  {
-    label: 'Billing',
-    icon: 'pi pi-wallet',
-    command: () => router.push('/billing'),
-  },
+  { label: 'Home', icon: 'pi pi-home', command: () => router.push(RoutePaths.HOME) },
+  { label: 'About', icon: 'pi pi-info-circle', command: () => router.push(RoutePaths.ABOUT) },
+  { label: 'Users', icon: 'pi pi-users', command: () => router.push(RoutePaths.USERS) },
+  { label: 'Jobs', icon: 'pi pi-briefcase', command: () => router.push('/jobs') }, // if Jobs not yet in enum
+  { label: 'Billing', icon: 'pi pi-wallet', command: () => router.push('/billing') }, // same
   {
     label: 'Customers',
     icon: 'pi pi-address-book',
-    command: () => router.push('/customers'),
+    command: () => router.push(RoutePaths.CUSTOMERS),
   },
-  {
-    label: 'Emails',
-    icon: 'pi pi-wallet',
-    command: () => router.push('/emails'),
-  },
-  {
-    label: 'Employees',
-    icon: 'pi pi-sitemap',
-    command: () => router.push('/employees'),
-  },
+  { label: 'Emails', icon: 'pi pi-envelope', command: () => router.push(RoutePaths.EMAILS) },
+  { label: 'Employees', icon: 'pi pi-sitemap', command: () => router.push(RoutePaths.EMPLOYEES) },
 ])
 </script>
 
