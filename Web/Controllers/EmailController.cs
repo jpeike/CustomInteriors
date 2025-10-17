@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Web;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/emails")]
 public class EmailsController : ControllerBase
 {
     private readonly IEmailService _emailService;
@@ -14,7 +14,7 @@ public class EmailsController : ControllerBase
         _emailService = emailService;
     }
 
-    [HttpGet()]
+    [HttpGet("")]
     public async Task<IEnumerable<EmailModel>> GetAllEmails()
     {
         return await _emailService.GetAllEmails();
@@ -27,10 +27,10 @@ public class EmailsController : ControllerBase
         return await _emailService.GetEmailById(id);
     }
 
-    [HttpPost("Create")]
+    [HttpPost("")]
     public async Task<EmailModel> CreateEmail([FromBody] CreateEmailRequest emailModel)
     {
-        Email email = new Email
+        Email email = new()
         {
             EmailAddress = emailModel.EmailAddress,
             EmailType = emailModel.EmailType,
@@ -41,17 +41,16 @@ public class EmailsController : ControllerBase
         return await _emailService.CreateEmail(email);
     }
 
-    [HttpPut("Update")]
+    [HttpPut("")]
     public async Task UpdateEmail([FromBody] EmailModel emailModel)
     { 
         await _emailService.UpdateEmail(emailModel);
     }
 
-    [HttpDelete("Delete/{id:int}")]
+    [HttpDelete("{id:int}")]
     public async Task<bool> DeleteEmail(int id)
     {
         return await _emailService.DeleteEmail(id);
     }
-
 }
 

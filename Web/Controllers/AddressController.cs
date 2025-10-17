@@ -2,10 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
+// https://www.geeksforgeeks.org/system-design/difference-between-rest-api-and-rpc-api/
+//https://restfulapi.net/resource-naming/
+
 namespace Web;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/addresses")]
 public class AddressController : ControllerBase
 {
     private readonly IAddressService _addressService;
@@ -22,17 +25,15 @@ public class AddressController : ControllerBase
     }
 
     [HttpGet("{customerId:int}")]
-
     public async Task<IEnumerable<AddressModel>> GetAddressesByCustomerId(int customerId)
     {
         return await _addressService.GetAddressesByCustomerId(customerId);
     }
 
-    [HttpPost("CreateAddress")]
+    [HttpPost("")]
     public async Task<AddressModel> CreateAddress([FromBody] AddressModel addressModel)
     {
-
-        var address = new Address
+        Address address = new()
         {
             CustomerId = addressModel.CustomerId,
             Street = addressModel.Street,
@@ -46,18 +47,15 @@ public class AddressController : ControllerBase
         return await _addressService.CreateAddress(address);
     }
 
-    [HttpPut("UpdateAddress")]
-
-public async Task UpdateAddress([FromBody] AddressModel addressModel)
+    [HttpPut("")]
+    public async Task UpdateAddress([FromBody] AddressModel addressModel)
     {
         await _addressService.UpdateAddress(addressModel);
     }
 
-    [HttpDelete("DeleteAddress/{addressId:int}")]
+    [HttpDelete("{addressId:int}")]
     public async Task<bool> DeleteAddress(int addressId)
     {
         return await _addressService.DeleteAddress(addressId);
     }
-
 }
-

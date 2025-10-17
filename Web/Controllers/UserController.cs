@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Web;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/users")]
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
@@ -15,7 +15,7 @@ public class UsersController : ControllerBase
         _userService = userService;
     }
 
-    [HttpGet()]
+    [HttpGet("")]
     [Authorize(Policy = "AdminOnly")]
     public async Task<IEnumerable<UserModel>> GetAllUsers()
     {
@@ -24,29 +24,27 @@ public class UsersController : ControllerBase
 
     [HttpGet("{id:int}")]
     [Authorize(Policy = "AdminOnly")]
-
     public async Task<UserModel?> GetUserById(int id)
     {
         return await _userService.GetUserById(id);
     }
 
-    [HttpPost("Create")]
+    [HttpPost("")]
     public async Task<UserModel> CreateUser([FromBody] User userModel)
     {
         return await _userService.CreateUser(userModel);
     }
 
-    [HttpPut("Update")]
+    [HttpPut("")]
     public async Task UpdateUser([FromBody] UserModel userModel)
     {
         await _userService.UpdateUser(userModel);
     }
 
-    [HttpDelete("Delete/{id:int}")]
+    [HttpDelete("{id:int}")]
     public async Task<bool> DeleteUser(int id)
     {
         return await _userService.DeleteUser(id);
     }
-
 }
 
