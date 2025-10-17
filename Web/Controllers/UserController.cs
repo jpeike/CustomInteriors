@@ -31,7 +31,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("Create")]
-    public async Task<UserModel> CreateUser([FromBody] User userModel)
+    public async Task<UserModel> CreateUser([FromBody] UserModel userModel)
     {
         return await _userService.CreateUser(userModel);
     }
