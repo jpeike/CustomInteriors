@@ -31,8 +31,7 @@ public class AddressController : ControllerBase
     [HttpPost("CreateAddress")]
     public async Task<AddressModel> CreateAddress([FromBody] AddressModel addressModel)
     {
-
-        var address = new Address
+        AddressModel address = new()
         {
             CustomerId = addressModel.CustomerId,
             Street = addressModel.Street,

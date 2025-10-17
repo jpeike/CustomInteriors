@@ -1,5 +1,8 @@
 ﻿namespace Core;
 
+/// <summary>
+/// backend facing class returned from the database / repository
+/// </summary>
 public class Employee
 {
     public required int EmployeeId { get; set; }
