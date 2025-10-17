@@ -767,7 +767,7 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    createEmployee(body?: EmployeeModel | undefined): Promise<EmployeeModel> {
+    createEmployee(body?: Employee | undefined): Promise<EmployeeModel> {
         let url_ = this.baseUrl + "/api/Employee/CreateEmployee";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -972,7 +972,7 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    create2(body?: UserModel | undefined): Promise<UserModel> {
+    create2(body?: User | undefined): Promise<UserModel> {
         let url_ = this.baseUrl + "/api/Users/Create";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1262,6 +1262,100 @@ export interface ICreateEmailRequest {
     customerId?: number;
 }
 
+export class Customer implements ICustomer {
+    customerId?: number;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    customerType?: string | undefined;
+    prefferedContactMethod?: string | undefined;
+    companyName?: string | undefined;
+    status?: string | undefined;
+    customerNotes?: string | undefined;
+    addresses?: Address[] | undefined;
+    emails?: Email[] | undefined;
+
+    constructor(data?: ICreateEmailRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.emailAddress = _data["emailAddress"];
+            this.emailType = _data["emailType"];
+            this.customerId = _data["customerId"];
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+            this.customerType = _data["customerType"];
+            this.prefferedContactMethod = _data["prefferedContactMethod"];
+            this.companyName = _data["companyName"];
+            this.status = _data["status"];
+            this.customerNotes = _data["customerNotes"];
+            if (Array.isArray(_data["addresses"])) {
+                this.addresses = [] as any;
+                for (let item of _data["addresses"])
+                    this.addresses!.push(Address.fromJS(item));
+            }
+            if (Array.isArray(_data["emails"])) {
+                this.emails = [] as any;
+                for (let item of _data["emails"])
+                    this.emails!.push(Email.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): CreateEmailRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateEmailRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["emailAddress"] = this.emailAddress;
+        data["emailType"] = this.emailType;
+        data["customerId"] = this.customerId;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["customerType"] = this.customerType;
+        data["prefferedContactMethod"] = this.prefferedContactMethod;
+        data["companyName"] = this.companyName;
+        data["status"] = this.status;
+        data["customerNotes"] = this.customerNotes;
+        if (Array.isArray(this.addresses)) {
+            data["addresses"] = [];
+            for (let item of this.addresses)
+                data["addresses"].push(item ? item.toJSON() : undefined as any);
+        }
+        if (Array.isArray(this.emails)) {
+            data["emails"] = [];
+            for (let item of this.emails)
+                data["emails"].push(item ? item.toJSON() : undefined as any);
+        }
+        return data;
+    }
+}
+
+export interface ICreateEmailRequest {
+    emailAddress?: string | undefined;
+    emailType?: string | undefined;
+    customerId?: number;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    customerType?: string | undefined;
+    prefferedContactMethod?: string | undefined;
+    companyName?: string | undefined;
+    status?: string | undefined;
+    customerNotes?: string | undefined;
+    addresses?: Address[] | undefined;
+    emails?: Email[] | undefined;
+}
+
 export class CustomerModel implements ICustomerModel {
     customerId?: number;
     firstName?: string | undefined;
@@ -1414,11 +1508,222 @@ export interface ICustomerWithFKsModel {
     addresses?: Address[] | undefined;
 }
 
+export class Email implements IEmail {
+    emailID?: number;
+    customerId?: number;
+    emailAddress?: string | undefined;
+    emailType?: string | undefined;
+    createdOn?: Date;
+    customer?: Customer;
+
+    constructor(data?: IEmail) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.emailID = _data["emailID"];
+            this.customerId = _data["customerId"];
+            this.emailAddress = _data["emailAddress"];
+            this.emailType = _data["emailType"];
+            this.createdOn = _data["createdOn"] ? new Date(_data["createdOn"].toString()) : undefined as any;
+            this.customer = _data["customer"] ? Customer.fromJS(_data["customer"]) : undefined as any;
+        }
+    }
+
+    static fromJS(data: any): Email {
+        data = typeof data === 'object' ? data : {};
+        let result = new Email();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["emailID"] = this.emailID;
+        data["customerId"] = this.customerId;
+        data["emailAddress"] = this.emailAddress;
+        data["emailType"] = this.emailType;
+        data["createdOn"] = this.createdOn ? this.createdOn.toISOString() : undefined as any;
+        data["customer"] = this.customer ? this.customer.toJSON() : undefined as any;
+        return data;
+    }
+}
+
+export interface IEmail {
+    emailID?: number;
+    customerId?: number;
+    emailAddress?: string | undefined;
+    emailType?: string | undefined;
+    createdOn?: Date;
+    customer?: Customer;
+}
+
 export class EmailModel implements IEmailModel {
     emailID?: number;
     customerId?: number;
     emailAddress?: string | undefined;
     emailType?: string | undefined;
+    createdOn?: Date;
+
+    constructor(data?: IEmailModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.emailID = _data["emailID"];
+            this.customerId = _data["customerId"];
+            this.emailAddress = _data["emailAddress"];
+            this.emailType = _data["emailType"];
+            this.createdOn = _data["createdOn"] ? new Date(_data["createdOn"].toString()) : undefined as any;
+        }
+    }
+
+    static fromJS(data: any): EmailModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new EmailModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["emailID"] = this.emailID;
+        data["customerId"] = this.customerId;
+        data["emailAddress"] = this.emailAddress;
+        data["emailType"] = this.emailType;
+        data["createdOn"] = this.createdOn ? this.createdOn.toISOString() : undefined as any;
+        return data;
+    }
+}
+
+export interface IEmailModel {
+    emailID?: number;
+    customerId?: number;
+    emailAddress?: string | undefined;
+    emailType?: string | undefined;
+    createdOn?: Date;
+}
+
+export class Employee implements IEmployee {
+    employeeId!: number;
+    accountId!: number;
+    emailId!: number;
+    name!: string | undefined;
+    role!: string | undefined;
+
+    constructor(data?: IEmployee) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.employeeId = _data["employeeId"];
+            this.accountId = _data["accountId"];
+            this.emailId = _data["emailId"];
+            this.name = _data["name"];
+            this.role = _data["role"];
+        }
+    }
+
+    static fromJS(data: any): Employee {
+        data = typeof data === 'object' ? data : {};
+        let result = new Employee();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["employeeId"] = this.employeeId;
+        data["accountId"] = this.accountId;
+        data["emailId"] = this.emailId;
+        data["name"] = this.name;
+        data["role"] = this.role;
+        return data;
+    }
+}
+
+export interface IEmployee {
+    employeeId: number;
+    accountId: number;
+    emailId: number;
+    name: string | undefined;
+    role: string | undefined;
+}
+
+export class EmployeeModel implements IEmployeeModel {
+    employeeId?: number;
+    accountId!: number;
+    emailId!: number;
+    name!: string | undefined;
+    role!: string | undefined;
+
+    constructor(data?: IEmployeeModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.employeeId = _data["employeeId"];
+            this.accountId = _data["accountId"];
+            this.emailId = _data["emailId"];
+            this.name = _data["name"];
+            this.role = _data["role"];
+        }
+    }
+
+    static fromJS(data: any): EmployeeModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new EmployeeModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["employeeId"] = this.employeeId;
+        data["accountId"] = this.accountId;
+        data["emailId"] = this.emailId;
+        data["name"] = this.name;
+        data["role"] = this.role;
+        return data;
+    }
+}
+
+export interface IEmployeeModel {
+    employeeId?: number;
+    accountId: number;
+    emailId: number;
+    name: string | undefined;
+    role: string | undefined;
+}
+
+export class User implements IUser {
+    id?: number;
+    username?: string | undefined;
+    email?: string | undefined;
     createdOn?: Date;
 
     constructor(data?: IEmailModel) {
