@@ -5,10 +5,13 @@ import { onMounted, reactive, ref } from 'vue'
 import CrudHeader from '../components/CrudHeader.vue'
 import EmployeeModal from '../components/EmployeeModal.vue'
 import 'primeicons/primeicons.css'
+import { useRouter } from 'vue-router'
 
 const client = new Client(import.meta.env.VITE_API_BASE_URL)
 let showEmployeeModal = ref(false)
 const selectedEmployee = ref(new EmployeeModel);
+
+const router = useRouter()
 
 const state = reactive({
   employees: [] as EmployeeModel[],
@@ -69,6 +72,11 @@ function updateEmployeeInformation(currentID: number, updatedEmployee: EmployeeM
     .updateEmployee(updatedEmployee)
     .catch((error) => {
       state.error = error.message || 'An error occurred';
+      if (error.status) {
+        redirectToErrorPage(error.status)
+      } else {
+        redirectToErrorPage(0) // Unknown error
+      }
     })
     .finally(() => {
       fetchEmployees();
@@ -85,12 +93,46 @@ state.loading = true;
     .deleteEmployee(id)
     .catch((error) => {
       state.error = error.message || 'An error occurred';
+      if (error.status) {
+        redirectToErrorPage(error.status)
+      } else {
+        redirectToErrorPage(0) // Unknown error
+      }
     })
     .finally(() => {
       fetchEmployees();
       state.loading = false;
     })
     showEmployeeModal = ref(false);
+}
+
+function redirectToErrorPage(errorCode: number) {
+  switch (errorCode) {
+    case 401:
+      router.push({ name: 'unauthorized' })
+      break
+    case 403:
+      router.push({ name: 'forbidden' })
+      break
+    case 500:
+      router.push({ name: 'InternalServerError' })
+      break
+    case 502:
+      router.push({ name: 'badGateway' })
+      break
+    case 503:
+      router.push({ name: 'serviceUnavailable' })
+      break
+    case 408:
+      router.push({ name: 'requestTimeout' })
+      break
+    case 404:
+      router.push({ name: 'notFound' })
+      break
+    default:
+      router.push({ name: 'generalError' })
+      break
+  }
 }
 </script>
 

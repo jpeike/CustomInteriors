@@ -1,15 +1,14 @@
 <template>
-  <div class="flex column notFoundBody">
-    <div class="notFoundContainer">
+  <div class="flex column generalErrorBody">
+    <div class="generalErrorContainer">
       <div class="errorIcon">
-        <img class="pi pi-exclamation-circle" style="font-size: 7.5rem;"></img>
+        <i class="pi pi-exclamation-circle" style="font-size: 7.5rem;"></i>
       </div>
       
-      <h1 class="errorCode">404</h1>
-      <h2 class="errorTitle">Page Not Found</h2>
-      <p class="errorDescription">Sorry, the page you are looking for does not exist or has been moved.</p>
+      <h1 class="error">Error</h1>
+      <p class="errorDescription">An unknown error has occured.</p>
       
-      <router-link to="/" class="homeButton"><img class="pi pi-home"></img>Go Back Home</router-link>
+      <router-link to="/" class="homeButton"><i class="pi pi-home"></i>Go Back Home</router-link>
     </div>
   </div>
 </template>
@@ -31,7 +30,7 @@ import 'primeicons/primeicons.css'
   flex-direction: column;
 }
 
-.notFoundBody {
+.generalErrorBody {
   width: auto;
   height: 90vh;
   top: 0;
@@ -41,7 +40,7 @@ import 'primeicons/primeicons.css'
   background: white;
 }
 
-.notFoundContainer {
+.generalErrorContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -56,19 +55,12 @@ import 'primeicons/primeicons.css'
   font-size: 5rem;
 }
 
-.errorCode {
+.error {
   font-size: 4rem;
   font-weight: 700;
   color: #000;
   margin: 0 0 1rem 0;
   letter-spacing: -0.02em;
-}
-
-.errorTitle {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #000;
-  margin: 0 0 0.75rem 0;
 }
 
 .errorDescription {
@@ -100,7 +92,7 @@ import 'primeicons/primeicons.css'
 
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
-  .notFoundBody {
+  .generalErrorBody {
     background: #1a1a1a;
   }
 
@@ -108,11 +100,7 @@ import 'primeicons/primeicons.css'
     color: #404040;
   }
 
-  .errorCode {
-    color: #ffffff;
-  }
-
-  .errorTitle {
+  .error {
     color: #ffffff;
   }
 

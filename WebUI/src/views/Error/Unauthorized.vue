@@ -1,13 +1,13 @@
 <template>
-  <div class="flex column notFoundBody">
-    <div class="notFoundContainer">
+  <div class="flex column unauthorizedBody">
+    <div class="unauthorizedContainer">
       <div class="errorIcon">
         <img class="pi pi-exclamation-circle" style="font-size: 7.5rem;"></img>
       </div>
       
-      <h1 class="errorCode">404</h1>
-      <h2 class="errorTitle">Page Not Found</h2>
-      <p class="errorDescription">Sorry, the page you are looking for does not exist or has been moved.</p>
+      <h1 class="errorCode">401</h1>
+      <h2 class="errorTitle">Unauthorized</h2>
+      <p class="errorDescription">Sorry, the you don't have the proper credentials to access this page.</p>
       
       <router-link to="/" class="homeButton"><img class="pi pi-home"></img>Go Back Home</router-link>
     </div>
@@ -31,7 +31,7 @@ import 'primeicons/primeicons.css'
   flex-direction: column;
 }
 
-.notFoundBody {
+.unauthorizedBody {
   width: auto;
   height: 90vh;
   top: 0;
@@ -41,7 +41,7 @@ import 'primeicons/primeicons.css'
   background: white;
 }
 
-.notFoundContainer {
+.unauthorizedContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -100,7 +100,7 @@ import 'primeicons/primeicons.css'
 
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
-  .notFoundBody {
+  .unauthorizedBody {
     background: #1a1a1a;
   }
 

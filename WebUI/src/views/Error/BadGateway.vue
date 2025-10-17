@@ -1,13 +1,13 @@
 <template>
-  <div class="flex column notFoundBody">
-    <div class="notFoundContainer">
+  <div class="flex column badGatewayBody">
+    <div class="badGatewayContainer">
       <div class="errorIcon">
         <img class="pi pi-exclamation-circle" style="font-size: 7.5rem;"></img>
       </div>
       
-      <h1 class="errorCode">404</h1>
-      <h2 class="errorTitle">Page Not Found</h2>
-      <p class="errorDescription">Sorry, the page you are looking for does not exist or has been moved.</p>
+      <h1 class="errorCode">502</h1>
+      <h2 class="errorTitle">Bad Gateway</h2>
+      <p class="errorDescription">Sorry, there was an invalid response from the server.</p>
       
       <router-link to="/" class="homeButton"><img class="pi pi-home"></img>Go Back Home</router-link>
     </div>
@@ -31,7 +31,7 @@ import 'primeicons/primeicons.css'
   flex-direction: column;
 }
 
-.notFoundBody {
+.badGatewayBody {
   width: auto;
   height: 90vh;
   top: 0;
@@ -41,7 +41,7 @@ import 'primeicons/primeicons.css'
   background: white;
 }
 
-.notFoundContainer {
+.badGatewayContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -100,7 +100,7 @@ import 'primeicons/primeicons.css'
 
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
-  .notFoundBody {
+  .badGatewayBody {
     background: #1a1a1a;
   }
 

@@ -41,7 +41,9 @@ import Card from 'primevue/card'
 import { Client, EmailModel } from '../client/client'
 // If the file does not exist, create it or correct the path as needed.
 import { onMounted, reactive, computed } from 'vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const client = new Client(import.meta.env.VITE_API_BASE_URL)
 
 const state = reactive({
@@ -80,9 +82,43 @@ function fetchEmails() {
     })
     .catch((error) => {
       state.error = error.message || 'An error occurred'
+      if (error.status) {
+        redirectToErrorPage(error.status)
+      } else {
+        redirectToErrorPage(0) // Unknown error
+      }
     })
     .finally(() => {
       state.loading = false
     })
+}
+
+function redirectToErrorPage(errorCode: number) {
+  switch (errorCode) {
+    case 401:
+      router.push({ name: 'unauthorized' })
+      break
+    case 403:
+      router.push({ name: 'forbidden' })
+      break
+    case 500:
+      router.push({ name: 'InternalServerError' })
+      break
+    case 502:
+      router.push({ name: 'badGateway' })
+      break
+    case 503:
+      router.push({ name: 'serviceUnavailable' })
+      break
+    case 408:
+      router.push({ name: 'requestTimeout' })
+      break
+    case 404:
+      router.push({ name: 'notFound' })
+      break
+    default:
+      router.push({ name: 'generalError' })
+      break
+  }
 }
 </script>

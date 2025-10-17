@@ -1,15 +1,15 @@
 <template>
-  <div class="flex column notFoundBody">
-    <div class="notFoundContainer">
+  <div class="flex column forbiddenBody">
+    <div class="forbiddenContainer">
       <div class="errorIcon">
-        <img class="pi pi-exclamation-circle" style="font-size: 7.5rem;"></img>
+        <i class="pi pi-exclamation-circle" style="font-size: 7.5rem;"></i>
       </div>
       
-      <h1 class="errorCode">404</h1>
-      <h2 class="errorTitle">Page Not Found</h2>
-      <p class="errorDescription">Sorry, the page you are looking for does not exist or has been moved.</p>
+      <h1 class="errorCode">403</h1>
+      <h2 class="errorTitle">Forbidden</h2>
+      <p class="errorDescription">Sorry, you don't have the proper credentials to access the page.</p>
       
-      <router-link to="/" class="homeButton"><img class="pi pi-home"></img>Go Back Home</router-link>
+      <router-link to="/" class="homeButton"><i class="pi pi-home"></i>Go Back Home</router-link>
     </div>
   </div>
 </template>
@@ -31,7 +31,7 @@ import 'primeicons/primeicons.css'
   flex-direction: column;
 }
 
-.notFoundBody {
+.forbiddenBody {
   width: auto;
   height: 90vh;
   top: 0;
@@ -41,7 +41,7 @@ import 'primeicons/primeicons.css'
   background: white;
 }
 
-.notFoundContainer {
+.forbiddenContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -100,7 +100,7 @@ import 'primeicons/primeicons.css'
 
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
-  .notFoundBody {
+  .forbiddenBody {
     background: #1a1a1a;
   }
 

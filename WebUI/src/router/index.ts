@@ -45,6 +45,41 @@ const router = createRouter({
       name: 'notfound',
       component: () => import('../views/Error/NotFound.vue'),
     },
+    {
+      path: '/forbidden',
+      name: 'forbidden',
+      component: () => import('../views/Error/Forbidden.vue'),
+    },
+    {
+      path: '/unauthorized',
+      name: 'unauthorized',
+      component: () => import('../views/Error/Unauthorized.vue'),
+    },
+    {
+      path: '/generalError',
+      name: 'generalError',
+      component: () => import('../views/Error/GeneralError.vue'),
+    },
+    {
+      path: '/internalServerError',
+      name: 'internalServerError',
+      component: () => import('../views/Error/InternalServerError.vue'),
+    },
+    {
+      path: '/badGateway',
+      name: 'badGateway',
+      component: () => import('../views/Error/BadGateway.vue'),
+    },
+    {
+      path: '/requestTimeout',
+      name: 'requestTimeout',
+      component: () => import('../views/Error/RequestTimeout.vue'),
+    },
+    {
+      path: '/serviceUnavailable',
+      name: 'serviceUnavailable',
+      component: () => import('../views/Error/ServiceUnavailable.vue'),
+    },
   ],
 })
 
