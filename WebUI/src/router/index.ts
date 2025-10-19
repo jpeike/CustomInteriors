@@ -3,7 +3,7 @@ import { RoutePaths } from '@/enums/RoutePaths'
 import { RouteNames } from '@/enums/RouteNames'
 
 import HomePage from '@/views/HomePage.vue'
-import NotFoundPage from '@/views/Error/NotFound.vue'
+import ErrorPage from '@/views/Error/ErrorPage.vue'
 
 const routes = [
   { path: RoutePaths.HOME, name: RouteNames.HOME, component: HomePage },
@@ -37,7 +37,8 @@ const routes = [
     name: RouteNames.CALLBACK,
     component: () => import('@/views/CallbackPage.vue'),
   },
-  { path: RoutePaths.NOT_FOUND, name: RouteNames.NOT_FOUND, component: NotFoundPage },
+  { path: RoutePaths.ERROR_PAGE, name: RouteNames.ERROR_PAGE, component: ErrorPage, props: true },
+  { path: RoutePaths.NOT_FOUND, name: RouteNames.NOT_FOUND, component: ErrorPage, props: { code: '404' } },
 ]
 
 const router = createRouter({

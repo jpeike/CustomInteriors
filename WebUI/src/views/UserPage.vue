@@ -24,6 +24,7 @@ import { UserModel } from '../client/client'
 import { proxiedApi as Client } from '@/client/apiClient'
 import { onMounted, reactive } from 'vue'
 import { useRouter } from 'vue-router'
+import { RouteNames } from '@/enums/RouteNames'
 
 const router = useRouter()
 
@@ -38,35 +39,6 @@ onMounted(() => {
   fetchUsers()
 })
 
-function redirectToErrorPage(errorCode: number) {
-  switch (errorCode) {
-    case 401:
-      router.push({ name: 'unauthorized' })
-      break
-    case 403:
-      router.push({ name: 'forbidden' })
-      break
-    case 500:
-      router.push({ name: 'InternalServerError' })
-      break
-    case 502:
-      router.push({ name: 'badGateway' })
-      break
-    case 503:
-      router.push({ name: 'serviceUnavailable' })
-      break
-    case 408:
-      router.push({ name: 'requestTimeout' })
-      break
-    case 404:
-      router.push({ name: 'notFound' })
-      break
-    default:
-      router.push({ name: 'generalError' })
-      break
-  }
-}
-
 function fetchUsers() {
   state.loading = true
   state.error = null
@@ -76,14 +48,18 @@ function fetchUsers() {
     })
     .catch((error) => {
       state.error = error.message || 'An error occurred'
-      if (error.status) {
-        redirectToErrorPage(error.status)
-      } else {
-        redirectToErrorPage(0) // Unknown error
-      }
+      redirectToErrorPage(error.status);
     })
     .finally(() => {
       state.loading = false
     })
+}
+
+function redirectToErrorPage(errorStatus: number | string) {
+  if (errorStatus) {
+    router.push({ name: RouteNames.ERROR_PAGE, params: { code: errorStatus } })
+  } else {
+    router.push({ name: RouteNames.ERROR_PAGE, params: { code: 'unknown' } })
+  }
 }
 </script>
