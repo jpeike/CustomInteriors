@@ -45,8 +45,12 @@
             </div>
             
         <!--Address Section-->
+            
             <div class="addressField" v-for="(address, index) in listOfAddresses">
-                <h2 style="margin-top: 0; margin-bottom: 2%;">Address {{ index + 1 }}</h2>
+                <div class="flex row addressHeader">
+                    <h2 style="margin: 0;">Address {{ index + 1 }}</h2>
+                    <i class="pi pi-trash editButton" @click="removedAddresses.push(listOfAddresses[index].addressId!); listOfAddresses.splice(index, 1);"></i>
+                </div>
                 <div>
                     <h3 class="fieldTitle">Street Address</h3>
                     <InputText v-model="address.street" required="true" type="text" class="inputValue" :placeholder="address.street ?? 'Street'"></InputText>
@@ -92,7 +96,7 @@
                 <button class = "cancelUpdateButton" @click="$emit('closePage')">
                     <p style="margin: 0; text-align: center;">Cancel</p>
                 </button>  
-                <button class = "updateInfoButton" @click="$emit('updateCustomerInformation', currentCustomerInformation?.customerId, customer, listOfAddresses)">
+                <button class = "updateInfoButton" @click="$emit('updateCustomerInformation', currentCustomerInformation?.customerId, customer, listOfAddresses, removedAddresses)">
                     <p style="margin: 0; text-align: center;">{{buttonDesctipnion}}</p>
                 </button>
             </div>
@@ -119,7 +123,8 @@
     const newEmail = ref('');
     const newPhone = ref('');
 
-    let listOfAddresses: Ref<{ addressId?: number | undefined; customerId?: number | undefined; street?: string | undefined | undefined; city?: string | undefined | undefined; state?: string | undefined | undefined; postalCode?: number | undefined; country?: string | undefined | undefined; addressType?: string | undefined | undefined; init: (_data?: any) => void; toJSON: (data?: any) => any; }[], AddressModel[] | { addressId?: number | undefined; customerId?: number | undefined; street?: string | undefined | undefined; city?: string | undefined | undefined; state?: string | undefined | undefined; postalCode?: number | undefined; country?: string | undefined | undefined; addressType?: string | undefined | undefined; init: (_data?: any) => void; toJSON: (data?: any) => any; }[]>;
+    let listOfAddresses: Ref<AddressModel[]>;
+    let removedAddresses = [0];
     
     let customer;
     
@@ -158,7 +163,6 @@
         height: 80vh;  
         border-radius: 5vh;
     }
-
     .customerInfoWindow{
         overflow: scroll;
         height: 100%;
@@ -219,6 +223,18 @@
     .addressField{
         margin-bottom: 5%;
         height: 100vh;    
+    }
+    .addressHeader{
+        margin-bottom: 2%;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .editButton{
+        font-size: 1.1rem;
+        height: 100%;
+    }
+    .editButton:hover{
+        scale: 1.25;
     }
     .addAddress{
         height: 5vh;

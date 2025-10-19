@@ -212,7 +212,7 @@ async function fetchAddressesByCustomerId(customerId: number) {
 }
 
 async function editCustomerUI(customer: CustomerModel){
-
+    selectedCustomerId.value = customer.customerId!;
     await fetchAddressesByCustomerId(customer.customerId!)
     getCustomerIndex(customer.customerId!); 
 
@@ -255,7 +255,7 @@ function closeUpdateModal() {
 async function deleteAddress(addressId: number) {
   try {
     await client.deleteAddress(addressId)
-    fetchAddressesByCustomerId(selectedCustomerId.value!)
+    //fetchAddressesByCustomerId(selectedCustomerId.value!)
   } catch (error) {
     console.error('Delete failed:', error)
   }
@@ -283,7 +283,7 @@ async function updateaddress(address: AddressModel) {
   }
 }
 
-function updateCustomerInformation(currentID: number, newCustomer: CustomerModel, newAddress: AddressModel[]){
+function updateCustomerInformation(currentID: number, newCustomer: CustomerModel, newAddress: AddressModel[], removedAddresses: number[]){
 
   //create new customer
   if(currentID == null){
@@ -292,6 +292,12 @@ function updateCustomerInformation(currentID: number, newCustomer: CustomerModel
   //update existing customer
   else{
     updateCustomer(currentID, newCustomer, newAddress);
+  }
+
+  if (removedAddresses.length > 1){
+    for (let i = 1; i < removedAddresses.length; i++){
+      deleteAddress(removedAddresses[i]!);
+    } 
   }
     
   displayCustomerDetails = ref(false); 
@@ -303,6 +309,7 @@ async function createCustomer(newCustomer: CustomerModel, newAddress: AddressMod
       updateError.value = null;
       await client.createCustomer(newCustomer);
       await fetchCustomers();
+      
       for (let i = 0; i < newAddress.length; i++){
         newAddress[i].addressType = "delete later";
         newAddress[i].customerId = state.customer[state.customer.length - 1].customerId;
@@ -324,10 +331,16 @@ async function updateCustomer(currentID: number, newCustomer: CustomerModel, new
       updateError.value = null;
       await client.updateCustomer(state.customer[currentCustomerIndex.value - 1]);
       await fetchCustomers();
+      
       for (let i = 0; i < newAddress.length; i++){
-        newAddress[i].addressType = "delete later";
-        newAddress[i].customerId = state.customer[state.customer.length - 1].customerId;
-        createAddress(newAddress[i]);
+        if (newAddress[i].addressId! == undefined){
+          newAddress[i].addressType = "delete later";
+          newAddress[i].customerId = state.customer[state.customer.length - 1].customerId;
+          await createAddress(newAddress[i]);
+        }
+        else{
+          await updateaddress(newAddress[i]);
+        }
       }
     } 
     catch (error) {
@@ -337,6 +350,7 @@ async function updateCustomer(currentID: number, newCustomer: CustomerModel, new
 
     state.loading = true
     state.error = null
+    /*
     client
     .updateCustomer(state.customer[currentCustomerIndex.value - 1])
     .catch((error) => {
@@ -345,7 +359,7 @@ async function updateCustomer(currentID: number, newCustomer: CustomerModel, new
     .finally(() => {
       fetchCustomers();
       state.loading = false
-    })
+    })*/
 }
 
 function deleteCustomer(currentID: number){
