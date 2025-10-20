@@ -29,7 +29,7 @@ public class UsersController : ControllerBase
         return await _userService.GetUserById(id);
     }
 
-    [HttpPost("Create", Name = "CreateUser")]
+    [HttpPost("", Name = "CreateUser")]
     public async Task<UserModel> CreateUser([FromBody] UserModel userModel)
     {
         return await _userService.CreateUser(userModel);
