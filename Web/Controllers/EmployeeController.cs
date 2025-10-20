@@ -29,7 +29,7 @@ public class EmployeeController : ControllerBase
     [HttpPost("")]
     public async Task<EmployeeModel> CreateEmployee([FromBody] Employee employeeModel)
     {
-        return await _employeeService.AddEmployee(employeeModel);
+        return await _employeeService.CreateEmployee(employeeModel);
     }
 
     [HttpPut("")]

@@ -30,7 +30,7 @@ public class EmailsController : ControllerBase
     [HttpPost("")]
     public async Task<EmailModel> CreateEmail([FromBody] CreateEmailRequest emailModel)
     {
-        Email email = new()
+        EmailModel email = new()
         {
             EmailAddress = emailModel.EmailAddress,
             EmailType = emailModel.EmailType,
