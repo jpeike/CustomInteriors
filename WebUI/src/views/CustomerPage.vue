@@ -3,7 +3,7 @@
     <AddressListModal
       :isOpen="showAddressList"
       :customerId="selectedCustomerId"
-      :addresses="state.addresses"
+      :addresses="state.modalAddresses"
       @close="showAddressList = false"
       @create="openCreateAddressModal"
       @edit="openUpdateAddressModal"
@@ -75,7 +75,7 @@
             </div>
           </div>
           
-          <br/><p style="margin: 0;"> Address: {{getAddressText(customer.customerId!)}}</p>
+          <br/><p style="margin: 0;"> Address: {{getAddressString(customer.customerId!)}}</p>
           <br/>
           <p style="margin: 0;">Type: {{ customer.customerType }}</p>
           <br/>
@@ -134,11 +134,11 @@ let customerDescription = ref('');
 let customerButtonDesc = ref('');
 let currentCustomerIndex = ref(0);
 let searchValue = ref('');
-let customerAddress = ref('');
 
 const state = reactive({
   customer: [] as CustomerModel[],
   addresses: [] as AddressModel[],
+  modalAddresses: [] as AddressModel[],
   loading: false,
   error: null as string | null,
 })
@@ -160,14 +160,9 @@ function getCustomerIndex(customerID: number){
 function getAddressString(customerID: number){
   for (let i = 0; i < state.addresses.length; i++){
     if (state.addresses[i].customerId == customerID){
-      customerAddress.value = state.addresses[i].street + " " + state.addresses[i].city + ", " + state.addresses[i].state;
+      return state.addresses[i].street + " " + state.addresses[i].city + ", " + state.addresses[i].state;
     }
   }  
-}
-
-function getAddressText(customerID: number){
-  getAddressString(customerID);
-  return customerAddress.value;
 }
 
 function fetchCustomers() {
@@ -208,7 +203,7 @@ function fetchAddressesByCustomerId(customerId: number) {
   client
     .address2(customerId)
     .then((response) => {
-      state.addresses = response
+      state.modalAddresses = response
     })
     .catch((error) => {
       state.error = error.message || 'An error occurred'

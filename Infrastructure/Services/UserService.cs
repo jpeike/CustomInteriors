@@ -11,9 +11,9 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
-    public async Task<UserModel> CreateUser(User user)
+    public async Task<UserModel> CreateUser(UserModel user)
     {
-        User toReturn = await _userRepository.AddUser(user);
+        User toReturn = await _userRepository.AddUser(user.ToEntity());
         return toReturn.ToModel();
     }
 

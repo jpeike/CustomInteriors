@@ -11,9 +11,9 @@ public class CustomerService : ICustomerService
         _customerRepository = customerRepository;
     }
 
-    public async Task<CustomerModel> CreateCustomer(Customer customer)
+    public async Task<CustomerModel> CreateCustomer(CustomerModel customer)
     {
-        Customer toReturn = await _customerRepository.AddCustomer(customer);
+        Customer toReturn = await _customerRepository.AddCustomer(customer.ToEntity());
         return toReturn.ToModel();
     }
 

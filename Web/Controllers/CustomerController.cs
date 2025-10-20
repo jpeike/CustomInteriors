@@ -1,7 +1,7 @@
 ﻿using Core;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Web;
+namespace Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -36,9 +36,9 @@ public class CustomersController : ControllerBase
 
 
     [HttpPost("CreateCustomer")]
-    public async Task<CustomerModel> CreateCustomer([FromBody] Customer customerModel)
+    public async Task<CustomerModel> CreateCustomer([FromBody] CustomerModel customerModel)
     {
-        var customer = new Customer
+        CustomerModel customer = new()
         {
             FirstName = customerModel.FirstName,
             LastName = customerModel.LastName,
