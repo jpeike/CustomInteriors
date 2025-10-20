@@ -27,7 +27,7 @@ public class EmployeeController : ControllerBase
     }
 
     [HttpPost("")]
-    public async Task<EmployeeModel> CreateEmployee([FromBody] Employee employeeModel)
+    public async Task<EmployeeModel> CreateEmployee([FromBody] EmployeeModel employeeModel)
     {
         return await _employeeService.CreateEmployee(employeeModel);
     }
