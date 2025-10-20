@@ -2,14 +2,14 @@
   <div class="flex column errorBody">
     <div class="errorContainer">
       <div class="errorIcon">
-        <i :class="iconClass" style="font-size: 7.5rem"></i>
+        <i :class="iconClass"></i>
       </div>
       
       <h1 v-if="shouldShowCode" class="errorCode">{{ errorCode }}</h1>
       <h2 class="errorTitle">{{ errorTitle }}</h2>
       <p class="errorDescription">{{ errorDescription }}</p>
       
-      <router-link to="/" class="homeButton"><img class="pi pi-home"></img>Go Back Home</router-link>
+      <router-link to="/" class="homeButton"><i class="pi pi-home"></i>Go Back Home</router-link>
     </div>
   </div>
 </template>
@@ -27,7 +27,7 @@ const errorCode = computed<string>(() => {
   if (Array.isArray(code)) {
     return code[0] ?? 'unknown'
   }
-  return code ?? 'unknown'
+  return code
 })
 
 const shouldShowCode = computed(() => {
@@ -117,6 +117,10 @@ const iconClass = computed(() => `pi ${getError.value.icon}`)
 .errorIcon {
   color: #d4d4d4;
   margin-bottom: 1.5rem;
+}
+
+.errorIcon i {
+  font-size: 7.5rem;
 }
 
 .errorCode {
