@@ -18,19 +18,20 @@ public class AddressController : ControllerBase
         _addressService = addressService;
     }
 
-    [HttpGet("")]
+    // this is how you specify the name of the method in the ts client -> Name = "nameIWant"
+    [HttpGet("", Name = "GetAllAddresses")]
     public async Task<IEnumerable<AddressModel>> GetAllAddresses()
     {
         return await _addressService.GetAllAddresses();
     }
 
-    [HttpGet("{customerId:int}")]
+    [HttpGet("{customerId:int}", Name = "GetAddressById")]
     public async Task<IEnumerable<AddressModel>> GetAddressesByCustomerId(int customerId)
     {
         return await _addressService.GetAddressesByCustomerId(customerId);
     }
 
-    [HttpPost("")]
+    [HttpPost("", Name = "CreateAddress")]
     public async Task<AddressModel> CreateAddress([FromBody] AddressModel addressModel)
     {
         AddressModel address = new()
@@ -47,13 +48,13 @@ public class AddressController : ControllerBase
         return await _addressService.CreateAddress(address);
     }
 
-    [HttpPut("")]
+    [HttpPut("", Name = "UpdateAddress")]
     public async Task UpdateAddress([FromBody] AddressModel addressModel)
     {
         await _addressService.UpdateAddress(addressModel);
     }
 
-    [HttpDelete("{addressId:int}")]
+    [HttpDelete("{addressId:int}", Name = "DeleteAddress")]
     public async Task<bool> DeleteAddress(int addressId)
     {
         return await _addressService.DeleteAddress(addressId);
