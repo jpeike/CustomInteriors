@@ -932,6 +932,48 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
+    createUser(body?: UserModel | undefined): Promise<UserModel> {
+        let url_ = this.baseUrl + "/api/users";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateUser(_response);
+        });
+    }
+
+    protected processCreateUser(response: Response): Promise<UserModel> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UserModel.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UserModel>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
     updateUser(body?: UserModel | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/users";
         url_ = url_.replace(/[?&]$/, "");
@@ -1045,48 +1087,6 @@ export class Client {
             });
         }
         return Promise.resolve<boolean>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return OK
-     */
-    createUser(body?: UserModel | undefined): Promise<UserModel> {
-        let url_ = this.baseUrl + "/api/users/Create";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateUser(_response);
-        });
-    }
-
-    protected processCreateUser(response: Response): Promise<UserModel> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = UserModel.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<UserModel>(null as any);
     }
 }
 
