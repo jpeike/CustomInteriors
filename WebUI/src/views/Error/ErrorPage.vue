@@ -17,13 +17,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import 'primeicons/primeicons.css'
+import { useRoute } from 'vue-router';
 
-const props = defineProps<{
-  code?: string
-}>() 
+const route = useRoute();
 
 const errorCode = computed<string>(() => {
-  const code = props.code ?? 'unknown'
+  const code =  route.params.code ?? 'unknown'
   if (Array.isArray(code)) {
     return code[0] ?? 'unknown'
   }

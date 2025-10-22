@@ -116,8 +116,6 @@ import CreateAddressModal from '../components/modals/CreateAddressModal.vue'
 import UpdateAddressModal from '../components/modals/UpdateAddressModal.vue'
 import InputText from 'primevue/inputtext';
 import 'primeicons/primeicons.css'
-import { useRouter } from 'vue-router'
-import { RouteNames } from '@/enums/RouteNames'
 
 const client = new Client(import.meta.env.VITE_API_BASE_URL)
 const showAddressList = ref(false)
@@ -127,7 +125,7 @@ const createError = ref<string | null>(null)
 const updateError = ref<string | null>(null)
 let selectedCustomerId = ref<number | null>(null)
 const selectedAddress = ref<AddressModel | null>(null)
-const router = useRouter()
+
 
 let displayCustomerDetails = ref(false);
 let deleteConfirmation = ref(false);
@@ -178,7 +176,6 @@ function fetchCustomers() {
     })
     .catch((error) => {
       state.error = error.message || 'An error occurred'
-      redirectToErrorPage(error.status);
     })
     .finally(() => {
       state.loading = false
@@ -195,7 +192,6 @@ function fetchAddresses() {
     })
     .catch((error) => {
       state.error = error.message || 'An error occurred'
-      redirectToErrorPage(error.status);
     })
     .finally(() => {
       state.loading = false
@@ -212,7 +208,6 @@ function fetchAddressesByCustomerId(customerId: number) {
     })
     .catch((error) => {
       state.error = error.message || 'An error occurred'
-      redirectToErrorPage(error.status);
     })
     .finally(() => {
       state.loading = false
@@ -286,7 +281,6 @@ function updateCustomerInformation(currentID: number, updatedCustomer: CustomerM
     .createCustomer(updatedCustomer)
     .catch((error) => {
       state.error = error.message || 'An error occurred'
-      redirectToErrorPage(error.status);
     })
     .finally(() => {
       fetchCustomers();
@@ -303,7 +297,6 @@ function updateCustomerInformation(currentID: number, updatedCustomer: CustomerM
     .updateCustomer(state.customer[currentCustomerIndex.value - 1])
     .catch((error) => {
       state.error = error.message || 'An error occurred'
-      redirectToErrorPage(error.status);
     })
     .finally(() => {
       fetchCustomers();
@@ -321,7 +314,6 @@ function deleteCustomer(currentID: number){
     .deleteCustomer(currentID)
     .catch((error) => {
       state.error = error.message || 'An error occurred'
-      redirectToErrorPage(error.status);
     })
     .finally(() => {
       fetchCustomers();
@@ -338,14 +330,6 @@ function filterCustomer(){
     ||
     customers.prefferedContactMethod?.toLowerCase().includes(searchValue.value.toLowerCase())
   );
-}
-
-function redirectToErrorPage(errorStatus: number | string) {
-  if (errorStatus) {
-    router.push({ name: RouteNames.ERROR_PAGE, params: { code: errorStatus } })
-  } else {
-    router.push({ name: RouteNames.ERROR_PAGE, params: { code: 'unknown' } })
-  }
 }
 
 </script>

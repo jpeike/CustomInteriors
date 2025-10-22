@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import type { RouteLocation } from 'vue-router'
 import { RoutePaths } from '@/enums/RoutePaths'
 import { RouteNames } from '@/enums/RouteNames'
 
@@ -37,8 +38,16 @@ const routes = [
     name: RouteNames.CALLBACK,
     component: () => import('@/views/CallbackPage.vue'),
   },
-  { path: RoutePaths.ERROR_PAGE, name: RouteNames.ERROR_PAGE, component: ErrorPage, props: true },
-  { path: RoutePaths.NOT_FOUND, name: RouteNames.NOT_FOUND, component: ErrorPage, props: { code: '404' } },
+  { path: RoutePaths.ERROR_PAGE, name: RouteNames.ERROR_PAGE, component: ErrorPage},
+  { 
+    path: RoutePaths.NOT_FOUND, 
+    name: RouteNames.NOT_FOUND, 
+    redirect: (to: RouteLocation) => ({
+      name: 'ErrorPage',
+      params: { code: '404' },
+      query: { routeName: to.fullPath }
+  })
+  },
 ]
 
 const router = createRouter({

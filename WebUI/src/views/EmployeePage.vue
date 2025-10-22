@@ -5,14 +5,10 @@ import { onMounted, reactive, ref } from 'vue'
 import CrudHeader from '../components/CrudHeader.vue'
 import EmployeeModal from '../components/EmployeeModal.vue'
 import 'primeicons/primeicons.css'
-import { useRouter } from 'vue-router'
-import { RouteNames } from '@/enums/RouteNames'
 
 const client = new Client(import.meta.env.VITE_API_BASE_URL)
 let showEmployeeModal = ref(false)
 const selectedEmployee = ref(new EmployeeModel);
-
-const router = useRouter()
 
 const state = reactive({
   employees: [] as EmployeeModel[],
@@ -36,7 +32,6 @@ function fetchEmployees() {
     })
     .catch((error) => {
       state.error = error.message || 'An error occurred'
-      redirectToErrorPage(error.status);
     })
     .finally(() => {
       state.loading = false
@@ -58,7 +53,6 @@ function addDefaultEmployee() {
   client.createEmployee(newEmployee)
     .catch((error) => {
       state.error = error.message || 'An error occurred';
-      redirectToErrorPage(error.status);
     })
     .finally(() => {
       fetchEmployees();
@@ -75,7 +69,6 @@ function updateEmployeeInformation(currentID: number, updatedEmployee: EmployeeM
     .updateEmployee(updatedEmployee)
     .catch((error) => {
       state.error = error.message || 'An error occurred';
-      redirectToErrorPage(error.status);
     })
     .finally(() => {
       fetchEmployees();
@@ -92,21 +85,12 @@ state.loading = true;
     .deleteEmployee(id)
     .catch((error) => {
       state.error = error.message || 'An error occurred';
-      redirectToErrorPage(error.status);
     })
     .finally(() => {
       fetchEmployees();
       state.loading = false;
     })
     showEmployeeModal = ref(false);
-}
-
-function redirectToErrorPage(errorStatus: number | string) {
-  if (errorStatus) {
-    router.push({ name: RouteNames.ERROR_PAGE, params: { code: errorStatus } })
-  } else {
-    router.push({ name: RouteNames.ERROR_PAGE, params: { code: 'unknown' } })
-  }
 }
 </script>
 
