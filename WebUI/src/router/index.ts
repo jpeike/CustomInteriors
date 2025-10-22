@@ -4,7 +4,6 @@ import { Roles } from '@/enums/Roles'
 import AuthGuard from './guards/AuthGuard'
 import RoleGuard from './guards/RoleGuards'
 import { RouteNames } from '@/enums/RouteNames'
-import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteLocation } from 'vue-router'
 import { RoutePaths } from '@/enums/RoutePaths'
 const router = createRouter({
@@ -57,58 +56,12 @@ const router = createRouter({
       name: RouteNames.EMAILS,
       component: () => import('../views/EmailPage.vue'),
     },
-    {
-      path: RoutePaths.NOT_FOUND,
-      name: RouteNames.NOT_FOUND,
-      component: () => import('../views/Error/NotFound.vue'),
-      meta: {
-        layout: 'none',
-      },
+    { 
+      path: RoutePaths.ERROR_PAGE, 
+      name: RouteNames.ERROR_PAGE, 
+      component: () => import('../views/Error/ErrorPage.vue'),
     },
-  ] satisfies RouteRecordRaw[],
-})
-
-router.beforeEach(AuthGuard)
-router.beforeEach(RoleGuard)
-import { RouteNames } from '@/enums/RouteNames'
-
-import HomePage from '@/views/HomePage.vue'
-import ErrorPage from '@/views/Error/ErrorPage.vue'
-
-const routes = [
-  { path: RoutePaths.HOME, name: RouteNames.HOME, component: HomePage },
-  {
-    path: RoutePaths.ABOUT,
-    name: RouteNames.ABOUT,
-    component: () => import('@/views/AboutPage.vue'),
-  },
-  {
-    path: RoutePaths.USERS,
-    name: RouteNames.USERS,
-    component: () => import('@/views/UserPage.vue'),
-  },
-  {
-    path: RoutePaths.EMPLOYEES,
-    name: RouteNames.EMPLOYEES,
-    component: () => import('@/views/EmployeePage.vue'),
-  },
-  {
-    path: RoutePaths.CUSTOMERS,
-    name: RouteNames.CUSTOMERS,
-    component: () => import('@/views/CustomerPage.vue'),
-  },
-  {
-    path: RoutePaths.EMAILS,
-    name: RouteNames.EMAILS,
-    component: () => import('@/views/EmailPage.vue'),
-  },
-  {
-    path: RoutePaths.CALLBACK,
-    name: RouteNames.CALLBACK,
-    component: () => import('@/views/CallbackPage.vue'),
-  },
-  { path: RoutePaths.ERROR_PAGE, name: RouteNames.ERROR_PAGE, component: ErrorPage},
-  { 
+    { 
     path: RoutePaths.NOT_FOUND, 
     name: RouteNames.NOT_FOUND, 
     redirect: (to: RouteLocation) => ({
@@ -117,11 +70,8 @@ const routes = [
       query: { routeName: to.fullPath }
   })
   },
-]
-
-const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes,
+  ] satisfies RouteRecordRaw[],
 })
+
 
 export default router
