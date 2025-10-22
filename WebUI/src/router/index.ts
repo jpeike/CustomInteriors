@@ -1,10 +1,9 @@
-import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHistory, type RouteRecordRaw, type RouteLocation } from 'vue-router'
 import HomePage from '../views/HomePage.vue'
 import { Roles } from '@/enums/Roles'
 import AuthGuard from './guards/AuthGuard'
 import RoleGuard from './guards/RoleGuards'
 import { RouteNames } from '@/enums/RouteNames'
-import type { RouteLocation } from 'vue-router'
 import { RoutePaths } from '@/enums/RoutePaths'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -73,5 +72,7 @@ const router = createRouter({
   ] satisfies RouteRecordRaw[],
 })
 
+router.beforeEach(AuthGuard)
+router.beforeEach(RoleGuard)
 
 export default router
