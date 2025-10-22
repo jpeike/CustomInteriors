@@ -1,8 +1,14 @@
 <template>
   <h1>Home Page</h1>
-  <Login></Login>
+  <button @click="logout">Log me out please</button>
 </template>
 
 <script setup lang="ts">
-import Login from './components/Login.vue'
+import { useAuthStore } from '@/stores/auth'
+
+const auth = useAuthStore()
+
+function logout() {
+  auth.logout()
+}
 </script>
