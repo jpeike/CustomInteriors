@@ -59,6 +59,9 @@ const router = createRouter({
       path: RoutePaths.ERROR_PAGE, 
       name: RouteNames.ERROR_PAGE, 
       component: () => import('../views/Error/ErrorPage.vue'),
+      meta: {
+        layout: 'none',
+      },
     },
     { 
     path: RoutePaths.NOT_FOUND, 

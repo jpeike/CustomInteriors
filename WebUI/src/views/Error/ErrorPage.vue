@@ -9,7 +9,10 @@
       <h2 class="errorTitle">{{ errorTitle }}</h2>
       <p class="errorDescription">{{ errorDescription }}</p>
       
-      <router-link to="/" class="homeButton"><i class="pi pi-home"></i>Go Back Home</router-link>
+      <div class="buttonRow">
+        <router-link to="/" class="buttons"><i class="pi pi-home"></i>Go Back Home</router-link>
+        <router-link to="#" class="buttons" @click="$router.go(-1)"><i class="pi pi-arrow-left"></i>Go Back</router-link>
+      </div>
     </div>
   </div>
 </template>
@@ -18,8 +21,13 @@
 import { computed } from 'vue'
 import 'primeicons/primeicons.css'
 import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 const route = useRoute();
+const router = useRouter();
+const previousPage = () => {
+      router.back();
+};
 
 const errorCode = computed<string>(() => {
   const code =  route.params.code ?? 'unknown'
@@ -96,7 +104,7 @@ const iconClass = computed(() => `pi ${getError.value.icon}`)
 
 .errorBody {
   width: auto;
-  height: 90vh;
+  height: 97vh;
   top: 0;
   left: 0;
   justify-content: center;
@@ -144,7 +152,7 @@ const iconClass = computed(() => `pi ${getError.value.icon}`)
   line-height: 1.6;
 }
 
-.homeButton {
+.buttons {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -160,7 +168,13 @@ const iconClass = computed(() => `pi ${getError.value.icon}`)
   transition: background-color 0.15s;
 }
 
-.homeButton:hover {
+.buttonRow {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.buttons:hover {
   background-color: #262626;
 }
 
@@ -186,12 +200,17 @@ const iconClass = computed(() => `pi ${getError.value.icon}`)
     color: #a3a3a3;
   }
 
+  .buttons {
+    background-color: #ffffff;
+    color: #000;
+  }
+
   .homeButton {
     background-color: #ffffff;
     color: #000;
   }
 
-  .homeButton:hover {
+  .buttons:hover {
     background-color: #e5e5e5;
   }
 }
