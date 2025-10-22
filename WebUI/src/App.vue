@@ -1,12 +1,31 @@
-<script setup lang="ts">
-import { RouterView } from 'vue-router'
-import AppHeader from './components/AppHeader.vue'
-</script>
-
+<!-- src/App.vue -->
 <template>
-  <AppHeader />
-  <RouterView />
+  <component :is="layoutComponent">
+    <router-view />
+  </component>
 </template>
+
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+
+// Import layouts
+import DefaultLayout from '@/components/layout/DefaultLayout.vue'
+import NoLayout from '@/components/layout/NoLayout.vue'
+
+const route = useRoute()
+
+// Choose layout dynamically based on meta.layout
+const layoutComponent = computed(() => {
+  switch (route.meta.layout) {
+    case 'none':
+      return NoLayout
+    case 'default':
+    default:
+      return DefaultLayout
+  }
+})
+</script>
 
 <style scoped>
 :global(body) {

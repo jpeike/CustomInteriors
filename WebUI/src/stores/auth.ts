@@ -24,6 +24,8 @@ export const useAuthStore = defineStore('auth', {
           issuer: 'https://us-east-1jpmu56ifb.auth.us-east-1.amazoncognito.com',
           authorization_endpoint:
             'https://us-east-1jpmu56ifb.auth.us-east-1.amazoncognito.com/oauth2/authorize',
+          end_session_endpoint:
+            'https://us-east-1jpmu56ifb.auth.us-east-1.amazoncognito.com/logout',
           token_endpoint:
             'https://us-east-1jpmu56ifb.auth.us-east-1.amazoncognito.com/oauth2/token',
           userinfo_endpoint:
@@ -58,9 +60,22 @@ export const useAuthStore = defineStore('auth', {
       this.user = await this.userManager.signinRedirectCallback()
     },
 
-    logout() {
+    async logout() {
       if (!this.userManager) return
-      return this.userManager.signoutRedirect()
+
+      // clear local session
+      this.user = null
+
+      // clear oidc-client-ts cached user
+      await this.userManager.removeUser() // removes user from storage
+      this.userManager.clearStaleState() // cleans any pending state
+
+      // redirect to Cognito logout
+      const domain = 'https://us-east-1jpmu56ifb.auth.us-east-1.amazoncognito.com'
+      const clientId = '574mvan5pjeoifpt063t473se6'
+      const logoutUri = encodeURIComponent(window.location.origin)
+
+      window.location.href = `${domain}/logout?client_id=${clientId}&logout_uri=${logoutUri}`
     },
   },
 })
