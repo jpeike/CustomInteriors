@@ -20,7 +20,6 @@ export default function roleGuard(
   const roles = extractRoles(auth.user)
   const hasRole = roles.some((r) => to.meta.roles!.includes(r))
 
-  // TODO: We should reroute to forbidded instead
   if (!hasRole) return next({ name: RouteNames.ERROR_PAGE, params: { code: '403' }, query: { routeName: to.fullPath } })
   next()
 }
