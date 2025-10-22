@@ -85,5 +85,4 @@ function fetchEmails() {
       state.loading = false
     })
 }
-
 </script>

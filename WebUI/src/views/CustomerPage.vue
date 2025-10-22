@@ -126,7 +126,6 @@ const updateError = ref<string | null>(null)
 let selectedCustomerId = ref<number | null>(null)
 const selectedAddress = ref<AddressModel | null>(null)
 
-
 let displayCustomerDetails = ref(false);
 let deleteConfirmation = ref(false);
 
