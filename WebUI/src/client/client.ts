@@ -144,7 +144,7 @@ export class Client {
     /**
      * @return OK
      */
-    getAddressById(customerId: number): Promise<AddressModel[]> {
+    getAddressesByCustomerId(customerId: number): Promise<AddressModel[]> {
         let url_ = this.baseUrl + "/api/addresses/{customerId}";
         if (customerId === undefined || customerId === null)
             throw new globalThis.Error("The parameter 'customerId' must be defined.");
@@ -159,11 +159,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetAddressById(_response);
+            return this.processGetAddressesByCustomerId(_response);
         });
     }
 
-    protected processGetAddressById(response: Response): Promise<AddressModel[]> {
+    protected processGetAddressesByCustomerId(response: Response): Promise<AddressModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {

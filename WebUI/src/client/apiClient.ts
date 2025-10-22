@@ -24,5 +24,5 @@ export const proxiedApi = new GeneratedApiClient('https://localhost:44351', cust
 
 // Example usage (optional helper functions)
 export async function getAllUsers(): Promise<UserModel[]> {
-  return proxiedApi.usersAll()
+  return proxiedApi.getAllUsers()
 }

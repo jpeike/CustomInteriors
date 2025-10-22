@@ -25,7 +25,7 @@ public class AddressController : ControllerBase
         return await _addressService.GetAllAddresses();
     }
 
-    [HttpGet("{customerId:int}", Name = "GetAddressById")]
+    [HttpGet("{customerId:int}", Name = "GetAddressesByCustomerId")]
     public async Task<IEnumerable<AddressModel>> GetAddressesByCustomerId(int customerId)
     {
         return await _addressService.GetAddressesByCustomerId(customerId);
