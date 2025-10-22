@@ -23,10 +23,6 @@ import Card from 'primevue/card'
 import { UserModel } from '../client/client'
 import { proxiedApi as Client } from '@/client/apiClient'
 import { onMounted, reactive } from 'vue'
-import { useRouter } from 'vue-router'
-import { RouteNames } from '@/enums/RouteNames'
-
-const router = useRouter()
 
 const state = reactive({
   users: [] as UserModel[],
@@ -48,18 +44,9 @@ function fetchUsers() {
     })
     .catch((error) => {
       state.error = error.message || 'An error occurred'
-      redirectToErrorPage(error.status);
     })
     .finally(() => {
       state.loading = false
     })
-}
-
-function redirectToErrorPage(errorStatus: number | string) {
-  if (errorStatus) {
-    router.push({ name: RouteNames.ERROR_PAGE, params: { code: errorStatus } })
-  } else {
-    router.push({ name: RouteNames.ERROR_PAGE, params: { code: 'unknown' } })
-  }
 }
 </script>
