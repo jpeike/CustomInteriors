@@ -45,34 +45,37 @@
             </div>
             
         <!--Address Section-->
-            
             <div class="addressField" v-for="(address, index) in listOfAddresses">
                 <div class="flex row addressHeader">
                     <h2 style="margin: 0;">Address {{ index + 1 }}</h2>
                     <i class="pi pi-trash editButton" @click="removedAddresses.push(listOfAddresses[index].addressId!); listOfAddresses.splice(index, 1);"></i>
                 </div>
                 <div>
-                    <h3 class="fieldTitle">Street Address</h3>
+                    <h3 class="fieldTitle">Street Address *</h3>
                     <InputText v-model="address.street" required="true" type="text" class="inputValue" :placeholder="address.street ?? 'Street'"></InputText>
                 </div>
                 <div>
                     <h3 class="fieldTitle">Country</h3>
-                    <InputText v-model="address.country" required="true" type="text" class="inputValue" :placeholder="address.country ?? 'Country'"></InputText>
+                    <InputText v-model="address.country" type="text" class="inputValue" :placeholder="address.country ?? 'Country'"></InputText>
                 </div>
                 <div class="flex row multipleFields">
                     <div class="tripleField">
-                        <h3 class="fieldTitle">City</h3>
+                        <h3 class="fieldTitle">City *</h3>
                         <InputText v-model="address.city" required="true" type="text" class="inputValue" :placeholder="address.city ?? 'City'"></InputText>
                     </div>
                     <div class="tripleField">
-                        <h3 class="fieldTitle">State</h3>
+                        <h3 class="fieldTitle">State *</h3>
                         <InputText v-model="address.state" required="true" type="text" class="inputValue" :placeholder="address.state ?? 'State'"></InputText>
                     </div>
                     <div class="tripleField">
-                        <h3 class="fieldTitle">Zip</h3>
+                        <h3 class="fieldTitle">Zip *</h3>
                         <input v-model="address.postalCode" required="true" class="p-inputtext p-component inputValue" :placeholder="address.postalCode?.toString()"></input>
                     </div>
-                </div>                
+                </div> 
+                 <div>
+                    <h3 class="fieldTitle">Address Type *</h3>
+                    <InputText v-model="address.addressType" type="text" class="inputValue" :placeholder="address.addressType ?? 'Address Type'"></InputText>
+                </div>               
             </div>
 
             <div class="addAddress">
@@ -107,10 +110,9 @@
 
 <script setup lang="ts">
     import 'primeicons/primeicons.css';
-    import { Client, CustomerModel, AddressModel, Address } from '../client/client'
+    import {CustomerModel, AddressModel, Address } from '../client/client'
     import InputText from 'primevue/inputtext';
-    import InputNumber from 'primevue/inputnumber';
-    import { ref, type Ref } from 'vue'
+    import {ref} from 'vue'
 
     const props = defineProps<{
         currentCustomerInformation: CustomerModel | undefined,
@@ -122,24 +124,17 @@
 
     const newEmail = ref('');
     const newPhone = ref('');
-
-    let listOfAddresses: Ref<AddressModel[]>;
+    
+    let customer = ref(new CustomerModel);;
+    let listOfAddresses = ref([new AddressModel]);
     let removedAddresses = [0];
-    
-    let customer;
-    
+        
     if (props.currentCustomerInformation != undefined){
         customer = ref(props.currentCustomerInformation);
-    }
-    else{
-        customer = ref(new CustomerModel);
     }
 
     if (props.currentAddresses != undefined){
         listOfAddresses = ref(props.currentAddresses);
-    }
-    else {
-        listOfAddresses = ref([new AddressModel]);
     }
     
     function addAdress(){

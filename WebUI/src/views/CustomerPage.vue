@@ -37,7 +37,7 @@
             <p style="margin: 0;">Manage your customer information and contact details.</p>
         </div>
         <div class = "rightPanel">
-            <button class = "addButton" @click="currentCustomerAddresses = undefined ;displayCustomerDetails = !displayCustomerDetails; currentCustomerIndex = -1; customerTitle = 'Create Customer'; customerDescription = 'Create customer information and contact details'; customerButtonDesc = 'Create'">
+            <button class = "addButton" @click="currentCustomerAddresses = undefined; displayCustomerDetails = !displayCustomerDetails; currentCustomerIndex = -1; customerTitle = 'Create Customer'; customerDescription = 'Create customer information and contact details'; customerButtonDesc = 'Create'; console.log(state.customer)">
                 <p style="margin: 0; text-align: center;"> + Add Customers</p>
             </button>
         </div>
@@ -213,8 +213,9 @@ async function fetchAddressesByCustomerId(customerId: number) {
 
 async function editCustomerUI(customer: CustomerModel){
     selectedCustomerId.value = customer.customerId!;
+   
+    getCustomerIndex(selectedCustomerId.value); 
     await fetchAddressesByCustomerId(customer.customerId!)
-    getCustomerIndex(customer.customerId!); 
 
     state.loading = true;
     displayCustomerDetails = ref(true);
@@ -284,7 +285,6 @@ async function updateaddress(address: AddressModel) {
 }
 
 function updateCustomerInformation(currentID: number, newCustomer: CustomerModel, newAddress: AddressModel[], removedAddresses: number[]){
-
   //create new customer
   if(currentID == null){
     createCustomer(newCustomer, newAddress);
@@ -293,13 +293,13 @@ function updateCustomerInformation(currentID: number, newCustomer: CustomerModel
   else{
     updateCustomer(currentID, newCustomer, newAddress);
   }
-
   if (removedAddresses.length > 1){
     for (let i = 1; i < removedAddresses.length; i++){
       deleteAddress(removedAddresses[i]!);
     } 
   }
-    
+  fetchCustomers();
+  fetchAddresses();
   displayCustomerDetails = ref(false); 
 }
 
@@ -311,7 +311,6 @@ async function createCustomer(newCustomer: CustomerModel, newAddress: AddressMod
       await fetchCustomers();
       
       for (let i = 0; i < newAddress.length; i++){
-        newAddress[i].addressType = "delete later";
         newAddress[i].customerId = state.customer[state.customer.length - 1].customerId;
         createAddress(newAddress[i]);
       }
@@ -322,19 +321,17 @@ async function createCustomer(newCustomer: CustomerModel, newAddress: AddressMod
     }
 }
 
-
 async function updateCustomer(currentID: number, newCustomer: CustomerModel, newAddress: AddressModel[]){
     state.customer[currentCustomerIndex.value - 1] = newCustomer;
     state.customer[currentCustomerIndex.value - 1].customerId = currentID;
+    state.loading = true;
 
     try {
       updateError.value = null;
       await client.updateCustomer(state.customer[currentCustomerIndex.value - 1]);
-      await fetchCustomers();
       
       for (let i = 0; i < newAddress.length; i++){
         if (newAddress[i].addressId! == undefined){
-          newAddress[i].addressType = "delete later";
           newAddress[i].customerId = state.customer[state.customer.length - 1].customerId;
           await createAddress(newAddress[i]);
         }
@@ -348,18 +345,8 @@ async function updateCustomer(currentID: number, newCustomer: CustomerModel, new
       console.error('Update failed:', error)
     }
 
-    state.loading = true
+    state.loading = false;
     state.error = null
-    /*
-    client
-    .updateCustomer(state.customer[currentCustomerIndex.value - 1])
-    .catch((error) => {
-      state.error = error.message || 'An error occurred'
-    })
-    .finally(() => {
-      fetchCustomers();
-      state.loading = false
-    })*/
 }
 
 function deleteCustomer(currentID: number){
@@ -387,7 +374,6 @@ function filterCustomer(){
     customers.prefferedContactMethod?.toLowerCase().includes(searchValue.value.toLowerCase())
   );
 }
-
 </script>
 
 <style scoped>
