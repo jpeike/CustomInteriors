@@ -169,7 +169,7 @@ function getAddressString(customerID: number){
 async function fetchCustomers() {
   try {
     createError.value = null
-    await client.customersAll()
+    await client.getAllCustomers()
     .then((response) => {
       state.customer = response
     })
@@ -199,7 +199,7 @@ async function fetchAddressesByCustomerId(customerId: number) {
   state.loading = true
   state.error = null
   await client
-    .address2(customerId)
+    .getAddressesByCustomerId(customerId)
     .then((response) => {
       currentCustomerAddresses = ref(response);
     })
