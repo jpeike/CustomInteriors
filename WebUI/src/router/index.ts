@@ -1,51 +1,72 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import HomePage from '../views/HomePage.vue'
-
+import { Roles } from '@/enums/Roles'
+import AuthGuard from './guards/AuthGuard'
+import RoleGuard from './guards/RoleGuards'
+import { RouteNames } from '@/enums/RouteNames'
+import { RoutePaths } from '@/enums/RoutePaths'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'home',
+      path: RoutePaths.HOME,
+      name: RouteNames.HOME,
       component: HomePage,
     },
     {
-      path: '/about',
-      name: 'about',
+      path: RoutePaths.ABOUT,
+      name: RouteNames.ABOUT,
       component: () => import('../views/AboutPage.vue'),
     },
     {
-      path: '/users',
-      name: 'users',
+      path: RoutePaths.USERS,
+      name: RouteNames.USERS,
       component: () => import('../views/UserPage.vue'),
+      meta: {
+        requiresAuth: true,
+        roles: [Roles.ADMIN],
+      },
     },
     // ... your other routes
     {
-      path: '/callback',
-      name: 'Callback',
+      path: RoutePaths.CALLBACK,
+      name: RouteNames.CALLBACK,
       component: () => import('../views/CallbackPage.vue'),
     },
     {
-      path: '/customers',
-      name: 'customers',
+      path: RoutePaths.CUSTOMERS,
+      name: RouteNames.CUSTOMERS,
       component: () => import('../views/CustomerPage.vue'),
+      meta: {
+        requiresAuth: true,
+      },
     },
     {
-      path: '/employees',
-      name: 'employees',
+      path: RoutePaths.EMPLOYEES,
+      name: RouteNames.EMPLOYEES,
       component: () => import('../views/EmployeePage.vue'),
+      meta: {
+        requiresAuth: true,
+        roles: ['FAKE ROLE NO ONE WILL HAVE'],
+      },
     },
     {
-      path: '/emails',
-      name: 'emails',
+      path: RoutePaths.EMAILS,
+      name: RouteNames.EMAILS,
       component: () => import('../views/EmailPage.vue'),
     },
     {
-      path: '/:pathMatch(.*)*',
-      name: 'notfound',
+      path: RoutePaths.NOT_FOUND,
+      name: RouteNames.NOT_FOUND,
       component: () => import('../views/Error/NotFound.vue'),
+      meta: {
+        layout: 'none',
+      },
     },
-  ],
+  ] satisfies RouteRecordRaw[],
 })
+
+router.beforeEach(AuthGuard)
+router.beforeEach(RoleGuard)
 
 export default router

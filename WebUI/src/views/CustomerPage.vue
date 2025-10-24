@@ -3,7 +3,7 @@
     <AddressListModal
       :isOpen="showAddressList"
       :customerId="selectedCustomerId"
-      :addresses="state.addresses"
+      :addresses="state.modalAddresses"
       @close="showAddressList = false"
       @create="openCreateAddressModal"
       @edit="openUpdateAddressModal"
@@ -75,7 +75,7 @@
             </div>
           </div>
           
-          <br/><p style="margin: 0;"> Address: {{ getAddressString(customer.customerId!)}}</p>
+          <br/><p style="margin: 0;"> Address: {{getAddressString(customer.customerId!)}}</p>
           <br/>
           <p style="margin: 0;">Type: {{ customer.customerType }}</p>
           <br/>
@@ -107,7 +107,7 @@
 import CustomerInformation from '../components/CustomerInformation.vue';
 import DeleteConfirmation from '../components/DeleteConfirmation.vue';
 import Card from 'primevue/card'
-import { Client, CustomerModel, AddressModel, Address } from '../client/client'
+import { Client, CustomerModel, AddressModel} from '../client/client'
 import { ref } from 'vue'
 import { onMounted, reactive } from 'vue'
 import AddressListModal from '../components/modals/AddressListModal.vue'
@@ -139,6 +139,7 @@ let currentCustomerAddresses = ref<AddressModel[] | undefined>(undefined)
 const state = reactive({
   customer: [] as CustomerModel[],
   addresses: [] as AddressModel[],
+  modalAddresses: [] as AddressModel[],
   loading: false,
   error: null as string | null,
 })
