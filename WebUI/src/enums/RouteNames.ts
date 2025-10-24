@@ -6,5 +6,6 @@ export enum RouteNames {
   CUSTOMERS = 'Customers',
   EMAILS = 'Emails',
   CALLBACK = 'Callback',
+  ERROR_PAGE = 'ErrorPage',
   NOT_FOUND = 'NotFound',
 }
