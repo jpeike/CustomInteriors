@@ -2,10 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
+// https://www.geeksforgeeks.org/system-design/difference-between-rest-api-and-rpc-api/
+//https://restfulapi.net/resource-naming/
+
 namespace Web;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/addresses")]
 public class AddressController : ControllerBase
 {
     private readonly IAddressService _addressService;
@@ -15,20 +18,20 @@ public class AddressController : ControllerBase
         _addressService = addressService;
     }
 
-    [HttpGet("")]
+    // this is how you specify the name of the method in the ts client -> Name = "nameIWant"
+    [HttpGet("", Name = "GetAllAddresses")]
     public async Task<IEnumerable<AddressModel>> GetAllAddresses()
     {
         return await _addressService.GetAllAddresses();
     }
 
-    [HttpGet("{customerId:int}")]
-
+    [HttpGet("{customerId:int}", Name = "GetAddressesByCustomerId")]
     public async Task<IEnumerable<AddressModel>> GetAddressesByCustomerId(int customerId)
     {
         return await _addressService.GetAddressesByCustomerId(customerId);
     }
 
-    [HttpPost("CreateAddress")]
+    [HttpPost("", Name = "CreateAddress")]
     public async Task<AddressModel> CreateAddress([FromBody] AddressModel addressModel)
     {
         AddressModel address = new()
@@ -45,18 +48,15 @@ public class AddressController : ControllerBase
         return await _addressService.CreateAddress(address);
     }
 
-    [HttpPut("UpdateAddress")]
-
-public async Task UpdateAddress([FromBody] AddressModel addressModel)
+    [HttpPut("", Name = "UpdateAddress")]
+    public async Task UpdateAddress([FromBody] AddressModel addressModel)
     {
         await _addressService.UpdateAddress(addressModel);
     }
 
-    [HttpDelete("DeleteAddress/{addressId:int}")]
+    [HttpDelete("{addressId:int}", Name = "DeleteAddress")]
     public async Task<bool> DeleteAddress(int addressId)
     {
         return await _addressService.DeleteAddress(addressId);
     }
-
 }
-

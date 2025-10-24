@@ -38,7 +38,7 @@ onMounted(() => {
 function fetchUsers() {
   state.loading = true
   state.error = null
-  Client.usersAll()
+  Client.getAllUsers()
     .then((response) => {
       state.users = response
     })
