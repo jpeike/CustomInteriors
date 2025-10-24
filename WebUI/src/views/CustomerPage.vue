@@ -183,7 +183,7 @@ function fetchAddresses() {
   state.loading = true
   state.error = null
   client
-    .address()
+    .getAllAddresses()
     .then((response) => {
       state.addresses = response
     })
