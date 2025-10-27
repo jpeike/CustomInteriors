@@ -1502,6 +1502,62 @@ export interface ICustomerWithFKsModel {
     addresses?: Address[] | undefined;
 }
 
+export class Email implements IEmail {
+    emailID?: number;
+    customerId?: number;
+    emailAddress?: string | undefined;
+    emailType?: string | undefined;
+    createdOn?: Date;
+    customer?: Customer;
+
+    constructor(data?: IEmail) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.emailID = _data["emailID"];
+            this.customerId = _data["customerId"];
+            this.emailAddress = _data["emailAddress"];
+            this.emailType = _data["emailType"];
+            this.createdOn = _data["createdOn"] ? new Date(_data["createdOn"].toString()) : undefined as any;
+            this.customer = _data["customer"] ? Customer.fromJS(_data["customer"]) : undefined as any;
+        }
+    }
+
+    static fromJS(data: any): Email {
+        data = typeof data === 'object' ? data : {};
+        let result = new Email();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["emailID"] = this.emailID;
+        data["customerId"] = this.customerId;
+        data["emailAddress"] = this.emailAddress;
+        data["emailType"] = this.emailType;
+        data["createdOn"] = this.createdOn ? this.createdOn.toISOString() : undefined as any;
+        data["customer"] = this.customer ? this.customer.toJSON() : undefined as any;
+        return data;
+    }
+}
+
+export interface IEmail {
+    emailID?: number;
+    customerId?: number;
+    emailAddress?: string | undefined;
+    emailType?: string | undefined;
+    createdOn?: Date;
+    customer?: Customer;
+}
+
 export class EmailModel implements IEmailModel {
     emailID?: number;
     customerId?: number;
