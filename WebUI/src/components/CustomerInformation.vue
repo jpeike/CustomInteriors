@@ -48,7 +48,7 @@
             <div class="addressField" v-for="(address, index) in listOfAddresses">
                 <div class="flex row addressHeader">
                     <h2 style="margin: 0;">Address {{ index + 1 }}</h2>
-                    <i class="pi pi-trash editButton" @click="removedAddresses.push(listOfAddresses[index].addressId!); listOfAddresses.splice(index, 1);"></i>
+                    <i class="pi pi-trash editButton" @click="deleteAddress(listOfAddresses[index]); listOfAddresses.splice(index, 1);"></i>
                 </div>
                 <div>
                     <h3 class="fieldTitle">Street Address *</h3>
@@ -139,6 +139,14 @@
     
     function addAdress(){
         listOfAddresses.value.push(new AddressModel);
+    }
+
+    function deleteAddress(address: AddressModel){
+        //removedAddresses.push(listOfAddresses[index].addressId!); listOfAddresses.splice(index, 1);
+        if (address.addressId! != undefined){
+            console.log(removedAddresses);
+            removedAddresses.push(address.addressId);
+        }
     }
 </script>
 
