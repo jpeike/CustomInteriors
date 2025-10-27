@@ -21,10 +21,29 @@
                 <h3 class="fieldTitle">Customer Type*</h3>
                 <InputText v-model="customer.customerType" type="text" class="inputValue" :placeholder="currentCustomerInformation?.customerType"></InputText>
             </div>
-            <div>
-                <h3 class="fieldTitle">Email</h3>
-                <InputText v-model="newEmail" type="text" class="inputValue" placeholder="placeholder email"></InputText>
+            
+            <div style="margin-bottom: 5%;" v-for="(emailsAdresses, index) in listOfEmails">
+                
+                <div class="flex row addressHeader">
+                    <h2 style="margin: 0;">Email {{ index + 1 }}</h2>
+                    <i class="pi pi-trash editButton" @click="deleteEmail(listOfEmails[index]); listOfEmails.splice(index, 1);"></i>
+                    </div>
+                <div class="flex row multipleFields">
+                    <div>
+                        <h3 class="fieldTitle">Address * </h3>
+                        <InputText v-model="listOfEmails[index].emailAddress" type="text" class="inputValue" :placeholder="listOfEmails[index].emailAddress"></InputText>
+                    </div>
+                    <div>
+                        <h3 class="fieldTitle">Type * </h3>
+                        <InputText v-model="listOfEmails[index].emailType" type="text" class="inputValue" :placeholder="listOfEmails[index].emailType"></InputText>
+                    </div>  
+                </div>                  
             </div>
+            
+            <div class="addAddress">
+                <button @click="addEmail" class="cancelUpdateButton"> <p style="margin: 0; text-align: center;">Add Email</p></button>
+            </div>
+
             <div>
                 <h3 class="fieldTitle">Phone</h3>
                 <InputText v-model="newPhone" type="text" class="inputValue" placeholder="placeholder phone"></InputText>
@@ -62,7 +81,7 @@
                 <button class = "cancelUpdateButton" @click="$emit('closePage')">
                     <p style="margin: 0; text-align: center;">Cancel</p>
                 </button>  
-                <button class = "updateInfoButton" @click="$emit('updateCustomerInformation', currentCustomerInformation?.customerId, customer)">
+                <button class = "updateInfoButton" @click="$emit('updateCustomerInformation', currentCustomerInformation?.customerId, customer, listOfEmails)">
                     <p style="margin: 0; text-align: center;">{{buttonDesctipnion}}</p>
                 </button>
             </div>
@@ -73,17 +92,21 @@
 
 <script setup lang="ts">
     import 'primeicons/primeicons.css';
-    import { Client, CustomerModel, AddressModel } from '../client/client'
+    import { Client, CustomerModel, AddressModel, EmailModel } from '../client/client'
     import InputText from 'primevue/inputtext';
     import InputNumber from 'primevue/inputnumber';
     import { ref } from 'vue'
 
-    const props = defineProps({
-       currentCustomerInformation: CustomerModel,
-       title: String,
-       description: String,
-       buttonDesctipnion: String
-    });
+    let listOfEmails = ref([new EmailModel]);
+    let removedEmails = [0];
+
+    const props = defineProps<{
+        currentCustomerInformation: CustomerModel | undefined,
+        currentEmails: EmailModel[] | undefined,
+        title: String,
+        description: String,
+        buttonDesctipnion: String
+    }>();
     
     let customer;
     if (props.currentCustomerInformation != undefined){
@@ -92,8 +115,22 @@
     else{
         customer = ref(new CustomerModel);
     }
+    if (props.currentEmails != undefined){
+        listOfEmails = ref(props.currentEmails);
+    }
     
-    const newEmail = ref('');
+    function addEmail(){
+        listOfEmails.value.push(new EmailModel);
+    }
+
+    function deleteEmail(email: EmailModel){
+        if (email.emailID! != undefined){
+            removedEmails.push(email.emailID);
+        }
+    }
+
+    
+
     const newPhone = ref('');
 </script>
 
@@ -125,6 +162,11 @@
     }
     .customerInfoTitle{
         margin-bottom: 2vh;
+    }
+    .addressHeader{
+        margin-bottom: 2%;
+        justify-content: space-between;
+        align-items: center;
     }
     .exitButton{
         background: none;

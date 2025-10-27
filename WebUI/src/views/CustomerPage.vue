@@ -37,7 +37,7 @@
             <p style="margin: 0;">Manage your customer information and contact details.</p>
         </div>
         <div class = "rightPanel">
-            <button class = "addButton" @click="displayCustomerDetails = !displayCustomerDetails; currentCustomerIndex = -1; customerTitle = 'Create Customer'; customerDescription = 'Create customer information and contact details'; customerButtonDesc = 'Create'">
+            <button class = "addButton" @click="currentEmailAddresses = undefined;displayCustomerDetails = !displayCustomerDetails; currentCustomerIndex = -1; customerTitle = 'Create Customer'; customerDescription = 'Create customer information and contact details'; customerButtonDesc = 'Create'">
                 <p style="margin: 0; text-align: center;"> + Add Customers</p>
             </button>
         </div>
@@ -54,7 +54,7 @@
           <div class = "flex row customCardHeader">
             <p style="margin: 0; flex-grow: 2; font-size: 1.2rem; font-weight: bold;">{{ customer.firstName }} {{ customer.lastName }}</p>
             <div class="flex row" style="justify-content: left; flex-grow: 0; gap: 15%">
-              <i class="pi pi-pen-to-square editButton" style="font-size: 1.1rem" @click="displayCustomerDetails = !displayCustomerDetails; getCustomerIndex(customer.customerId ?? 0); customerTitle = 'Update Customer'; customerDescription = 'Update customer information and contact details'; customerButtonDesc = 'Update'"></i>
+              <i class="pi pi-pen-to-square editButton" style="font-size: 1.1rem" @click="getEmailsByUserId(customer.customerId!); displayCustomerDetails = !displayCustomerDetails; getCustomerIndex(customer.customerId ?? 0); customerTitle = 'Update Customer'; customerDescription = 'Update customer information and contact details'; customerButtonDesc = 'Update'"></i>
               <i class="pi pi-trash editButton" style="font-size: 1.1rem" @click="deleteConfirmation = !deleteConfirmation; getCustomerIndex(customer.customerId ?? 0);"></i>
             </div>
           </div>
@@ -94,7 +94,16 @@
   </div>
 
   <div v-if="displayCustomerDetails" class="flex row customerWindowBlur">
-    <CustomerInformation :currentCustomerInformation="state.customer[currentCustomerIndex]" :title="customerTitle" :description="customerDescription" :buttonDesctipnion="customerButtonDesc" @closePage="displayCustomerDetails = !displayCustomerDetails" @updateCustomerInformation="updateCustomerInformation" @openAddressListModal="openAddressListModal"></CustomerInformation>
+    <CustomerInformation 
+      :currentCustomerInformation="state.customer[currentCustomerIndex]" 
+      :currentEmails="currentEmailAddresses"
+      :title="customerTitle" 
+      :description="customerDescription" 
+      :buttonDesctipnion="customerButtonDesc" 
+      @closePage="displayCustomerDetails = !displayCustomerDetails" 
+      @updateCustomerInformation="updateCustomerInformation" 
+      @openAddressListModal="openAddressListModal">
+    </CustomerInformation>
   </div>
 
   <div v-if="deleteConfirmation" class="flex row customerWindowBlur">
@@ -108,7 +117,7 @@
 import CustomerInformation from '../components/CustomerInformation.vue';
 import DeleteConfirmation from '../components/DeleteConfirmation.vue';
 import Card from 'primevue/card'
-import { Client, CustomerModel, AddressModel} from '../client/client'
+import { Client, CustomerModel, AddressModel, EmailModel} from '../client/client'
 import { ref } from 'vue'
 import { onMounted, reactive } from 'vue'
 import AddressListModal from '../components/modals/AddressListModal.vue'
@@ -135,10 +144,13 @@ let customerButtonDesc = ref('');
 let currentCustomerIndex = ref(0);
 let searchValue = ref('');
 
+let currentEmailAddresses = ref<EmailModel[] | undefined>(undefined)
+
 const state = reactive({
   customer: [] as CustomerModel[],
   addresses: [] as AddressModel[],
   modalAddresses: [] as AddressModel[],
+  emails: [] as EmailModel[],
   loading: false,
   error: null as string | null,
 })
@@ -147,6 +159,7 @@ onMounted(() => {
   console.log('AboutView mounted')
   fetchCustomers()
   fetchAddresses()
+  fetchEmails()
 })
 
 function getCustomerIndex(customerID: number){
@@ -197,6 +210,23 @@ function fetchAddresses() {
     })
 }
 
+function fetchEmails() {
+  state.loading = true
+  state.error = null
+  client
+    .getAllEmails()
+    .then((response) => {
+      state.emails = response
+      console.log(state.emails);
+    })
+    .catch((error) => {
+      state.error = error.message || 'An error occurred'
+    })
+    .finally(() => {
+      state.loading = false
+    })
+}
+
 function fetchAddressesByCustomerId(customerId: number) {
   state.loading = true
   state.error = null
@@ -211,6 +241,16 @@ function fetchAddressesByCustomerId(customerId: number) {
     .finally(() => {
       state.loading = false
     })
+}
+
+function getEmailsByUserId(customerId: number){
+  let userEmails = new Array();
+  for (let i = 0; i < state.emails.length; i++){
+    if(state.emails[i].customerId == customerId){
+      userEmails.push(state.emails[i]);
+    }
+  }
+  currentEmailAddresses = ref(userEmails);
 }
 
 function openAddressListModal(customerId: number) {
