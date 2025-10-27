@@ -306,19 +306,23 @@ function updateCustomerInformation(currentID: number, newCustomer: CustomerModel
 
 async function createCustomer(newCustomer: CustomerModel, newAddress: AddressModel[]){
     newCustomer.customerId = 0;
-    try {
-      updateError.value = null;
-      await client.createCustomer(newCustomer);
-      await fetchCustomers();
-      
-      for (let i = 0; i < newAddress.length; i++){
-        newAddress[i].customerId = state.customer[state.customer.length - 1].customerId;
-        createAddress(newAddress[i]);
+    if (newCustomer.firstName != undefined && newCustomer.lastName != undefined && newCustomer.customerType != undefined){
+      try {
+        updateError.value = null;
+        await client.createCustomer(newCustomer);
+        await fetchCustomers();
+        
+        for (let i = 0; i < newAddress.length; i++){
+          if (newAddress[i].city != undefined && newAddress[i].state != undefined && newAddress[i].postalCode != undefined && newAddress[i].addressType != undefined){
+            newAddress[i].customerId = state.customer[state.customer.length - 1].customerId;
+            createAddress(newAddress[i]);
+          }
+        }
+      } 
+      catch (error) {
+        updateError.value = 'Failed To Create Customer'
+        console.error('Update failed:', error)
       }
-    } 
-    catch (error) {
-      updateError.value = 'Failed To Create Customer'
-      console.error('Update failed:', error)
     }
 }
 
@@ -329,15 +333,19 @@ async function updateCustomer(currentID: number, newCustomer: CustomerModel, new
 
     try {
       updateError.value = null;
-      await client.updateCustomer(state.customer[currentCustomerIndex.value - 1]);
+      if (newCustomer.firstName != undefined && newCustomer.lastName != undefined && newCustomer.customerType != undefined){
+        await client.updateCustomer(state.customer[currentCustomerIndex.value - 1]);
+      }
       
       for (let i = 0; i < newAddress.length; i++){
-        if (newAddress[i].addressId! == undefined){
+        if (newAddress[i].city != undefined && newAddress[i].state != undefined && newAddress[i].postalCode != undefined && newAddress[i].addressType != undefined){
+          if (newAddress[i].addressId! == undefined){
           newAddress[i].customerId = state.customer[state.customer.length - 1].customerId;
           await createAddress(newAddress[i]);
-        }
-        else{
-          await updateaddress(newAddress[i]);
+          }
+          else{
+            await updateaddress(newAddress[i]);
+          }
         }
       }
     } 
