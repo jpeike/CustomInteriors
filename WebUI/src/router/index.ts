@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHistory, type RouteRecordRaw, type RouteLocation } from 'vue-router'
 import HomePage from '../views/HomePage.vue'
 import { Roles } from '@/enums/Roles'
 import AuthGuard from './guards/AuthGuard'
@@ -55,14 +55,23 @@ const router = createRouter({
       name: RouteNames.EMAILS,
       component: () => import('../views/EmailPage.vue'),
     },
-    {
-      path: RoutePaths.NOT_FOUND,
-      name: RouteNames.NOT_FOUND,
-      component: () => import('../views/Error/NotFound.vue'),
+    { 
+      path: RoutePaths.ERROR_PAGE, 
+      name: RouteNames.ERROR_PAGE, 
+      component: () => import('../views/Error/ErrorPage.vue'),
       meta: {
         layout: 'none',
       },
     },
+    { 
+    path: RoutePaths.NOT_FOUND, 
+    name: RouteNames.NOT_FOUND, 
+    redirect: (to: RouteLocation) => ({
+      name: 'ErrorPage',
+      params: { code: '404' },
+      query: { routeName: to.fullPath }
+  })
+  },
   ] satisfies RouteRecordRaw[],
 })
 

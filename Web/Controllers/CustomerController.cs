@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Web.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/customers")]
 public class CustomersController : ControllerBase
 {
     private readonly ICustomerService _customerService;
@@ -14,29 +14,28 @@ public class CustomersController : ControllerBase
         _customerService = customerService;
     }
 
-    [HttpGet()]
+    [HttpGet("", Name = "GetAllCustomers")]
     public async Task<IEnumerable<CustomerModel>> GetAllCustomers()
     {
         return await _customerService.GetAllCustomers();
     }
 
-    [HttpGet("{id:int}")]
-
+    [HttpGet("{id:int}", Name = "GetCustomerById")]
     public async Task<CustomerModel?> GetCustomerById(int id)
     {
         return await _customerService.GetCustomerById(id);
     }
 
-    [HttpGet("withChildren/{id:int}")]
-
+    // todo look at this again, not really restful but I dont want to change too much with this one yet
+    [HttpGet("with-addresses/{id:int}", Name = "GetCustomerWithAddresses")]
     public async Task<CustomerWithFKsModel?> GetCustomerWithAddress(int id)
     {
         return await _customerService.GetCustomerWithAddress(id);
     }
 
 
-    [HttpPost("CreateCustomer")]
-    public async Task<CustomerModel> CreateCustomer([FromBody] CustomerModel customerModel)
+    [HttpPost("", Name = "CreateCustomer")]
+    public async Task<CustomerModel> CreateCustomer([FromBody] Customer customerModel)
     {
         CustomerModel customer = new()
         {
@@ -52,17 +51,15 @@ public class CustomersController : ControllerBase
         return await _customerService.CreateCustomer(customer);
     }
 
-    [HttpPut("UpdateCustomer")]
+    [HttpPut("", Name = "UpdateCustomer")]
     public async Task UpdateCustomer([FromBody] CustomerModel customerModel)
     {
         await _customerService.UpdateCustomer(customerModel);
     }
 
-    [HttpDelete("DeleteCustomer/{id:int}")]
+    [HttpDelete("{id:int}", Name = "DeleteCustomer")]
     public async Task<bool> DeleteCustomer(int id)
     {
         return await _customerService.DeleteCustomer(id);
     }
-
 }
-

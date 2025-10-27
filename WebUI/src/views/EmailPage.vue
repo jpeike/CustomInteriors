@@ -74,7 +74,7 @@ function fetchEmails() {
   state.loading = true
   state.error = null
   client
-    .emailsAll()
+    .getAllEmails()
     .then((response) => {
       state.emails = response
     })

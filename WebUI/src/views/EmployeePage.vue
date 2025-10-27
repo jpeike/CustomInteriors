@@ -29,7 +29,7 @@ function fetchEmployees() {
   state.loading = true
   state.error = null
   client
-    .getEmployees()
+    .getAllEmployees()
     .then((response) => {
       state.employees = response
     })

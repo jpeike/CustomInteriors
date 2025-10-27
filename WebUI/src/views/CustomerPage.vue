@@ -168,7 +168,7 @@ function fetchCustomers() {
   state.loading = true
   state.error = null
   client
-    .customersAll()
+    .getAllCustomers()
     .then((response) => {
       state.customer = response
     })
@@ -184,7 +184,7 @@ function fetchAddresses() {
   state.loading = true
   state.error = null
   client
-    .address()
+    .getAllAddresses()
     .then((response) => {
       state.addresses = response
     })
@@ -200,7 +200,7 @@ function fetchAddressesByCustomerId(customerId: number) {
   state.loading = true
   state.error = null
   client
-    .address2(customerId)
+    .getAddressesByCustomerId(customerId)
     .then((response) => {
       state.modalAddresses = response
     })

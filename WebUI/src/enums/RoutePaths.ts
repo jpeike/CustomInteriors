@@ -6,5 +6,6 @@ export enum RoutePaths {
   CUSTOMERS = '/customers',
   EMAILS = '/emails',
   CALLBACK = '/callback',
+  ERROR_PAGE = '/error/:code?',
   NOT_FOUND = '/:pathMatch(.*)*', // Vue 3 catch-all route
 }
