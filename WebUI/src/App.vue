@@ -1,5 +1,6 @@
 <!-- src/App.vue -->
 <template>
+  <Toast />
   <component :is="layoutComponent">
     <router-view />
   </component>
