@@ -21,33 +21,7 @@
                 <h3 class="fieldTitle">Customer Type*</h3>
                 <InputText v-model="customer.customerType" required="true" type="text" class="inputValue" :placeholder="currentCustomerInformation?.customerType"></InputText>
             </div>
-            
-            <div style="margin-bottom: 5%;" v-for="(emailsAdresses, index) in listOfEmails">
-                
-                <div class="flex row addressHeader">
-                    <h2 style="margin: 0;">Email {{ index + 1 }}</h2>
-                    <i class="pi pi-trash editButton" @click="deleteEmail(listOfEmails[index]); listOfEmails.splice(index, 1);"></i>
-                    </div>
-                <div class="flex row multipleFields">
-                    <div>
-                        <h3 class="fieldTitle">Address * </h3>
-                        <InputText v-model="listOfEmails[index].emailAddress" type="text" class="inputValue" :placeholder="listOfEmails[index].emailAddress"></InputText>
-                    </div>
-                    <div>
-                        <h3 class="fieldTitle">Type * </h3>
-                        <InputText v-model="listOfEmails[index].emailType" type="text" class="inputValue" :placeholder="listOfEmails[index].emailType"></InputText>
-                    </div>  
-                </div>                  
-            </div>
-            
-            <div class="addAddress">
-                <button @click="addEmail" class="cancelUpdateButton"> <p style="margin: 0; text-align: center;">Add Email</p></button>
-            </div>
-
-            <div>
-                <h3 class="fieldTitle">Phone</h3>
-                <InputText v-model="newPhone" type="text" class="inputValue" placeholder="placeholder phone"></InputText>
-            </div>
+                        
         <!--Contact-->
             <div style="margin-bottom: 5%;">
                 <h3 class="fieldTitle">Preffered Contact Method</h3>
@@ -63,6 +37,27 @@
                 </div>
             </div>
             
+            <div style="margin-bottom: 5%;" v-for="(emailsAdresses, index) in listOfEmails">
+                
+                <div class="flex row addressHeader">
+                    <h2 style="margin: 0;">Email {{ index + 1 }}</h2>
+                    <i class="pi pi-trash editButton" @click="deleteEmail(listOfEmails[index]); listOfEmails.splice(index, 1);"></i>
+                    </div>
+                <div class="flex row multipleFields">
+                    <div>
+                        <h3 class="fieldTitle">Address * </h3>
+                        <InputText v-model="emailsAdresses.emailAddress" type="text" class="inputValue" :placeholder="listOfEmails[index].emailAddress"></InputText>
+                    </div>
+                    <div>
+                        <h3 class="fieldTitle">Type * </h3>
+                        <InputText v-model="emailsAdresses.emailType" type="text" class="inputValue" :placeholder="listOfEmails[index].emailType"></InputText>
+                    </div>  
+                </div>                  
+            </div>
+            <div class="addAddress">
+                <button @click="addEmail" class="cancelUpdateButton"> <p style="margin: 0; text-align: center;">Add Email</p></button>
+            </div>
+
         <!--Address Section-->
             <div class="addressField" v-for="(address, index) in listOfAddresses">
                 <div class="flex row addressHeader">
@@ -118,7 +113,7 @@
                 <button class = "cancelUpdateButton" @click="$emit('closePage')">
                     <p style="margin: 0; text-align: center;">Cancel</p>
                 </button>  
-                <button class = "updateInfoButton" @click="$emit('updateCustomerInformation', currentCustomerInformation?.customerId, customer, listOfAddresses, removedAddresses)">
+                <button class = "updateInfoButton" @click="$emit('updateCustomerInformation', currentCustomerInformation?.customerId, customer, listOfAddresses, removedAddresses, listOfEmails, removedEmails)">
                     <p style="margin: 0; text-align: center;">{{buttonDesctipnion}}</p>
                 </button>
             </div>
@@ -136,6 +131,7 @@
     const props = defineProps<{
         currentCustomerInformation: CustomerModel | undefined,
         currentAddresses: AddressModel[] | undefined,
+        currentEmails: EmailModel[] | undefined,
         title: String,
         description: String,
         buttonDesctipnion: String
@@ -158,6 +154,10 @@
     if (props.currentAddresses != undefined){
         listOfAddresses = ref(props.currentAddresses);
     }
+
+    if (props.currentEmails != undefined){
+        listOfEmails = ref(props.currentEmails);
+    }
     
     function addAdress(){
         listOfAddresses.value.push(new AddressModel);
@@ -177,7 +177,7 @@
 
     function deleteEmail(email: EmailModel){
         if (email.emailID! != undefined){
-            removedAddresses.push(email.emailID);
+            removedEmails.push(email.emailID);
         }
     }
 </script>

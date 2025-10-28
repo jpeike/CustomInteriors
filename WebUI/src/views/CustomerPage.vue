@@ -94,7 +94,7 @@
   </div>
 
   <div v-if="displayCustomerDetails" class="flex row customerWindowBlur">
-    <CustomerInformation :currentCustomerInformation="state.customer[currentCustomerIndex]" :currentAddresses = "currentCustomerAddresses" :title="customerTitle" :description="customerDescription" :buttonDesctipnion="customerButtonDesc" @closePage="displayCustomerDetails = !displayCustomerDetails" @updateCustomerInformation="updateCustomerInformation" @openAddressListModal="openAddressListModal"></CustomerInformation>
+    <CustomerInformation :currentCustomerInformation="state.customer[currentCustomerIndex]" :currentEmails="currentEmailAddresses" :currentAddresses = "currentCustomerAddresses" :title="customerTitle" :description="customerDescription" :buttonDesctipnion="customerButtonDesc" @closePage="displayCustomerDetails = !displayCustomerDetails" @updateCustomerInformation="updateCustomerInformation" @openAddressListModal="openAddressListModal"></CustomerInformation>
   </div>
 
   <div v-if="deleteConfirmation" class="flex row customerWindowBlur">
@@ -205,7 +205,6 @@ function fetchEmails() {
     .getAllEmails()
     .then((response) => {
       state.emails = response
-      console.log(state.emails);
     })
     .catch((error) => {
       state.error = error.message || 'An error occurred'
@@ -232,7 +231,14 @@ async function fetchAddressesByCustomerId(customerId: number) {
     })
 }
 
-function getEmailsByUserId(customerId: number){
+function fetchEmailsByCustomerId(customerId: number){
+  state.loading = true
+  state.error = null
+
+  currentEmailAddresses = ref(undefined);
+  state.loading = false
+  state.loading = true
+
   let userEmails = new Array();
   for (let i = 0; i < state.emails.length; i++){
     if(state.emails[i].customerId == customerId){
@@ -240,6 +246,7 @@ function getEmailsByUserId(customerId: number){
     }
   }
   currentEmailAddresses = ref(userEmails);
+  state.loading = false
 }
 
 async function editCustomerUI(customer: CustomerModel){
@@ -247,6 +254,7 @@ async function editCustomerUI(customer: CustomerModel){
    
     getCustomerIndex(selectedCustomerId.value); 
     await fetchAddressesByCustomerId(customer.customerId!)
+    fetchEmailsByCustomerId(customer.customerId!);
 
     state.loading = true;
     displayCustomerDetails = ref(true);
@@ -287,7 +295,6 @@ function closeUpdateModal() {
 async function deleteAddress(addressId: number) {
   try {
     await client.deleteAddress(addressId)
-    //fetchAddressesByCustomerId(selectedCustomerId.value!)
   } catch (error) {
     console.error('Delete failed:', error)
   }
@@ -297,7 +304,7 @@ async function createAddress(address: AddressModel) {
   try {
     createError.value = null
     await client.createAddress(address)
-    fetchAddressesByCustomerId(address.customerId!)
+    fetchAddressesByCustomerId(selectedCustomerId.value!)
   } catch (error) {
     console.error('Create failed:', error)
     createError.value = 'Failed To Create Address'
@@ -310,31 +317,77 @@ async function updateaddress(address: AddressModel) {
     await client.updateAddress(address)
     fetchAddressesByCustomerId(selectedCustomerId.value!)
   } catch (error) {
-    updateError.value = 'Failed To Create Address'
+    updateError.value = 'Failed To Update Address'
     console.error('Update failed:', error)
   }
 }
 
-function updateCustomerInformation(currentID: number, newCustomer: CustomerModel, newAddress: AddressModel[], removedAddresses: number[]){
+//emails
+async function deleteEmail(emailID: number) {
+  try {
+    await client.deleteEmail(emailID)
+    fetchEmails()
+
+  } catch (error) {
+    console.error('Delete failed:', error)
+  }
+}
+
+async function createEmail(email: EmailModel) {
+  try {
+    createError.value = null
+    await client.createEmail(email)
+    fetchEmails()
+    fetchEmailsByCustomerId(email.customerId!)
+  } catch (error) {
+    console.error('Create failed:', error)
+    createError.value = 'Failed To Create Email'
+  }
+}
+
+async function updateEmail(email: EmailModel) {
+  try {
+    updateError.value = null
+    await client.updateEmail(email)
+    fetchEmailsByCustomerId(selectedCustomerId.value!)
+    fetchEmails()
+
+  } catch (error) {
+    updateError.value = 'Failed To Update Email'
+    console.error('Update failed:', error)
+  }
+}
+
+function updateCustomerInformation(currentID: number, newCustomer: CustomerModel, newAddress: AddressModel[], removedAddresses: number[], newEmails: EmailModel[], removedEmails: number[]){
   //create new customer
   if(currentID == null){
-    createCustomer(newCustomer, newAddress);
+    createCustomer(newCustomer, newAddress, newEmails);
   }
   //update existing customer
   else{
-    updateCustomer(currentID, newCustomer, newAddress);
+    updateCustomer(currentID, newCustomer, newAddress, newEmails);
   }
+
   if (removedAddresses.length > 1){
     for (let i = 1; i < removedAddresses.length; i++){
       deleteAddress(removedAddresses[i]!);
     } 
   }
+
+  if (removedEmails.length > 1){
+    for (let i = 1; i < removedEmails.length; i++){
+      deleteEmail(removedEmails[i]!);
+    }
+  }
+
   fetchCustomers();
   fetchAddresses();
+  fetchEmails();
   displayCustomerDetails = ref(false); 
+  console.log(state.emails);
 }
 
-async function createCustomer(newCustomer: CustomerModel, newAddress: AddressModel[]){
+async function createCustomer(newCustomer: CustomerModel, newAddress: AddressModel[], newEmails: EmailModel[]){
     newCustomer.customerId = 0;
     if (newCustomer.firstName != undefined && newCustomer.lastName != undefined && newCustomer.customerType != undefined){
       try {
@@ -345,7 +398,14 @@ async function createCustomer(newCustomer: CustomerModel, newAddress: AddressMod
         for (let i = 0; i < newAddress.length; i++){
           if (newAddress[i].city != undefined && newAddress[i].state != undefined && newAddress[i].postalCode != undefined && newAddress[i].addressType != undefined){
             newAddress[i].customerId = state.customer[state.customer.length - 1].customerId;
-            createAddress(newAddress[i]);
+            await createAddress(newAddress[i]);
+          }
+        }
+
+         for (let i = 0; i < newEmails.length; i++){
+          if (newEmails[i].emailAddress != undefined && newEmails[i].emailType != undefined){
+            newEmails[i].customerId = state.customer[state.customer.length - 1].customerId;
+            await createEmail(newEmails[i]);
           }
         }
       } 
@@ -356,7 +416,7 @@ async function createCustomer(newCustomer: CustomerModel, newAddress: AddressMod
     }
 }
 
-async function updateCustomer(currentID: number, newCustomer: CustomerModel, newAddress: AddressModel[]){
+async function updateCustomer(currentID: number, newCustomer: CustomerModel, newAddress: AddressModel[], newEmails: EmailModel[]){
     state.customer[currentCustomerIndex.value - 1] = newCustomer;
     state.customer[currentCustomerIndex.value - 1].customerId = currentID;
     state.loading = true;
@@ -370,11 +430,22 @@ async function updateCustomer(currentID: number, newCustomer: CustomerModel, new
       for (let i = 0; i < newAddress.length; i++){
         if (newAddress[i].city != undefined && newAddress[i].state != undefined && newAddress[i].postalCode != undefined && newAddress[i].addressType != undefined){
           if (newAddress[i].addressId! == undefined){
-          newAddress[i].customerId = state.customer[state.customer.length - 1].customerId;
-          await createAddress(newAddress[i]);
+            newAddress[i].customerId = state.customer[state.customer.length - 1].customerId;
+            await createAddress(newAddress[i]);
           }
           else{
             await updateaddress(newAddress[i]);
+          }
+        }
+      }
+      for (let i = 0; i < newEmails.length; i++){
+        if (newEmails[i].emailAddress != undefined && newEmails[i].emailType != undefined){
+          if (newEmails[i].emailID! == undefined){
+            newEmails[i].customerId = state.customer[state.customer.length - 1].customerId;
+            await createEmail(newEmails[i]);
+          }
+          else{
+            await updateEmail(newEmails[i])
           }
         }
       }
