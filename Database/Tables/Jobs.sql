@@ -6,5 +6,5 @@
     [StartDate]      DATE,
     [EndDate]        DATE,
     [Status]         NVARCHAR(100),
-    FOREIGN KEY (CustomerId) REFERENCES Customer (CustomerId) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (CustomerId) REFERENCES Customers (CustomerId) ON DELETE CASCADE ON UPDATE CASCADE
 )
