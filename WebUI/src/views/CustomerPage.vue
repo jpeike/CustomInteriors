@@ -37,7 +37,7 @@
             <p style="margin: 0;">Manage your customer information and contact details.</p>
         </div>
         <div class = "rightPanel">
-            <button class = "addButton" @click="currentCustomerAddresses = undefined; displayCustomerDetails = !displayCustomerDetails; currentCustomerIndex = -1; customerTitle = 'Create Customer'; customerDescription = 'Create customer information and contact details'; customerButtonDesc = 'Create'; console.log(state.customer)">
+            <button class = "addButton" @click="currentEmailAddresses = undefined; currentCustomerAddresses = undefined; displayCustomerDetails = !displayCustomerDetails; currentCustomerIndex = -1; customerTitle = 'Create Customer'; customerDescription = 'Create customer information and contact details'; customerButtonDesc = 'Create'; console.log(state.customer)">
                 <p style="margin: 0; text-align: center;"> + Add Customers</p>
             </button>
         </div>
@@ -204,10 +204,12 @@ function fetchEmails() {
   client
     .getAllEmails()
     .then((response) => {
+      console.log(response);
       state.emails = response
     })
     .catch((error) => {
       state.error = error.message || 'An error occurred'
+      return null;
     })
     .finally(() => {
       state.loading = false
@@ -234,13 +236,11 @@ async function fetchAddressesByCustomerId(customerId: number) {
 function fetchEmailsByCustomerId(customerId: number){
   state.loading = true
   state.error = null
-
-  currentEmailAddresses = ref(undefined);
-  state.loading = false
-  state.loading = true
-
+    
   let userEmails = new Array();
   for (let i = 0; i < state.emails.length; i++){
+    console.log(state.emails[i])
+
     if(state.emails[i].customerId == customerId){
       userEmails.push(state.emails[i]);
     }
@@ -304,7 +304,6 @@ async function createAddress(address: AddressModel) {
   try {
     createError.value = null
     await client.createAddress(address)
-    fetchAddressesByCustomerId(selectedCustomerId.value!)
   } catch (error) {
     console.error('Create failed:', error)
     createError.value = 'Failed To Create Address'
@@ -315,7 +314,6 @@ async function updateaddress(address: AddressModel) {
   try {
     updateError.value = null
     await client.updateAddress(address)
-    fetchAddressesByCustomerId(selectedCustomerId.value!)
   } catch (error) {
     updateError.value = 'Failed To Update Address'
     console.error('Update failed:', error)
@@ -326,8 +324,6 @@ async function updateaddress(address: AddressModel) {
 async function deleteEmail(emailID: number) {
   try {
     await client.deleteEmail(emailID)
-    fetchEmails()
-
   } catch (error) {
     console.error('Delete failed:', error)
   }
@@ -337,8 +333,6 @@ async function createEmail(email: EmailModel) {
   try {
     createError.value = null
     await client.createEmail(email)
-    fetchEmails()
-    fetchEmailsByCustomerId(email.customerId!)
   } catch (error) {
     console.error('Create failed:', error)
     createError.value = 'Failed To Create Email'
@@ -349,23 +343,20 @@ async function updateEmail(email: EmailModel) {
   try {
     updateError.value = null
     await client.updateEmail(email)
-    fetchEmailsByCustomerId(selectedCustomerId.value!)
-    fetchEmails()
-
   } catch (error) {
     updateError.value = 'Failed To Update Email'
     console.error('Update failed:', error)
   }
 }
 
-function updateCustomerInformation(currentID: number, newCustomer: CustomerModel, newAddress: AddressModel[], removedAddresses: number[], newEmails: EmailModel[], removedEmails: number[]){
+function updateCustomerInformation(currentID: number | undefined, newCustomer: CustomerModel, newAddress: AddressModel[], removedAddresses: number[], newEmails: EmailModel[], removedEmails: number[]){
   //create new customer
   if(currentID == null){
     createCustomer(newCustomer, newAddress, newEmails);
   }
   //update existing customer
   else{
-    updateCustomer(currentID, newCustomer, newAddress, newEmails);
+      updateCustomer(currentID, newCustomer, newAddress, newEmails);
   }
 
   if (removedAddresses.length > 1){
@@ -382,9 +373,7 @@ function updateCustomerInformation(currentID: number, newCustomer: CustomerModel
 
   fetchCustomers();
   fetchAddresses();
-  fetchEmails();
-  displayCustomerDetails = ref(false); 
-  console.log(state.emails);
+  displayCustomerDetails = ref(false);
 }
 
 async function createCustomer(newCustomer: CustomerModel, newAddress: AddressModel[], newEmails: EmailModel[]){
@@ -396,17 +385,15 @@ async function createCustomer(newCustomer: CustomerModel, newAddress: AddressMod
         await fetchCustomers();
         
         for (let i = 0; i < newAddress.length; i++){
-          if (newAddress[i].city != undefined && newAddress[i].state != undefined && newAddress[i].postalCode != undefined && newAddress[i].addressType != undefined){
-            newAddress[i].customerId = state.customer[state.customer.length - 1].customerId;
-            await createAddress(newAddress[i]);
-          }
+          newAddress[i].customerId = state.customer[state.customer.length - 1].customerId;
+          await createAddress(newAddress[i]);
         }
 
-         for (let i = 0; i < newEmails.length; i++){
-          if (newEmails[i].emailAddress != undefined && newEmails[i].emailType != undefined){
-            newEmails[i].customerId = state.customer[state.customer.length - 1].customerId;
-            await createEmail(newEmails[i]);
-          }
+        for (let i = 0; i < newEmails.length; i++){
+          newEmails[i].customerId = state.customer[state.customer.length - 1].customerId;
+          await createEmail(newEmails[i]);
+          fetchEmails();
+
         }
       } 
       catch (error) {
@@ -428,26 +415,25 @@ async function updateCustomer(currentID: number, newCustomer: CustomerModel, new
       }
       
       for (let i = 0; i < newAddress.length; i++){
-        if (newAddress[i].city != undefined && newAddress[i].state != undefined && newAddress[i].postalCode != undefined && newAddress[i].addressType != undefined){
-          if (newAddress[i].addressId! == undefined){
-            newAddress[i].customerId = state.customer[state.customer.length - 1].customerId;
-            await createAddress(newAddress[i]);
-          }
-          else{
-            await updateaddress(newAddress[i]);
-          }
+        if (newAddress[i].addressId! == undefined){
+          newAddress[i].customerId = state.customer[state.customer.length - 1].customerId;
+          await createAddress(newAddress[i]);
         }
+        else{
+          await updateaddress(newAddress[i]);
+        }        
       }
       for (let i = 0; i < newEmails.length; i++){
-        if (newEmails[i].emailAddress != undefined && newEmails[i].emailType != undefined){
-          if (newEmails[i].emailID! == undefined){
-            newEmails[i].customerId = state.customer[state.customer.length - 1].customerId;
-            await createEmail(newEmails[i]);
-          }
-          else{
-            await updateEmail(newEmails[i])
-          }
+        if (newEmails[i].emailID! == undefined){
+          newEmails[i].customerId = state.customer[state.customer.length - 1].customerId;
+          await createEmail(newEmails[i]);
+          
         }
+        else{
+          await updateEmail(newEmails[i])
+        }
+        fetchEmails();
+
       }
     } 
     catch (error) {
@@ -470,6 +456,8 @@ function deleteCustomer(currentID: number){
     })
     .finally(() => {
       fetchCustomers();
+      fetchAddresses();
+      fetchEmails();
       state.loading = false
     })
   deleteConfirmation = ref(false); 

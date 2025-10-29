@@ -109,14 +109,20 @@
                 <h3 class="fieldTitle">Notes</h3>
                 <textarea v-model="customer.customerNotes" type="text" class="p-inputtext p-component inputValue notes" :placeholder="currentCustomerInformation?.customerNotes"></textarea>
             </div>
+            
+            <div v-if="message" :class="['message', messageType]">
+              {{ message }}
+            </div>
+
             <div class="flex row buttons">
                 <button class = "cancelUpdateButton" @click="$emit('closePage')">
                     <p style="margin: 0; text-align: center;">Cancel</p>
                 </button>  
-                <button class = "updateInfoButton" @click="$emit('updateCustomerInformation', currentCustomerInformation?.customerId, customer, listOfAddresses, removedAddresses, listOfEmails, removedEmails)">
+                <button class = "updateInfoButton" @click="testInfo(currentCustomerInformation?.customerId, customer, listOfAddresses, removedAddresses, listOfEmails, removedEmails)">
                     <p style="margin: 0; text-align: center;">{{buttonDesctipnion}}</p>
                 </button>
             </div>
+            
         </div>
         <button class = "exitButton" @click="$emit('closePage')"><h4 style="margin: 0;">X</h4></button>
     </div>
@@ -126,7 +132,7 @@
     import 'primeicons/primeicons.css';
     import { Client, CustomerModel, AddressModel, EmailModel, Email } from '../client/client'
     import InputText from 'primevue/inputtext';
-    import {ref} from 'vue'
+    import {ref, computed} from 'vue'
 
     const props = defineProps<{
         currentCustomerInformation: CustomerModel | undefined,
@@ -136,6 +142,11 @@
         description: String,
         buttonDesctipnion: String
     }>();
+    
+    const emit = defineEmits<{
+        closePage: []
+        updateCustomerInformation: [customerId: number | undefined, customer: CustomerModel, listOfAddresses: AddressModel[], removedAddresses: number[], listOfEmails: EmailModel[], removedEmails: number[]]
+    }>()
 
     const newEmail = ref('');
     const newPhone = ref('');
@@ -146,6 +157,14 @@
     
     let listOfEmails = ref([new EmailModel]);
     let removedEmails = [0];
+
+    const message = ref('');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const messageType = computed(() => {
+        return message.value.includes('successfully') || message.value.includes('Successfully') ? 'success' : 'error'
+    })
+
 
     if (props.currentCustomerInformation != undefined){
         customer = ref(props.currentCustomerInformation);
@@ -180,9 +199,59 @@
             removedEmails.push(email.emailID);
         }
     }
+
+    function testInfo(customerId: number | undefined, customer: CustomerModel, listOfAddresses: AddressModel[], removedAddresses: number[], listOfEmails: EmailModel[], removedEmails: number[]){
+        if (customer.firstName == undefined || customer.lastName == undefined || customer.customerType == undefined){
+            message.value = "Customer information not valid";
+            return;
+        }
+        
+        for (let i = 0; i < listOfEmails.length; i++){
+        if (listOfEmails[i].emailAddress == undefined || listOfEmails[i].emailType == undefined || !emailRegex.test(listOfEmails[i].emailAddress!)){
+            message.value = "Email " + (i+1) + " information not valid";
+            return;
+          }
+        }
+
+        for (let i = 0; i < listOfAddresses.length; i++){
+            if (!/^\d{5}$/.test(listOfAddresses[i].postalCode?.toString()!) || listOfAddresses[i].postalCode! < 10000){
+                message.value = "Address " + (i + 1) + " ZIP Code must be a 5 digit integer"
+                return
+            }
+           
+            else if (listOfAddresses[i].city == undefined || listOfAddresses[i].postalCode == undefined || listOfAddresses[i].addressType == undefined){
+                message.value = "Address " + (i+1) + " has one or more fields that are valid";
+                return
+            }
+        }
+        
+        message.value = 'Address Successfully Created'
+        emit('updateCustomerInformation', customerId, customer, listOfAddresses, removedAddresses, listOfEmails, removedEmails);
+
+    }
 </script>
 
 <style scoped>
+
+    .message {
+        padding: 0.875rem 1rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .message.success {
+        background-color: #d1fae5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+    }
+
+    .message.error {
+        background-color: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+
     .flex{
         display: flex;
     }
