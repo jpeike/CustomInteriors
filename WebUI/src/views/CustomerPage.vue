@@ -75,7 +75,8 @@
             </div>
           </div>
           
-          <br/><p style="margin: 0;"> Address: {{getAddressString(customer.customerId!)}}</p>
+          <br/>
+          <p style="margin: 0;"> Address: {{getAddressString(customer.customerId!)}}</p>
           <br/>
           <p style="margin: 0;">Type: {{ customer.customerType }}</p>
           <br/>
