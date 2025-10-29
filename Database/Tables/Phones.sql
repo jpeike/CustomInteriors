@@ -1,7 +1,8 @@
 ﻿CREATE TABLE [dbo].[Phones]
 (
-    [Id]          INT NOT NULL PRIMARY KEY,
-    [CustomerId]  INT NOT NULL, -- FOREIGN KEY REFERENCES [dbo].[Customers].[CustomerId],
+    [PhoneId]     INT IDENTITY (1,1) NOT NULL PRIMARY KEY,
+    [CustomerId]  INT                NOT NULL,
     [PhoneNumber] NVARCHAR(100),
-    [PhoneType]   NVARCHAR(100)
+    [PhoneType]   NVARCHAR(100),
+    FOREIGN KEY (CustomerId) REFERENCES Customers (CustomerId) ON DELETE CASCADE ON UPDATE CASCADE
 )

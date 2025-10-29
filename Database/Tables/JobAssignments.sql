@@ -1,7 +1,10 @@
 ﻿CREATE TABLE [dbo].[JobAssignments]
 (
-    [JobId]          INT NOT NULL PRIMARY KEY,
-    [UserId]         INT, -- FOREIGN KEY REFERENCES [dbo].[Users].[UserId],
+    [JobId]          INT NOT NULL,
+    [UserId]         INT NOT NULL,
     [AssignmentDate] DATE,
-    [RoleOnJob]      NVARCHAR(100)
+    [RoleOnJob]      NVARCHAR(100),
+    CONSTRAINT PK_JobAssignments PRIMARY KEY (JobId, UserId),
+    FOREIGN KEY (JobId) REFERENCES Jobs (JobId) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (UserId) REFERENCES Users (UserId) ON DELETE CASCADE ON UPDATE CASCADE
 )

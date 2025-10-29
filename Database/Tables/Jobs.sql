@@ -1,9 +1,10 @@
 ﻿CREATE TABLE [dbo].[Jobs]
 (
-    [JobId]          INT NOT NULL PRIMARY KEY,
-    [CustomerId]     INT NOT NULL, -- FOREIGN KEY REFERENCES [dbo].[Customers].[CustomerId],
+    [JobId]          INT IDENTITY (1,1) NOT NULL PRIMARY KEY,
+    [CustomerId]     INT                NOT NULL,
     [JobDescription] NVARCHAR(255),
     [StartDate]      DATE,
     [EndDate]        DATE,
-    [Status]         NVARCHAR(100)
+    [Status]         NVARCHAR(100),
+    FOREIGN KEY (CustomerId) REFERENCES Customer (CustomerId) ON DELETE CASCADE ON UPDATE CASCADE
 )

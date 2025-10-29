@@ -1,8 +1,9 @@
 ﻿CREATE TABLE [dbo].[InvoiceItems]
 (
-    [ItemId]      INT NOT NULL PRIMARY KEY,
-    [InvoiceId]   INT, -- FOREIGN KEY REFERENCES [dbo].[Invoices].[InvoiceId],
+    [ItemId]      INT IDENTITY (1,1) NOT NULL PRIMARY KEY,
+    [InvoiceId]   INT                NOT NULL,
     [Description] NVARCHAR(255),
     [Amount]      INT,
-    [Price]       DECIMAL
+    [Price]       DECIMAL,
+    FOREIGN KEY (InvoiceId) REFERENCES Invoices (InvoiceId) ON DELETE CASCADE ON UPDATE CASCADE
 )

@@ -1,9 +1,11 @@
 ﻿CREATE TABLE [dbo].[QuoteRequests]
 (
-    [QuoteId]           INT NOT NULL PRIMARY KEY,
-    [CustomerId]        INT NOT NULL, -- FOREIGN KEY REFERENCES [dbo].[Customers].[CustomerId],
-    [JobId]             INT NOT NULL, -- FOREIGN KEY REFERENCES [dbo].[Jobs].[JobId],
+    [QuoteId]           INT IDENTITY (1,1) NOT NULL PRIMARY KEY,
+    [CustomerId]        INT                NOT NULL,
+    [JobId]             INT                NOT NULL,
     [RequestDate]       DATE,
     [DescriptionOfWork] NVARCHAR(MAX),
-    [EstimatedPrice]    DECIMAL
+    [EstimatedPrice]    DECIMAL,
+    FOREIGN KEY (CustomerId) REFERENCES Customer (CustomerId) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (JobId) REFERENCES Jobs (JobId) ON DELETE CASCADE ON UPDATE CASCADE
 )
