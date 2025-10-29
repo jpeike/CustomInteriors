@@ -1,12 +1,11 @@
-CREATE TABLE [dbo].[Addresses] (
-	[AddressId] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	[CustomerId] INT NOT NULL,
+CREATE TABLE [dbo].[Address] (
+	[AddressID] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[CustomerID] INT NOT NULL,
 	[Street] NVARCHAR(255) NOT NULL,
 	[City] NVARCHAR(255) NOT NULL,
 	[State] NVARCHAR(255) NOT NULL,
 	[PostalCode] INT NOT NULL,
-	[Country] NVARCHAR(255),
-	[AddressType] NVARCHAR(255) NOT NULL,
-
-	FOREIGN KEY(CustomerId) REFERENCES Customers(CustomerId) ON DELETE CASCADE,
+	[AddressType] NVARCHAR(100) NOT NULL,
+	CONSTRAINT FK_Address_Customer FOREIGN KEY([CustomerID]) REFERENCES [dbo].[Customer]([CustomerID]) ON DELETE CASCADE
 );
+GO

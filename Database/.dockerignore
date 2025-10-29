@@ -1,0 +1,8 @@
+*.md
+*.csproj
+*.sqlproj
+bin/
+obj/
+.vs/
+.git/
+*.user

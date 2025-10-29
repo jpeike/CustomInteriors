@@ -1,0 +1,39 @@
+# Docker Compose for Phase 1: Database Only
+# Use this file to test the database container independently
+# Run with: docker-compose -f docker-compose.db.yml up
+
+version: '3.8'
+
+services:
+  sqlserver:
+    build:
+      context: ./Database
+      dockerfile: Dockerfile
+    container_name: custominteriors-sqlserver
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=YourStrong@Passw0rd123
+      - MSSQL_PID=Developer
+    volumes:
+      # Persist database data
+      - sqlserver-data:/var/opt/mssql
+    networks:
+      - custominteriors-network
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'YourStrong@Passw0rd123' -Q 'SELECT 1' -C || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  sqlserver-data:
+    driver: local
+    name: custominteriors-sqlserver-data
+
+networks:
+  custominteriors-network:
+    driver: bridge
+    name: custominteriors-network
