@@ -2,7 +2,7 @@
 (
     [JobId]               INT NOT NULL,
     [InvoiceId]           INT NOT NULL,
-    [CreatedId]           DATE,
+    [CreatedDate]           DATE,
     [PercentageOfInvoice] DECIMAL,
     CONSTRAINT PK_JobInvoices PRIMARY KEY (JobId, InvoiceId),
     FOREIGN KEY (JobId) REFERENCES Jobs (JobId) ON DELETE CASCADE ON UPDATE CASCADE,
