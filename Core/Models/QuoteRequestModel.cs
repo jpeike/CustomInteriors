@@ -11,5 +11,5 @@ public class QuoteRequestModel
     public decimal? EstimatedPrice { get; set; }
 
     //public required CustomerModel Customer { get; set; }
-    public required JobModel Job { get; set; }
+    public JobModel Job { get; set; } //required
 }
