@@ -5,14 +5,9 @@ namespace Core;
 public class Customer
 {
     public int CustomerId { get; set; }
-
-    public string FirstName { get; set; } =
-        null!; // this "=null!" means that we are ignoring the warning that we would otherwise get saying we know this isn't going to be null
-
-    public string LastName { get; set; } =
-        null!; // this "=null!" means that we are ignoring the warning that we would otherwise get saying we know this isn't going to be null
-
-    public string CustomerType { get; set; } = null!;
+    public required string FirstName { get; set; }
+    public required string LastName { get; set; }
+    public required string CustomerType { get; set; }
     public string? PrefferedContactMethod { get; set; }
     public string? CompanyName { get; set; }
     public string? Status { get; set; }

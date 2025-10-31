@@ -2,7 +2,7 @@
 
 namespace Core;
 
-public class InvoiceItem
+public class InvoiceItemModel
 {
     public int ItemId { get; set; }
     public int InvoiceId { get; set; }
@@ -10,5 +10,5 @@ public class InvoiceItem
     public int? Amount { get; set; }
     public decimal? Price { get; set; }
 
-    [JsonIgnore] public required Invoice Invoice { get; set; }
+   public required InvoiceModel Invoice { get; set; }
 }

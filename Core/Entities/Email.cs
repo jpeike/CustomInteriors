@@ -5,10 +5,10 @@ namespace Core;
 
 public class Email
 {
-    public int EmailID { get; set; } // Primary Key
+    public int EmailId { get; set; } // Primary Key
     public int CustomerId { get; set; } // Foreign Key -> Customer(CustomerId)
-    public string EmailAddress { get; set; } = null!; // Required, non-nullable
-    public string EmailType { get; set; } = null!; // Required, non-nullable
+    public required string EmailAddress { get; set; }
+    public required string EmailType { get; set; }
     public DateTime CreatedOn { get; set; } // Defaults to GETDATE() in SQL
-    [JsonIgnore] public Customer Customer { get; set; } = null!; // Navigation property
+    [JsonIgnore] public required Customer Customer { get; set; } // Navigation property
 }

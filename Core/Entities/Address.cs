@@ -11,13 +11,13 @@ namespace Core
     {
         public int AddressId { get; set; }
         public int CustomerId { get; set; }
-        public string Street { get; set; } = null!;
-        public string City { get; set; } = null!;
-        public string State { get; set; } = null!;
-        public int PostalCode { get; set; }
+        public required string Street { get; set; }
+        public required string City { get; set; }
+        public required string State { get; set; }
+        public required int PostalCode { get; set; }
         public string? Country { get; set; }
-        public string AddressType { get; set; } = null!;
+        public required string AddressType { get; set; }
 
-        [JsonIgnore] public Customer Customer { get; set; } = null!;
+        public required Customer Customer { get; set; }
     }
 }

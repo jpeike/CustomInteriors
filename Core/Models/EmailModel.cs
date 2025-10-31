@@ -2,9 +2,11 @@ namespace Core;
 
 public class EmailModel
 {
-    public int EmailID { get; set; }
+    public int EmailId { get; set; }
     public int CustomerId { get; set; }
-    public string EmailAddress { get; set; } = null!;
-    public string EmailType { get; set; } = null!;
+    public required string EmailAddress { get; set; }
+    public required string EmailType { get; set; }
     public DateTime CreatedOn { get; set; }
+    
+    public required CustomerModel Customer { get; set; }
 }

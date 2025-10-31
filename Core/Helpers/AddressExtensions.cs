@@ -14,6 +14,7 @@ namespace Core;
             PostalCode = address.PostalCode,
             Country = address.Country,
             AddressType = address.AddressType,
+            Customer = address.Customer.ToModel()
         };
 
         public static IEnumerable<AddressModel> ToModels(this IEnumerable<Address> addresses)
@@ -31,6 +32,7 @@ namespace Core;
             PostalCode = model.PostalCode,
             Country = model.Country,
             AddressType = model.AddressType,
+            Customer = model.Customer.ToEntity()
         };
     }
 

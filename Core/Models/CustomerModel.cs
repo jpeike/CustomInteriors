@@ -3,15 +3,17 @@
 public class CustomerModel
 {
     public int CustomerId { get; set; }
-    public string FirstName { get; set; } = null!; // this "=null!" means that we are ignoring the warning that we would otherwise get saying we know this isnt going to be null
-    public string LastName { get; set; } = null!; // this "=null!" means that we are ignoring the warning that we would otherwise get saying we know this isnt going to be null
-    public string CustomerType { get; set; } = null!;
+    public required string FirstName { get; set; }
+    public required string LastName { get; set; }
+    public required string CustomerType { get; set; }
     public string? PrefferedContactMethod { get; set; }
     public string? CompanyName { get; set; }
     public string? Status { get; set; }
     public string? CustomerNotes { get; set; }
-    public List<EmailModel> Emails { get; set; } = new();
-
-
+    public ICollection<AddressModel>? Addresses { get; set; }
+    public ICollection<EmailModel>? Emails { get; set; } = new List<EmailModel>();
+    public ICollection<PhoneModel>? Phones { get; set; } = new List<PhoneModel>();
+    public ICollection<JobModel>? Jobs { get; set; } = new List<JobModel>();
+    public ICollection<QuoteRequestModel>? QuoteRequests { get; set; } = new List<QuoteRequestModel>();
+    public UserModel? User { get; set; }
 }
-
