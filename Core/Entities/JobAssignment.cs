@@ -10,4 +10,5 @@ public class JobAssignment
     public string? RoleOnJob { get; set; }
 
     [JsonIgnore] public User? User { get; set; }
+    [JsonIgnore] public Job? Job { get; set; }
 }

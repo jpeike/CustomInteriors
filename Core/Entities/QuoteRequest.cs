@@ -9,6 +9,7 @@ public class QuoteRequest
     public DateTime? RequestDate { get; set; }
     public string? DescriptionOfWork { get; set; }
     public decimal? EstimatedPrice { get; set; }
-    
-    [JsonIgnore] Customer Customer { get; set; }
+
+    [JsonIgnore] public Customer Customer { get; set; }
+    [JsonIgnore] public Job Job { get; set; }
 }

@@ -1,9 +1,15 @@
-﻿namespace Core;
+﻿using System.Text.Json.Serialization;
+
+namespace Core;
 
 public class Invoice
 {
     public int InvoiceId { get; set; }
     public DateTime? DateIssued { get; set; }
-    public string? Method {  get; set; }
+    public string? Method { get; set; }
     public string? SellerDetails { get; set; }
+
+    [JsonIgnore] public ICollection<JobInvoice> JobInvoices { get; set; } = new List<JobInvoice>();
+    [JsonIgnore] public ICollection<InvoiceItem> InvoiceItems { get; set; } = new List<InvoiceItem>();
+    [JsonIgnore] public ICollection<Payment>? Payments { get; set; } = new List<Payment>();
 }

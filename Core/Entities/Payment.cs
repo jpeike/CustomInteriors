@@ -9,6 +9,6 @@ public class Payment
     public DateTime? PaymentDate { get; set; }
     public decimal? AmountPaid { get; set; }
     public string? Method { get; set; }
-    
-    [JsonIgnore] Invoice Invoice { get; set; }
+
+    [JsonIgnore] public Invoice Invoice { get; set; }
 }

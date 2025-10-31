@@ -9,6 +9,6 @@ public class JobInvoice
     public DateTime? CreatedDate { get; set; }
     public float PercentageOfInvoice { get; set; }
 
-    [JsonIgnore] Job Job { get; set; }
-    [JsonIgnore] Invoice Invoice { get; set; }
+    [JsonIgnore] public Job Job { get; set; }
+    [JsonIgnore] public Invoice Invoice { get; set; }
 }
