@@ -1,34 +1,31 @@
 ﻿namespace Core;
 
-public class InvoiceExtensions
+public static class InvoiceExtensions
 {
-    public static CustomerModel ToModel(this Customer customer) => new CustomerModel
+    public static InvoiceModel ToModel(this Invoice entity) => new InvoiceModel
     {
-        CustomerId = customer.CustomerId,
-        FirstName = customer.FirstName,
-        LastName = customer.LastName,
-        CustomerType = customer.CustomerType,
-        PrefferedContactMethod = customer.PrefferedContactMethod,
-        CompanyName = customer.CompanyName,
-        Status = customer.Status,
-        CustomerNotes = customer.CustomerNotes,
-        Emails = customer.Emails.Select(x =>x.ToModel()).ToList()
+        InvoiceId = entity.InvoiceId,
+        DateIssued = entity.DateIssued,
+        Method = entity.Method,
+        SellerDetails = entity.SellerDetails,
+        JobInvoices = entity.JobInvoices.Select(j => j.ToModel()).ToList(),
+        InvoiceItems = entity.InvoiceItems.Select(i => i.ToModel()).ToList(),
+        Payments = entity.Payments.Select(p => p.ToModel()).ToList(),
     };
 
-    public static IEnumerable<CustomerModel> ToModels(this IEnumerable<Customer> customer)
+    public static IEnumerable<InvoiceModel> ToModels(this IEnumerable<Invoice> entity)
     {
-        return customer.Select(u => u.ToModel());
+        return entity.Select(e => e.ToModel());
     }
 
-    public static Customer ToEntity(this CustomerModel model) => new Customer
+    public static Invoice ToEntity(this InvoiceModel model) => new Invoice
     {
-        CustomerId = model.CustomerId,
-        FirstName = model.FirstName,
-        LastName = model.LastName,
-        CustomerType = model.CustomerType,
-        PrefferedContactMethod = model.PrefferedContactMethod,
-        CompanyName = model.CompanyName,
-        Status = model.Status,
-        CustomerNotes = model.CustomerNotes
+        InvoiceId = model.InvoiceId,
+        DateIssued = model.DateIssued,
+        Method = model.Method,
+        SellerDetails = model.SellerDetails,
+        JobInvoices = model.JobInvoices.Select(j => j.ToEntity()).ToList(),
+        InvoiceItems = model.InvoiceItems.Select(i => i.ToEntity()).ToList(),
+        Payments = model.Payments.Select(p => p.ToEntity()).ToList(),
     };
 }

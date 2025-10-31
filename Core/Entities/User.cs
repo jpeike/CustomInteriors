@@ -10,7 +10,7 @@ public class User
     public DateTime CreatedOn { get; set; }
 
     [JsonIgnore] // Swagger and JSON serialization skip this, we need it to compare the hash, but we want to ensure no matter what it does not get logged or exposed. 
-    public required string PasswordHash { get; set; }
+    public string PasswordHash { get; set; }
     
     [JsonIgnore] public Customer? Customer { get; set; }
     [JsonIgnore] public ICollection<JobAssignment> JobAssignments { get; set; } =  new List<JobAssignment>();

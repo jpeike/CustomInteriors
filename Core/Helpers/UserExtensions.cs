@@ -20,7 +20,7 @@ public static class UserExtensions
         Id = model.Id,
         Username = model.Username,
         Email = model.Email,
-        CreatedOn = model.CreatedOn
+        CreatedOn = model.CreatedOn,
         // PasswordHash would need to be set separately
     };
 }
