@@ -26,9 +26,7 @@
       @close="closeUpdateModal"
       @updated="updateaddress"
     />
-  </div>
-  
-  
+  </div>  
   
   <div class="flex column customerBody">
     <div class="flex row pageHeader">
