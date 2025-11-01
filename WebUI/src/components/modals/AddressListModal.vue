@@ -1,5 +1,4 @@
 <template>
-  <!-- Modal Backdrop -->
   <Transition name="modal">
     <div v-if="isOpen" class="modalBackdrop" @click.self="closeModal">
       <div class="modalContainer">

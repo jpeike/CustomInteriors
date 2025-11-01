@@ -74,12 +74,12 @@
                 </div> 
                  <div>
                     <h3 class="fieldTitle">Address Type *</h3>
-                    <InputText v-model="address.addressType" type="text" class="inputValue" :placeholder="address.addressType ?? 'Address Type'"></InputText>
+                    <InputText v-model="address.addressType" required="true" type="text" class="inputValue" :placeholder="address.addressType ?? 'Address Type'"></InputText>
                 </div>               
             </div>
 
             <div class="addAddress">
-                <button @click="addAdress" class="cancelUpdateButton"> <p style="margin: 0; text-align: center;">Add Address</p></button>
+                <button @click="addAddress" class="cancelUpdateButton"> <p style="margin: 0; text-align: center;">Add Address</p></button>
             </div>
 
         <!--Company Name-->
@@ -99,7 +99,7 @@
                 <button class = "cancelUpdateButton" @click="$emit('closePage')">
                     <p style="margin: 0; text-align: center;">Cancel</p>
                 </button>  
-                <button class = "updateInfoButton" @click="$emit('updateCustomerInformation', currentCustomerInformation?.customerId, customer, listOfAddresses, removedAddresses)">
+                <button class = "updateInfoButton" @click="testInfo(currentCustomerInformation?.customerId, customer, listOfAddresses, removedAddresses)">
                     <p style="margin: 0; text-align: center;">{{buttonDesctipnion}}</p>
                 </button>
             </div>
@@ -113,6 +113,9 @@
     import {CustomerModel, AddressModel, Address } from '../client/client'
     import InputText from 'primevue/inputtext';
     import {ref} from 'vue'
+    import { useToast } from '@/composables/useToast.ts'
+
+    const { showWarning } = useToast()
 
     const props = defineProps<{
         currentCustomerInformation: CustomerModel | undefined,
@@ -121,6 +124,10 @@
         description: String,
         buttonDesctipnion: String
     }>();
+    const emit = defineEmits<{
+        closePage: []
+        updateCustomerInformation: [customerId: number | undefined, customer: CustomerModel, listOfAddresses: AddressModel[], removedAddresses: number[]]
+    }>()
 
     const newEmail = ref('');
     const newPhone = ref('');
@@ -137,7 +144,7 @@
         listOfAddresses = ref(props.currentAddresses);
     }
     
-    function addAdress(){
+    function addAddress(){
         listOfAddresses.value.push(new AddressModel);
     }
 
@@ -148,6 +155,29 @@
             removedAddresses.push(address.addressId);
         }
     }
+
+    function testInfo(customerId: number | undefined, customer: CustomerModel, listOfAddresses: AddressModel[], removedAddresses: number[]){
+        if (customer.firstName == undefined || customer.lastName == undefined || customer.customerType == undefined){
+            showWarning('Customer information not valid')
+            return;
+        }
+
+        for (let i = 0; i < listOfAddresses.length; i++){
+            if (listOfAddresses[i].city == undefined || listOfAddresses[i].postalCode == undefined || listOfAddresses[i].addressType == undefined){
+                showWarning("Address " + (i+1) + " has one or more fields that are valid")
+                return
+            }
+
+            if (!/^\d{5}$/.test(listOfAddresses[i].postalCode?.toString()!) || listOfAddresses[i].postalCode! < 10000){
+                showWarning("Address " + (i + 1) + " ZIP Code must be a 5 digit integer")
+                return
+            }
+        }
+        
+        emit('updateCustomerInformation', customerId, customer, listOfAddresses, removedAddresses);
+
+    }
+
 </script>
 
 <style scoped>

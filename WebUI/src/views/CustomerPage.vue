@@ -13,7 +13,6 @@
     <CreateAddressModal
       :isOpen="showCreateAddressModal"
       :customerId="selectedCustomerId"
-      :errorMessage="createError"
       @close="closeCreateModal"
       @created="createAddress"
     />
@@ -22,9 +21,8 @@
       :isOpen="showUpdateAddressModal"
       :customerId="selectedCustomerId"
       :address="selectedAddress"
-      :errorMessage="updateError"
       @close="closeUpdateModal"
-      @updated="updateaddress"
+      @updated="updateAddress"
     />
   </div>
   
@@ -115,13 +113,14 @@ import CreateAddressModal from '../components/modals/CreateAddressModal.vue'
 import UpdateAddressModal from '../components/modals/UpdateAddressModal.vue'
 import InputText from 'primevue/inputtext';
 import 'primeicons/primeicons.css'
+import { useToast } from '@/composables/useToast.ts'
+
+const { showSuccess, showError } = useToast()
 
 const client = new Client(import.meta.env.VITE_API_BASE_URL)
 const showAddressList = ref(false)
 const showCreateAddressModal = ref(false)
 const showUpdateAddressModal = ref(false)
-const createError = ref<string | null>(null)
-const updateError = ref<string | null>(null)
 let selectedCustomerId = ref<number | null>(null)
 const selectedAddress = ref<AddressModel | null>(null)
 
@@ -168,14 +167,12 @@ function getAddressString(customerID: number){
 
 async function fetchCustomers() {
   try {
-    createError.value = null
     await client.getAllCustomers()
     .then((response) => {
       state.customer = response
     })
   } catch (error) {
     console.error('Create failed:', error)
-    createError.value = 'Failed To Fetch Customers'
   }
 }
 
@@ -254,38 +251,61 @@ function closeUpdateModal() {
   showAddressList.value = true
 }
 
-async function deleteAddress(addressId: number) {
-  try {
-    await client.deleteAddress(addressId)
-    //fetchAddressesByCustomerId(selectedCustomerId.value!)
-  } catch (error) {
-    console.error('Delete failed:', error)
-  }
+function deleteAddress(addressId: number){
+    state.loading = true
+    state.error = null
+    client
+    .deleteAddress(addressId)
+    .then(() => {
+      showSuccess('Address Deleted Successfully');
+    })
+    .catch((error) => {
+      showError(error);
+      state.error = error.message || 'An error occurred'
+    })
+    .finally(() => {
+      fetchAddressesByCustomerId(selectedCustomerId.value!)
+      state.loading = false
+    })
 }
 
-async function createAddress(address: AddressModel) {
-  try {
-    createError.value = null
-    await client.createAddress(address)
-    fetchAddressesByCustomerId(address.customerId!)
-  } catch (error) {
-    console.error('Create failed:', error)
-    createError.value = 'Failed To Create Address'
-  }
+function createAddress(address: AddressModel){
+    state.loading = true
+    state.error = null
+    client
+    .createAddress(address)
+    .then(() => {
+      showSuccess('Address Created Successfully');
+    })
+    .catch((error) => {
+      showError(error);
+      state.error = error.message || 'An error occurred'
+    })
+    .finally(() => {
+      fetchAddressesByCustomerId(selectedCustomerId.value!)
+      state.loading = false
+    })
 }
 
-async function updateaddress(address: AddressModel) {
-  try {
-    updateError.value = null
-    await client.updateAddress(address)
-    fetchAddressesByCustomerId(selectedCustomerId.value!)
-  } catch (error) {
-    updateError.value = 'Failed To Create Address'
-    console.error('Update failed:', error)
-  }
+function updateAddress(address: AddressModel){
+    state.loading = true
+    state.error = null
+    client
+    .updateAddress(address)
+    .then(() => {
+      showSuccess('Address Updated Successfully');
+    })
+    .catch((error) => {
+      showError(error);
+      state.error = error.message || 'An error occurred'
+    })
+    .finally(() => {
+      fetchAddressesByCustomerId(selectedCustomerId.value!)
+      state.loading = false
+    })
 }
 
-function updateCustomerInformation(currentID: number, newCustomer: CustomerModel, newAddress: AddressModel[], removedAddresses: number[]){
+function updateCustomerInformation(currentID: number | undefined, newCustomer: CustomerModel, newAddress: AddressModel[], removedAddresses: number[]){
   //create new customer
   if(currentID == null){
     createCustomer(newCustomer, newAddress);
@@ -308,8 +328,20 @@ async function createCustomer(newCustomer: CustomerModel, newAddress: AddressMod
     newCustomer.customerId = 0;
     if (newCustomer.firstName != undefined && newCustomer.lastName != undefined && newCustomer.customerType != undefined){
       try {
-        updateError.value = null;
-        await client.createCustomer(newCustomer);
+        await client
+        .createCustomer(newCustomer)
+        .then(() => {
+          showSuccess('Customer Created Successfully');
+        })
+        .catch((error) => {
+          showError(error);
+          state.error = error.message || 'An error occurred'
+        })
+        .finally(() => {
+          fetchCustomers();
+          state.loading = false
+        })
+
         await fetchCustomers();
         
         for (let i = 0; i < newAddress.length; i++){
@@ -320,7 +352,6 @@ async function createCustomer(newCustomer: CustomerModel, newAddress: AddressMod
         }
       } 
       catch (error) {
-        updateError.value = 'Failed To Create Customer'
         console.error('Update failed:', error)
       }
     }
@@ -332,25 +363,35 @@ async function updateCustomer(currentID: number, newCustomer: CustomerModel, new
     state.loading = true;
 
     try {
-      updateError.value = null;
       if (newCustomer.firstName != undefined && newCustomer.lastName != undefined && newCustomer.customerType != undefined){
-        await client.updateCustomer(state.customer[currentCustomerIndex.value - 1]);
+        await client
+        .updateCustomer(state.customer[currentCustomerIndex.value - 1])
+         .then(() => {
+          showSuccess('Customer Updated Successfully');
+        })
+        .catch((error) => {
+          showError(error)
+          state.error = error.message || 'An error occurred'
+        })
+        .finally(() => {
+          fetchCustomers();
+          state.loading = false
+        })
       }
       
       for (let i = 0; i < newAddress.length; i++){
         if (newAddress[i].city != undefined && newAddress[i].state != undefined && newAddress[i].postalCode != undefined && newAddress[i].addressType != undefined){
           if (newAddress[i].addressId! == undefined){
-          newAddress[i].customerId = state.customer[state.customer.length - 1].customerId;
-          await createAddress(newAddress[i]);
+            newAddress[i].customerId = state.customer[state.customer.length - 1].customerId;
+            await createAddress(newAddress[i]);
           }
           else{
-            await updateaddress(newAddress[i]);
+            await updateAddress(newAddress[i]);
           }
         }
       }
     } 
     catch (error) {
-      updateError.value = 'Failed To Create Customer'
       console.error('Update failed:', error)
     }
 
@@ -364,7 +405,11 @@ function deleteCustomer(currentID: number){
     state.error = null
     client
     .deleteCustomer(currentID)
+    .then(() => {
+      showSuccess('Customer Deleted Successfully');
+    })
     .catch((error) => {
+      showError(error);
       state.error = error.message || 'An error occurred'
     })
     .finally(() => {
