@@ -88,12 +88,12 @@
                 </div> 
                  <div>
                     <h3 class="fieldTitle">Address Type *</h3>
-                    <InputText v-model="address.addressType" type="text" class="inputValue" :placeholder="address.addressType ?? 'Address Type'"></InputText>
+                    <InputText v-model="address.addressType" required="true" type="text" class="inputValue" :placeholder="address.addressType ?? 'Address Type'"></InputText>
                 </div>               
             </div>
 
             <div class="addAddress">
-                <button @click="addAdress" class="cancelUpdateButton"> <p style="margin: 0; text-align: center;">Add Address</p></button>
+                <button @click="addAddress" class="cancelUpdateButton"> <p style="margin: 0; text-align: center;">Add Address</p></button>
             </div>
 
         <!--Company Name-->
@@ -110,9 +110,7 @@
                 <textarea v-model="customer.customerNotes" type="text" class="p-inputtext p-component inputValue notes" :placeholder="currentCustomerInformation?.customerNotes"></textarea>
             </div>
             
-            <div v-if="message" :class="['message', messageType]">
-              {{ message }}
-            </div>
+            
 
             <div class="flex row buttons">
                 <button class = "cancelUpdateButton" @click="$emit('closePage')">
@@ -132,7 +130,10 @@
     import 'primeicons/primeicons.css';
     import { Client, CustomerModel, AddressModel, EmailModel, Email } from '../client/client'
     import InputText from 'primevue/inputtext';
-    import {ref, computed} from 'vue'
+    import {ref} from 'vue'
+    import { useToast } from '@/composables/useToast.ts'
+
+    const { showWarning } = useToast()
 
     const props = defineProps<{
         currentCustomerInformation: CustomerModel | undefined,
@@ -161,10 +162,6 @@
     const message = ref('');
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    const messageType = computed(() => {
-        return message.value.includes('successfully') || message.value.includes('Successfully') ? 'success' : 'error'
-    })
-
 
     if (props.currentCustomerInformation != undefined){
         customer = ref(props.currentCustomerInformation);
@@ -178,7 +175,7 @@
         listOfEmails = ref(props.currentEmails);
     }
     
-    function addAdress(){
+    function addAddress(){
         listOfAddresses.value.push(new AddressModel);
     }
 
@@ -201,26 +198,30 @@
     }
 
     function testInfo(customerId: number | undefined, customer: CustomerModel, listOfAddresses: AddressModel[], removedAddresses: number[], listOfEmails: EmailModel[], removedEmails: number[]){
-        if (customer.firstName == undefined || customer.lastName == undefined || customer.customerType == undefined){
-            message.value = "Customer information not valid";
+        if (!customer.firstName|| !customer.lastName || !customer.customerType){
+            showWarning('Customer information not valid')
             return;
         }
         
         for (let i = 0; i < listOfEmails.length; i++){
-        if (listOfEmails[i].emailAddress == undefined || listOfEmails[i].emailType == undefined || !emailRegex.test(listOfEmails[i].emailAddress!)){
-            message.value = "Email " + (i+1) + " information not valid";
-            return;
-          }
+            if (!emailRegex.test(listOfEmails[i].emailAddress!)){
+                showWarning("Email " + (i+1) + " 's address is invalid")
+                return;
+            }
+            if (!listOfEmails[i].emailAddress || !listOfEmails[i].emailType){
+                showWarning("Email " + (i+1) + " has one or more fields that are valid")
+                return;
+            }
         }
 
         for (let i = 0; i < listOfAddresses.length; i++){
-            if (!/^\d{5}$/.test(listOfAddresses[i].postalCode?.toString()!) || listOfAddresses[i].postalCode! < 10000){
-                message.value = "Address " + (i + 1) + " ZIP Code must be a 5 digit integer"
+            if (!listOfAddresses[i].city || !listOfAddresses[i].postalCode || !listOfAddresses[i].addressType){
+                showWarning("Address " + (i+1) + " has one or more fields that are valid")
                 return
             }
-           
-            else if (listOfAddresses[i].city == undefined || listOfAddresses[i].postalCode == undefined || listOfAddresses[i].addressType == undefined){
-                message.value = "Address " + (i+1) + " has one or more fields that are valid";
+
+            if (!/^\d{5}$/.test(listOfAddresses[i].postalCode?.toString()!) || listOfAddresses[i].postalCode! < 10000){
+                showWarning("Address " + (i + 1) + " ZIP Code must be a 5 digit integer")
                 return
             }
         }

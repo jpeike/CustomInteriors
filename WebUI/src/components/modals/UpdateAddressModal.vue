@@ -84,15 +84,6 @@
                 placeholder="e.g., Home, Work, Billing"
               />
             </div>
-
-            <div v-if="message" :class="['message', messageType]">
-              {{ message }}
-            </div>
-
-            <div v-if="props.errorMessage" class="message error">
-              {{ props.errorMessage }}
-            </div>
-
             <div class="modalActions">
               <button @click="closeModal" type="button" class="cancelButton">Cancel</button>
               <button @click="handleSubmit" type="button" class="submitButton">Update Address</button>
@@ -105,13 +96,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch} from 'vue'
-import { Client, AddressModel } from '../../client/client'
+import { ref, watch} from 'vue'
+import { AddressModel } from '../../client/client'
+import { useToast } from '@/composables/useToast.ts'
+
+const { showWarning } = useToast()
 
 const props = defineProps<{
   isOpen: boolean
   customerId: number | null
-  errorMessage: string | null
   address: AddressModel | null
 }>()
 
@@ -120,20 +113,12 @@ const emit = defineEmits<{
   updated: [address: AddressModel]
 }>()
 
-const client = new Client(import.meta.env.VITE_API_BASE_URL)
-
 const street = ref('')
 const city = ref('')
 const state = ref('')
 const zipCode = ref('')
 const country = ref('')
 const addressType = ref('')
-
-const message = ref('')
-
-const messageType = computed(() => {
-  return message.value.includes('successfully') || message.value.includes('Successfully') ? 'success' : 'error'
-})
 
 function resetForm() {
   street.value = ''
@@ -142,7 +127,6 @@ function resetForm() {
   zipCode.value = ''
   country.value = ''
   addressType.value = ''
-  message.value = ''
 }
 
 watch([() => props.isOpen, () => props.address], ([isOpen, address]) => {
@@ -163,22 +147,22 @@ function closeModal() {
 
 async function handleSubmit() {
   if (!props.customerId) {
-    message.value = 'Customer ID is required'
+    showWarning('Customer ID is required')
     return
   }
 
   if (!/^\d{5}$/.test(zipCode.value)) {
-    message.value = 'ZIP Code must be a 5 digit integer'
+    showWarning('ZIP Code must be a 5 digit integer')
     return
   }
 
   if (Number(zipCode.value) < 0) {
-    message.value = 'ZIP Code must be a postitive integer'
+    showWarning('ZIP Code must be a positive integer')
     return
   }
 
   if (street.value.length > 255 || city.value.length > 100 || state.value.length > 100 || zipCode.value.length > 10 || (country.value && country.value.length > 100) || addressType.value.length > 100) {
-    message.value = 'One or more fields exceed maximum length'
+    showWarning('One or more fields exceed maximum length')
     return
   }
 
@@ -193,14 +177,11 @@ async function handleSubmit() {
     country: country.value || undefined,
   })
 
-  
-    message.value = 'Address Successfully Updated'
-
-    emit('updated', updatedAddress)
+  emit('updated', updatedAddress)
     
-    setTimeout(() => {
-      closeModal()
-    }, 1500)
+  setTimeout(() => {
+    closeModal()
+  }, 1500)
 }
 </script>
 
@@ -336,26 +317,6 @@ input::placeholder {
   color: #a3a3a3;
 }
 
-/* Message */
-.message {
-  padding: 0.875rem 1rem;
-  border-radius: 6px;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.message.success {
-  background-color: #d1fae5;
-  color: #065f46;
-  border: 1px solid #a7f3d0;
-}
-
-.message.error {
-  background-color: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #fecaca;
-}
-
 .modalActions {
   display: flex;
   gap: 0.75rem;
@@ -448,18 +409,6 @@ input::placeholder {
 
   input::placeholder {
     color: #737373;
-  }
-
-  .message.success {
-    background-color: #064e3b;
-    color: #a7f3d0;
-    border: 1px solid #065f46;
-  }
-
-  .message.error {
-    background-color: #7f1d1d;
-    color: #fca5a5;
-    border: 1px solid #991b1b;
   }
 
   .cancelButton {
