@@ -157,13 +157,13 @@
     }
 
     function testInfo(customerId: number | undefined, customer: CustomerModel, listOfAddresses: AddressModel[], removedAddresses: number[]){
-        if (customer.firstName == undefined || customer.lastName == undefined || customer.customerType == undefined){
+        if (!customer.firstName|| !customer.lastName || !customer.customerType){
             showWarning('Customer information not valid')
             return;
         }
 
         for (let i = 0; i < listOfAddresses.length; i++){
-            if (listOfAddresses[i].city == undefined || listOfAddresses[i].postalCode == undefined || listOfAddresses[i].addressType == undefined){
+            if (!listOfAddresses[i].city || !listOfAddresses[i].postalCode || !listOfAddresses[i].addressType){
                 showWarning("Address " + (i+1) + " has one or more fields that are valid")
                 return
             }
