@@ -4,7 +4,6 @@
         <div class = "flex column leftPanel">
             <h2 style="margin: 0%;">Dashboard</h2>
             <p style="margin: 0;">Welcome back! Here's what's happening with your painting business.</p>
-
         </div>        
     </div>
     
@@ -193,6 +192,7 @@ function fetchCustomers() {
     border-width: 1px;
     border-color: rgb(222, 222, 222);
     box-shadow: var(--p-card-shadow);
+    background-color: rgb(248, 251, 255);
 
     border-radius: 10px;
     padding: 2%;
@@ -241,6 +241,7 @@ function fetchCustomers() {
     border: solid;
     border-width: 1px;
     border-color: rgb(222, 222, 222);
+    background-color: white;
     border-radius: 10px;
     padding: var(--p-card-body-padding);
     box-shadow: var(--p-card-shadow);
@@ -292,10 +293,19 @@ function fetchCustomers() {
 
 @media (prefers-color-scheme: dark) {
   .jobCompletionBar{
-    background-color: rgb(15, 15, 15);
+    background-color: black;
   }
   .jobCompletionStatus{
     background-color: rgb(222, 222, 222);
+  }
+  .dashboardContainer{
+    background-color: #18181b;
+  }
+  .jobCompletion{
+    background-color: #1c1b22;
+  }
+  .dashboardElement{
+    background-color: #1c1b22;
   }
 }
   
