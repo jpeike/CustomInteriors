@@ -9,8 +9,8 @@ namespace Core
 {
     public class Address
     {
-        public int AddressId { get; set; }
-        public int CustomerId { get; set; }
+        public required int AddressId { get; set; }
+        public required int CustomerId { get; set; }
         public required string Street { get; set; }
         public required string City { get; set; }
         public required string State { get; set; }
@@ -18,6 +18,8 @@ namespace Core
         public string? Country { get; set; }
         public required string AddressType { get; set; }
 
-        public required Customer Customer { get; set; }
+        // navigational properties should be not nullable and forced to null if the fk is required
+        // or nullable if the fk is nullable
+        [JsonIgnore] public Customer Customer { get; set; } = null!;
     }
 }

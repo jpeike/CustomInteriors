@@ -29,16 +29,7 @@ public class PaymentController : ControllerBase
     [HttpPost("", Name = "CreatePayment")]
     public async Task<PaymentModel> CreatePayment([FromBody] PaymentModel paymentModel)
     {
-        PaymentModel payment = new()
-        {
-            PaymentId = paymentModel.PaymentId,
-            InvoiceId = paymentModel.InvoiceId,
-            PaymentDate = paymentModel.PaymentDate,
-            AmountPaid = paymentModel.AmountPaid,
-            Method = paymentModel.Method,
-        };
-
-        return await _paymentService.CreatePayment(payment);
+        return await _paymentService.CreatePayment(paymentModel);
     }
 
     [HttpPut("", Name = "UpdatePayment")]

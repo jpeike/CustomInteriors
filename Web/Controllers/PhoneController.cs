@@ -29,15 +29,7 @@ public class PhoneController : ControllerBase
     [HttpPost("", Name = "CreatePhone")]
     public async Task<PhoneModel> CreatePhone([FromBody] PhoneModel phoneModel)
     {
-        PhoneModel phone = new()
-        {
-            PhoneId = phoneModel.PhoneId,
-            CustomerId = phoneModel.CustomerId,
-            PhoneNumber = phoneModel.PhoneNumber,
-            PhoneType = phoneModel.PhoneType,
-        };
-
-        return await _phoneService.CreatePhone(phone);
+        return await _phoneService.CreatePhone(phoneModel);
     }
 
     [HttpPut("", Name = "UpdatePhone")]

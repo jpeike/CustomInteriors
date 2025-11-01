@@ -13,6 +13,6 @@ namespace Core
         public string? Country { get; set; }
         public required string AddressType { get; set; }
 
-       public CustomerModel Customer { get; set; } //required
+        //public CustomerModel Customer { get; set; } = null!; //required
     }
 }

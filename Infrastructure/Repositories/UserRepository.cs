@@ -25,6 +25,8 @@ public class UserRepository : IUserRepository
 
     public async Task<User> AddUser(User user)
     {
+        // todo placeholder password hash because table req is not null
+        user.PasswordHash = "PASSWORD_HASH";
         _dbContext.Users.Add(user);
         await _dbContext.SaveChangesAsync();
         return user;

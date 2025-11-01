@@ -29,16 +29,7 @@ public class QuoteRequestController : ControllerBase
     [HttpPost("", Name = "CreateQuoteRequest")]
     public async Task<QuoteRequestModel> CreateQuoteRequest([FromBody] QuoteRequestModel quoteRequestModel)
     {
-        QuoteRequestModel quoteRequest = new()
-        {
-            QuoteId = quoteRequestModel.QuoteId,
-            JobId = quoteRequestModel.JobId,
-            RequestDate = quoteRequestModel.RequestDate,
-            DescriptionOfWork = quoteRequestModel.DescriptionOfWork,
-            EstimatedPrice = quoteRequestModel.EstimatedPrice,
-        };
-
-        return await _quoteRequestService.CreateQuoteRequest(quoteRequest);
+        return await _quoteRequestService.CreateQuoteRequest(quoteRequestModel);
     }
 
     [HttpPut("", Name = "UpdateQuoteRequest")]

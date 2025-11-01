@@ -27,17 +27,10 @@ public class EmailsController : ControllerBase
     }
 
     [HttpPost("", Name = "CreateEmail")]
-    public async Task<EmailModel> CreateEmail([FromBody] CreateEmailRequest emailModel)
+    public async Task<EmailModel> CreateEmail([FromBody] EmailModel emailModel)
     {
-        EmailModel email = new()
-        {
-            EmailAddress = emailModel.EmailAddress,
-            EmailType = emailModel.EmailType,
-            CustomerId = emailModel.CustomerId,
-            CreatedOn = DateTime.UtcNow
-        };
-
-        return await _emailService.CreateEmail(email);
+        emailModel.CreatedOn = DateTime.UtcNow;
+        return await _emailService.CreateEmail(emailModel);
     }
 
     [HttpPut("", Name = "UpdateEmail")]

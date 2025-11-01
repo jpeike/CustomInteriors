@@ -8,8 +8,8 @@ public static class JobInvoiceExtensions
         InvoiceId = entity.InvoiceId,
         CreatedDate = entity.CreatedDate,
         PercentageOfInvoice = entity.PercentageOfInvoice,
-        Job = entity.Job.ToModel(),
-        Invoice = entity.Invoice.ToModel()
+        // Job = entity.Job.ToModel(),
+        // Invoice = entity.Invoice.ToModel()
     };
 
     public static IEnumerable<JobInvoiceModel> ToModels(this IEnumerable<JobInvoice> entity)
@@ -23,7 +23,7 @@ public static class JobInvoiceExtensions
         InvoiceId = model.InvoiceId,
         CreatedDate = model.CreatedDate,
         PercentageOfInvoice = model.PercentageOfInvoice,
-        Job = model.Job.ToEntity(),
-        Invoice = model.Invoice.ToEntity()
+        // Job = model.Job.ToEntity(),
+        // Invoice = model.Invoice.ToEntity()
     };
 }

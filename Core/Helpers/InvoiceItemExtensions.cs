@@ -9,7 +9,7 @@ public static class InvoiceItemExtensions
         Description = entity.Description,
         Amount = entity.Amount,
         Price = entity.Price,
-        Invoice = entity.Invoice.ToModel()
+        // Invoice = entity.Invoice.ToModel()
     };
 
     public static IEnumerable<InvoiceItemModel> ToModels(this IEnumerable<InvoiceItem> entity)
@@ -24,6 +24,6 @@ public static class InvoiceItemExtensions
         Description = model.Description,
         Amount = model.Amount,
         Price = model.Price,
-        Invoice = model.Invoice.ToEntity()
+        // Invoice = model.Invoice.ToEntity()
     };
 }

@@ -8,5 +8,5 @@ public class EmailModel
     public required string EmailType { get; set; }
     public DateTime CreatedOn { get; set; }
     
-    public CustomerModel Customer { get; set; }  //required
+    // public CustomerModel Customer { get; set; }  //required
 }

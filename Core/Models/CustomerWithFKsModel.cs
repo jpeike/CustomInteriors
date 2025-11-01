@@ -10,7 +10,7 @@ public class CustomerWithFKsModel
     public string? CompanyName { get; set; }
     public string? Status { get; set; }
     public string? CustomerNotes { get; set; }
-    public ICollection<AddressModel>? Addresses { get; set; }
+    // public ICollection<AddressModel>? Addresses { get; set; }
 
 }
 

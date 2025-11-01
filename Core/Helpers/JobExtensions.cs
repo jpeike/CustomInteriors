@@ -10,7 +10,7 @@ public static class JobExtensions
         StartDate = entity.StartDate,
         EndDate = entity.EndDate,
         Status = entity.Status,
-        Customer = entity.Customer.ToModel()
+        // Customer = entity.Customer.ToModel()
     };
 
     public static IEnumerable<JobModel> ToModels(this IEnumerable<Job> entity)
@@ -26,6 +26,6 @@ public static class JobExtensions
         StartDate = model.StartDate,
         EndDate = model.EndDate,
         Status = model.Status,
-        Customer = model.Customer.ToEntity()
+        // Customer = model.Customer.ToEntity()
     };
 }

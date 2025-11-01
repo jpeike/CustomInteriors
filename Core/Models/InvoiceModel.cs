@@ -9,7 +9,7 @@ public class InvoiceModel
     public string? Method { get; set; }
     public string? SellerDetails { get; set; }
 
-    public ICollection<JobInvoiceModel> JobInvoices { get; set; } = new List<JobInvoiceModel>();
-    public ICollection<InvoiceItemModel> InvoiceItems { get; set; } = new List<InvoiceItemModel>();
-    public ICollection<PaymentModel>? Payments { get; set; } = new List<PaymentModel>();
+    // public ICollection<JobInvoiceModel> JobInvoices { get; set; } = new List<JobInvoiceModel>();
+    // public ICollection<InvoiceItemModel> InvoiceItems { get; set; } = new List<InvoiceItemModel>();
+    // public ICollection<PaymentModel>? Payments { get; set; } = new List<PaymentModel>();
 }

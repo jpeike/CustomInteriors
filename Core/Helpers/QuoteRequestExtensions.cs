@@ -9,7 +9,7 @@ public static class QuoteRequestExtensions
         RequestDate = entity.RequestDate,
         DescriptionOfWork = entity.DescriptionOfWork,
         EstimatedPrice = entity.EstimatedPrice,
-        Job = entity.Job.ToModel()
+        // Job = entity.Job.ToModel()
     };
 
     public static IEnumerable<QuoteRequestModel> ToModels(this IEnumerable<QuoteRequest> entity)
@@ -24,6 +24,6 @@ public static class QuoteRequestExtensions
         RequestDate = model.RequestDate,
         DescriptionOfWork = model.DescriptionOfWork,
         EstimatedPrice = model.EstimatedPrice,
-        Job = model.Job.ToEntity()
+        // Job = model.Job.ToEntity()
     };
 }

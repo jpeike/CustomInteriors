@@ -9,5 +9,5 @@ public class PhoneModel
     public string? PhoneNumber { get; set; }
     public string? PhoneType { get; set; }
 
-    public CustomerModel Customer { get; set; }
+    // public CustomerModel Customer { get; set; }
 }

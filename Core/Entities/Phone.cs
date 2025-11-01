@@ -9,5 +9,5 @@ public class Phone
     public string? PhoneNumber { get; set; }
     public string? PhoneType { get; set; }
 
-    [JsonIgnore] public required Customer Customer { get; set; }
+    [JsonIgnore] public Customer Customer { get; set; } = null!;
 }

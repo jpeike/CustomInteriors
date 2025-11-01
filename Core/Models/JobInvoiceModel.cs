@@ -9,6 +9,6 @@ public class JobInvoiceModel
     public DateTime? CreatedDate { get; set; }
     public float? PercentageOfInvoice { get; set; }
 
-   public JobModel Job { get; set; }
-   public InvoiceModel Invoice { get; set; }
+   // public JobModel Job { get; set; }
+   // public InvoiceModel Invoice { get; set; }
 }

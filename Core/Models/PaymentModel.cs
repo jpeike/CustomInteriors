@@ -10,5 +10,5 @@ public class PaymentModel
     public decimal? AmountPaid { get; set; }
     public string? Method { get; set; }
 
-    public InvoiceModel Invoice { get; set; }
+    // public InvoiceModel Invoice { get; set; }
 }

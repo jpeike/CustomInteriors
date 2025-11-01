@@ -8,7 +8,7 @@ public static class PhoneExtensions
         CustomerId = entity.CustomerId,
         PhoneNumber = entity.PhoneNumber,
         PhoneType = entity.PhoneType,
-        Customer = entity.Customer.ToModel()
+        // Customer = entity.Customer.ToModel()
     };
 
     public static IEnumerable<PhoneModel> ToModels(this IEnumerable<Phone> entity)
@@ -22,6 +22,6 @@ public static class PhoneExtensions
         CustomerId = model.CustomerId,
         PhoneNumber = model.PhoneNumber,
         PhoneType = model.PhoneType,
-        Customer = model.Customer.ToEntity()
+        // Customer = model.Customer.ToEntity()
     };
 }

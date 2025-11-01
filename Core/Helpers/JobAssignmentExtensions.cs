@@ -4,12 +4,12 @@ public static class JobAssignmentExtensions
 {
     public static JobAssignmentModel ToModel(this JobAssignment entity) => new JobAssignmentModel
     {
+        JobAssignmentId = entity.JobAssignmentId,
         JobId = entity.JobId,
-        UserId = entity.UserId,
         AssignmentDate = entity.AssignmentDate,
         RoleOnJob = entity.RoleOnJob,
-        Job = entity.Job?.ToModel(),
-        User = entity.User?.ToModel()
+        // Job = entity.Job?.ToModel(),
+        // User = entity.User?.ToModel()
     };
 
     public static IEnumerable<JobAssignmentModel> ToModels(this IEnumerable<JobAssignment> entity)
@@ -19,11 +19,11 @@ public static class JobAssignmentExtensions
 
     public static JobAssignment ToEntity(this JobAssignmentModel model) => new JobAssignment
     {
+        JobAssignmentId = model.JobAssignmentId,
         JobId = model.JobId,
-        UserId = model.UserId,
         AssignmentDate = model.AssignmentDate,
         RoleOnJob = model.RoleOnJob,
-        Job = model.Job?.ToEntity(),
-        User = model.User?.ToEntity()
+        // Job = model.Job?.ToEntity(),
+        // User = model.User?.ToEntity()
     };
 }

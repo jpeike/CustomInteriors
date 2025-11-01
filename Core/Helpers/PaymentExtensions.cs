@@ -9,7 +9,7 @@ public static class PaymentExtensions
         PaymentDate = entity.PaymentDate,
         AmountPaid = entity.AmountPaid,
         Method = entity.Method,
-        Invoice = entity.Invoice.ToModel()
+        // Invoice = entity.Invoice.ToModel()
     };
 
     public static IEnumerable<PaymentModel> ToModels(this IEnumerable<Payment> entity)
@@ -24,6 +24,6 @@ public static class PaymentExtensions
         PaymentDate = model.PaymentDate,
         AmountPaid = model.AmountPaid,
         Method = model.Method,
-        Invoice = model.Invoice.ToEntity()
+        // Invoice = model.Invoice.ToEntity()
     };
 }

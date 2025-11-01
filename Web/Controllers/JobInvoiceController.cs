@@ -29,15 +29,7 @@ public class JobInvoiceController : ControllerBase
     [HttpPost("", Name = "CreateJobInvoice")]
     public async Task<JobInvoiceModel> CreateJobInvoice([FromBody] JobInvoiceModel jobInvoiceModel)
     {
-        JobInvoiceModel jobInvoice = new()
-        {
-            JobId = jobInvoiceModel.JobId,
-            InvoiceId = jobInvoiceModel.InvoiceId,
-            CreatedDate = jobInvoiceModel.CreatedDate,
-            PercentageOfInvoice = jobInvoiceModel.PercentageOfInvoice,
-        };
-
-        return await _jobInvoiceService.CreateJobInvoice(jobInvoice);
+        return await _jobInvoiceService.CreateJobInvoice(jobInvoiceModel);
     }
 
     [HttpPut("", Name = "UpdateJobInvoice")]

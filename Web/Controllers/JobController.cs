@@ -29,17 +29,7 @@ public class JobController : ControllerBase
     [HttpPost("", Name = "CreateJob")]
     public async Task<JobModel> CreateJob([FromBody] JobModel jobModel)
     {
-        JobModel job = new()
-        {
-            JobId = jobModel.JobId,
-            CustomerId = jobModel.CustomerId,
-            JobDescription = jobModel.JobDescription,
-            StartDate = jobModel.StartDate,
-            EndDate = jobModel.EndDate,
-            Status = jobModel.Status,
-        };
-
-        return await _jobService.CreateJob(job);
+        return await _jobService.CreateJob(jobModel);
     }
 
     [HttpPut("", Name = "UpdateJob")]

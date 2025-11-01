@@ -16,6 +16,5 @@ public class Customer
     [JsonIgnore] public ICollection<Email>? Emails { get; set; } = new List<Email>();
     [JsonIgnore] public ICollection<Phone>? Phones { get; set; } = new List<Phone>();
     [JsonIgnore] public ICollection<Job>? Jobs { get; set; } = new List<Job>();
-    [JsonIgnore] public ICollection<QuoteRequest>? QuoteRequests { get; set; } = new List<QuoteRequest>();
     [JsonIgnore] public User? User { get; set; }
 }

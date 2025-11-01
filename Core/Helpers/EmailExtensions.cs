@@ -9,7 +9,7 @@ public static class EmailExtensions
         EmailAddress = email.EmailAddress,
         EmailType = email.EmailType,
         CreatedOn = email.CreatedOn,
-        Customer = email.Customer.ToModel()
+        // Customer = email.Customer.ToModel()
     };
 
     public static IEnumerable<EmailModel> ToModels(this IEnumerable<Email> emails)
@@ -24,6 +24,6 @@ public static class EmailExtensions
         EmailAddress = model.EmailAddress,
         EmailType = model.EmailType,
         CreatedOn = model.CreatedOn,
-        Customer = model.Customer.ToEntity()
+        // Customer = model.Customer.ToEntity()
     };
 }

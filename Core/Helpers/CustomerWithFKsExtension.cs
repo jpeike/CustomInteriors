@@ -12,7 +12,7 @@ public static class CustomerWithFKsExtensions
         CompanyName = customer.CompanyName,
         Status = customer.Status,
         CustomerNotes = customer.CustomerNotes,
-        Addresses = customer.Addresses?.Select(a => a.ToModel()).ToList()
+        // Addresses = customer.Addresses?.Select(a => a.ToModel()).ToList()
     };
 
     public static IEnumerable<CustomerWithFKsModel> FksToModels(this IEnumerable<Customer> customer)
@@ -30,7 +30,7 @@ public static class CustomerWithFKsExtensions
         CompanyName = model.CompanyName,
         Status = model.Status,
         CustomerNotes = model.CustomerNotes,
-        Addresses = model.Addresses?.Select(a => a.ToEntity()).ToList()
+        // Addresses = model.Addresses?.Select(a => a.ToEntity()).ToList()
     };
 }
 

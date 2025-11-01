@@ -10,5 +10,5 @@ public class InvoiceItem
     public int? Amount { get; set; }
     public decimal? Price { get; set; }
 
-    [JsonIgnore] public required Invoice Invoice { get; set; }
+    [JsonIgnore] public Invoice Invoice { get; set; } = null!;
 }

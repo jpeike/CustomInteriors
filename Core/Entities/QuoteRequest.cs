@@ -10,6 +10,5 @@ public class QuoteRequest
     public string? DescriptionOfWork { get; set; }
     public decimal? EstimatedPrice { get; set; }
 
-    //[JsonIgnore] public required Customer Customer { get; set; }
-    [JsonIgnore] public required Job Job { get; set; }
+    [JsonIgnore] public Job Job { get; set; } = null!;
 }

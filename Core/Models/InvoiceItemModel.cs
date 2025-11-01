@@ -10,5 +10,5 @@ public class InvoiceItemModel
     public int? Amount { get; set; }
     public decimal? Price { get; set; }
 
-   public InvoiceModel Invoice { get; set; } // required
+   // public InvoiceModel Invoice { get; set; } // required
 }

@@ -9,7 +9,7 @@ public class Invoice
     public string? Method { get; set; }
     public string? SellerDetails { get; set; }
 
-    [JsonIgnore] public ICollection<JobInvoice> JobInvoices { get; set; } = new List<JobInvoice>();
-    [JsonIgnore] public ICollection<InvoiceItem> InvoiceItems { get; set; } = new List<InvoiceItem>();
-    [JsonIgnore] public ICollection<Payment>? Payments { get; set; } = new List<Payment>();
+    [JsonIgnore] public ICollection<JobInvoice> JobInvoices { get; set; }  = null!;
+    [JsonIgnore] public ICollection<InvoiceItem> InvoiceItems { get; set; } = null!;
+    [JsonIgnore] public ICollection<Payment>? Payments { get; set; }
 }
