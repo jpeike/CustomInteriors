@@ -38,7 +38,7 @@ const router = createRouter({
       name: RouteNames.CUSTOMERS,
       component: () => import('../views/CustomerPage.vue'),
       meta: {
-        requiresAuth: true,
+        requiresAuth: false,
       },
     },
     {
@@ -55,23 +55,23 @@ const router = createRouter({
       name: RouteNames.EMAILS,
       component: () => import('../views/EmailPage.vue'),
     },
-    { 
-      path: RoutePaths.ERROR_PAGE, 
-      name: RouteNames.ERROR_PAGE, 
+    {
+      path: RoutePaths.ERROR_PAGE,
+      name: RouteNames.ERROR_PAGE,
       component: () => import('../views/Error/ErrorPage.vue'),
       meta: {
         layout: 'none',
       },
     },
-    { 
-    path: RoutePaths.NOT_FOUND, 
-    name: RouteNames.NOT_FOUND, 
-    redirect: (to: RouteLocation) => ({
-      name: 'ErrorPage',
-      params: { code: '404' },
-      query: { routeName: to.fullPath }
-  })
-  },
+    {
+      path: RoutePaths.NOT_FOUND,
+      name: RouteNames.NOT_FOUND,
+      redirect: (to: RouteLocation) => ({
+        name: 'ErrorPage',
+        params: { code: '404' },
+        query: { routeName: to.fullPath },
+      }),
+    },
   ] satisfies RouteRecordRaw[],
 })
 

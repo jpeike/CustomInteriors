@@ -32,3 +32,10 @@ coverage
 *.tsbuildinfo
 
 /src/client/client.ts
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
