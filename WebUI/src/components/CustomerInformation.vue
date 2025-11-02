@@ -205,11 +205,11 @@
         
         for (let i = 0; i < listOfEmails.length; i++){
             if (!emailRegex.test(listOfEmails[i].emailAddress!)){
-                showWarning("Email " + (i+1) + " 's address is invalid")
+                showWarning("Email " + (i+1) + " 's address is not valid")
                 return;
             }
             if (!listOfEmails[i].emailAddress || !listOfEmails[i].emailType){
-                showWarning("Email " + (i+1) + " has one or more fields that are valid")
+                showWarning("Email " + (i+1) + " has one or more fields that are not valid")
                 return;
             }
         }

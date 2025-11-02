@@ -61,7 +61,7 @@
               <p style="margin: 0;">Contact: </p>
             </div>
             <div v-if="customer.prefferedContactMethod == 'Email'">
-              Temp Email
+              {{getEmailString(customer.customerId!)}}
             </div>
             <div v-else-if="customer.prefferedContactMethod == 'Phone'">
               Temp Phone
@@ -163,6 +163,14 @@ function getAddressString(customerID: number){
   for (let i = 0; i < state.addresses.length; i++){
     if (state.addresses[i].customerId == customerID){
       return state.addresses[i].street + " " + state.addresses[i].city + ", " + state.addresses[i].state;
+    }
+  }  
+}
+
+function getEmailString(customerID: number){
+  for (let i = 0; i < state.emails.length; i++){
+    if (state.emails[i].customerId == customerID){
+      return state.emails[i].emailAddress;
     }
   }  
 }
