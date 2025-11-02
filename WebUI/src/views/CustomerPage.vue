@@ -79,7 +79,7 @@
           <br/>
           <p style="margin: 0;">Company: {{ customer.companyName }}</p>
           <br/>
-          <p style="margin: 0;">Status: {{ customer.companyName }}</p>
+          <p style="margin: 0;">Status: {{ customer.status }}</p>
           <br/>
           <p style="margin: 0;">Notes: {{ customer.customerNotes }}</p>
         </template>
