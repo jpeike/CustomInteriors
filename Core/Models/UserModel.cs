@@ -3,9 +3,12 @@ namespace Core;
 public class UserModel
 {
     public int Id { get; set; }
-    public string Username { get; set; } = null!; // this "=null!" means that we are ignoring the warning that we would otherwise get saying we know this isnt going to be null
-    public string Email { get; set; } = null!;
+    public int CustomerId { get; set; }
+    public required string Username { get; set; }
+    public required string Email { get; set; }
     public DateTime CreatedOn { get; set; }
 
+    // public CustomerModel? Customer { get; set; }
+    // public ICollection<JobAssignmentModel> JobAssignments { get; set; } =  new List<JobAssignmentModel>();
 }
 

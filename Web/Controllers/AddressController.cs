@@ -12,10 +12,12 @@ namespace Web;
 public class AddressController : ControllerBase
 {
     private readonly IAddressService _addressService;
+    private readonly ICustomerService _customerService;
 
-    public AddressController(IAddressService addressService)
+    public AddressController(IAddressService addressService, ICustomerService customerService)
     {
         _addressService = addressService;
+        _customerService = customerService;
     }
 
     // this is how you specify the name of the method in the ts client -> Name = "nameIWant"
@@ -34,18 +36,7 @@ public class AddressController : ControllerBase
     [HttpPost("", Name = "CreateAddress")]
     public async Task<AddressModel> CreateAddress([FromBody] AddressModel addressModel)
     {
-        AddressModel address = new()
-        {
-            CustomerId = addressModel.CustomerId,
-            Street = addressModel.Street,
-            City = addressModel.City,
-            State = addressModel.State,
-            PostalCode = addressModel.PostalCode,
-            Country = addressModel.Country,
-            AddressType = addressModel.AddressType
-        };
-
-        return await _addressService.CreateAddress(address);
+        return await _addressService.CreateAddress(addressModel);
     }
 
     [HttpPut("", Name = "UpdateAddress")]

@@ -24,7 +24,7 @@ public class AddressService : IAddressService
 
     public async Task<IEnumerable<AddressModel>> GetAllAddresses()
     {
-        var allAddresses = await _addressRepository.GetAllAddresses();
+        IEnumerable<Address> allAddresses = await _addressRepository.GetAllAddresses();
         return allAddresses.ToModels();
     }
 

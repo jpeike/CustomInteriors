@@ -5,6 +5,7 @@ public static class UserExtensions
     public static UserModel ToModel(this User user) => new UserModel
     {
         Id = user.Id,
+        CustomerId = user.CustomerId,
         Username = user.Username,
         Email = user.Email,
         CreatedOn = user.CreatedOn
@@ -18,9 +19,10 @@ public static class UserExtensions
     public static User ToEntity(this UserModel model) => new User
     {
         Id = model.Id,
+        CustomerId = model.CustomerId,
         Username = model.Username,
         Email = model.Email,
-        CreatedOn = model.CreatedOn
+        CreatedOn = model.CreatedOn,
         // PasswordHash would need to be set separately
     };
 }
