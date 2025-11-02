@@ -21,14 +21,7 @@
                 <h3 class="fieldTitle">Customer Type*</h3>
                 <InputText v-model="customer.customerType" required="true" type="text" class="inputValue" :placeholder="currentCustomerInformation?.customerType"></InputText>
             </div>
-            <div>
-                <h3 class="fieldTitle">Email</h3>
-                <InputText v-model="newEmail" type="text" class="inputValue" placeholder="placeholder email"></InputText>
-            </div>
-            <div>
-                <h3 class="fieldTitle">Phone</h3>
-                <InputText v-model="newPhone" type="text" class="inputValue" placeholder="placeholder phone"></InputText>
-            </div>
+                        
         <!--Contact-->
             <div style="margin-bottom: 5%;">
                 <h3 class="fieldTitle">Preffered Contact Method</h3>
@@ -44,6 +37,27 @@
                 </div>
             </div>
             
+            <div style="margin-bottom: 5%;" v-for="(emailsAdresses, index) in listOfEmails">
+                
+                <div class="flex row addressHeader">
+                    <h2 style="margin: 0;">Email {{ index + 1 }}</h2>
+                    <i class="pi pi-trash editButton" @click="deleteEmail(listOfEmails[index]); listOfEmails.splice(index, 1);"></i>
+                    </div>
+                <div class="flex row multipleFields">
+                    <div>
+                        <h3 class="fieldTitle">Address * </h3>
+                        <InputText v-model="emailsAdresses.emailAddress" type="text" class="inputValue" :placeholder="listOfEmails[index].emailAddress"></InputText>
+                    </div>
+                    <div>
+                        <h3 class="fieldTitle">Type * </h3>
+                        <InputText v-model="emailsAdresses.emailType" type="text" class="inputValue" :placeholder="listOfEmails[index].emailType"></InputText>
+                    </div>  
+                </div>                  
+            </div>
+            <div class="addAddress">
+                <button @click="addEmail" class="cancelUpdateButton"> <p style="margin: 0; text-align: center;">Add Email</p></button>
+            </div>
+
         <!--Address Section-->
             <div class="addressField" v-for="(address, index) in listOfAddresses">
                 <div class="flex row addressHeader">
@@ -95,14 +109,18 @@
                 <h3 class="fieldTitle">Notes</h3>
                 <textarea v-model="customer.customerNotes" type="text" class="p-inputtext p-component inputValue notes" :placeholder="currentCustomerInformation?.customerNotes"></textarea>
             </div>
+            
+            
+
             <div class="flex row buttons">
                 <button class = "cancelUpdateButton" @click="$emit('closePage')">
                     <p style="margin: 0; text-align: center;">Cancel</p>
                 </button>  
-                <button class = "updateInfoButton" @click="testInfo(currentCustomerInformation?.customerId, customer, listOfAddresses, removedAddresses)">
+                <button class = "updateInfoButton" @click="testInfo(currentCustomerInformation?.customerId, customer, listOfAddresses, removedAddresses, listOfEmails, removedEmails)">
                     <p style="margin: 0; text-align: center;">{{buttonDesctipnion}}</p>
                 </button>
             </div>
+            
         </div>
         <button class = "exitButton" @click="$emit('closePage')"><h4 style="margin: 0;">X</h4></button>
     </div>
@@ -110,7 +128,7 @@
 
 <script setup lang="ts">
     import 'primeicons/primeicons.css';
-    import {CustomerModel, AddressModel, Address } from '../client/client'
+    import { Client, CustomerModel, AddressModel, EmailModel, Email } from '../client/client'
     import InputText from 'primevue/inputtext';
     import {ref} from 'vue'
     import { useToast } from '@/composables/useToast.ts'
@@ -120,13 +138,15 @@
     const props = defineProps<{
         currentCustomerInformation: CustomerModel | undefined,
         currentAddresses: AddressModel[] | undefined,
+        currentEmails: EmailModel[] | undefined,
         title: String,
         description: String,
         buttonDesctipnion: String
     }>();
+    
     const emit = defineEmits<{
         closePage: []
-        updateCustomerInformation: [customerId: number | undefined, customer: CustomerModel, listOfAddresses: AddressModel[], removedAddresses: number[]]
+        updateCustomerInformation: [customerId: number | undefined, customer: CustomerModel, listOfAddresses: AddressModel[], removedAddresses: number[], listOfEmails: EmailModel[], removedEmails: number[]]
     }>()
 
     const newEmail = ref('');
@@ -135,13 +155,24 @@
     let customer = ref(new CustomerModel);;
     let listOfAddresses = ref([new AddressModel]);
     let removedAddresses = [0];
-        
+    
+    let listOfEmails = ref([new EmailModel]);
+    let removedEmails = [0];
+
+    const message = ref('');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+
     if (props.currentCustomerInformation != undefined){
         customer = ref(props.currentCustomerInformation);
     }
 
     if (props.currentAddresses != undefined){
         listOfAddresses = ref(props.currentAddresses);
+    }
+
+    if (props.currentEmails != undefined){
+        listOfEmails = ref(props.currentEmails);
     }
     
     function addAddress(){
@@ -156,10 +187,31 @@
         }
     }
 
-    function testInfo(customerId: number | undefined, customer: CustomerModel, listOfAddresses: AddressModel[], removedAddresses: number[]){
+    function addEmail(){
+        listOfEmails.value.push(new EmailModel);
+    }
+
+    function deleteEmail(email: EmailModel){
+        if (email.emailID! != undefined){
+            removedEmails.push(email.emailID);
+        }
+    }
+
+    function testInfo(customerId: number | undefined, customer: CustomerModel, listOfAddresses: AddressModel[], removedAddresses: number[], listOfEmails: EmailModel[], removedEmails: number[]){
         if (!customer.firstName|| !customer.lastName || !customer.customerType){
             showWarning('Customer information not valid')
             return;
+        }
+        
+        for (let i = 0; i < listOfEmails.length; i++){
+            if (!emailRegex.test(listOfEmails[i].emailAddress!)){
+                showWarning("Email " + (i+1) + " 's address is not valid")
+                return;
+            }
+            if (!listOfEmails[i].emailAddress || !listOfEmails[i].emailType){
+                showWarning("Email " + (i+1) + " has one or more fields that are not valid")
+                return;
+            }
         }
 
         for (let i = 0; i < listOfAddresses.length; i++){
@@ -174,13 +226,33 @@
             }
         }
         
-        emit('updateCustomerInformation', customerId, customer, listOfAddresses, removedAddresses);
+        message.value = 'Address Successfully Created'
+        emit('updateCustomerInformation', customerId, customer, listOfAddresses, removedAddresses, listOfEmails, removedEmails);
 
     }
-
 </script>
 
 <style scoped>
+
+    .message {
+        padding: 0.875rem 1rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .message.success {
+        background-color: #d1fae5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+    }
+
+    .message.error {
+        background-color: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+
     .flex{
         display: flex;
     }
@@ -207,6 +279,11 @@
     }
     .customerInfoTitle{
         margin-bottom: 2vh;
+    }
+    .addressHeader{
+        margin-bottom: 2%;
+        justify-content: space-between;
+        align-items: center;
     }
     .exitButton{
         background: none;

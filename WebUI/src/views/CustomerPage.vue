@@ -33,7 +33,7 @@
             <p style="margin: 0;">Manage your customer information and contact details.</p>
         </div>
         <div class = "rightPanel">
-            <button class = "addButton" @click="currentCustomerAddresses = undefined; displayCustomerDetails = !displayCustomerDetails; currentCustomerIndex = -1; customerTitle = 'Create Customer'; customerDescription = 'Create customer information and contact details'; customerButtonDesc = 'Create'; console.log(state.customer)">
+            <button class = "addButton" @click="currentEmailAddresses = undefined; currentCustomerAddresses = undefined; displayCustomerDetails = !displayCustomerDetails; currentCustomerIndex = -1; customerTitle = 'Create Customer'; customerDescription = 'Create customer information and contact details'; customerButtonDesc = 'Create'; console.log(state.customer)">
                 <p style="margin: 0; text-align: center;"> + Add Customers</p>
             </button>
         </div>
@@ -61,7 +61,7 @@
               <p style="margin: 0;">Contact: </p>
             </div>
             <div v-if="customer.prefferedContactMethod == 'Email'">
-              Temp Email
+              {{getEmailString(customer.customerId!)}}
             </div>
             <div v-else-if="customer.prefferedContactMethod == 'Phone'">
               Temp Phone
@@ -91,7 +91,7 @@
   </div>
 
   <div v-if="displayCustomerDetails" class="flex row customerWindowBlur">
-    <CustomerInformation :currentCustomerInformation="state.customer[currentCustomerIndex]" :currentAddresses = "currentCustomerAddresses" :title="customerTitle" :description="customerDescription" :buttonDesctipnion="customerButtonDesc" @closePage="displayCustomerDetails = !displayCustomerDetails" @updateCustomerInformation="updateCustomerInformation" @openAddressListModal="openAddressListModal"></CustomerInformation>
+    <CustomerInformation :currentCustomerInformation="state.customer[currentCustomerIndex]" :currentEmails="currentEmailAddresses" :currentAddresses = "currentCustomerAddresses" :title="customerTitle" :description="customerDescription" :buttonDesctipnion="customerButtonDesc" @closePage="displayCustomerDetails = !displayCustomerDetails" @updateCustomerInformation="updateCustomerInformation" @openAddressListModal="openAddressListModal"></CustomerInformation>
   </div>
 
   <div v-if="deleteConfirmation" class="flex row customerWindowBlur">
@@ -104,7 +104,7 @@
 import CustomerInformation from '../components/CustomerInformation.vue';
 import DeleteConfirmation from '../components/DeleteConfirmation.vue';
 import Card from 'primevue/card'
-import { Client, CustomerModel, AddressModel} from '../client/client'
+import { Client, CustomerModel, AddressModel, EmailModel} from '../client/client'
 import { ref } from 'vue'
 import { onMounted, reactive } from 'vue'
 import AddressListModal from '../components/modals/AddressListModal.vue'
@@ -132,12 +132,14 @@ let customerButtonDesc = ref('');
 let currentCustomerIndex = ref(0);
 let searchValue = ref('');
 
+let currentEmailAddresses = ref<EmailModel[] | undefined>(undefined)
 let currentCustomerAddresses = ref<AddressModel[] | undefined>(undefined)
 
 const state = reactive({
   customer: [] as CustomerModel[],
   addresses: [] as AddressModel[],
   modalAddresses: [] as AddressModel[],
+  emails: [] as EmailModel[],
   loading: false,
   error: null as string | null,
 })
@@ -146,6 +148,7 @@ onMounted(() => {
   console.log('AboutView mounted')
   fetchCustomers()
   fetchAddresses()
+  fetchEmails()
 })
 
 function getCustomerIndex(customerID: number){
@@ -160,6 +163,14 @@ function getAddressString(customerID: number){
   for (let i = 0; i < state.addresses.length; i++){
     if (state.addresses[i].customerId == customerID){
       return state.addresses[i].street + " " + state.addresses[i].city + ", " + state.addresses[i].state;
+    }
+  }  
+}
+
+function getEmailString(customerID: number){
+  for (let i = 0; i < state.emails.length; i++){
+    if (state.emails[i].customerId == customerID){
+      return state.emails[i].emailAddress;
     }
   }  
 }
@@ -191,6 +202,24 @@ function fetchAddresses() {
     })
 }
 
+function fetchEmails() {
+  state.loading = true
+  state.error = null
+  client
+    .getAllEmails()
+    .then((response) => {
+      console.log(response);
+      state.emails = response
+    })
+    .catch((error) => {
+      state.error = error.message || 'An error occurred'
+      return null;
+    })
+    .finally(() => {
+      state.loading = false
+    })
+}
+
 async function fetchAddressesByCustomerId(customerId: number) {
   state.loading = true
   state.error = null
@@ -208,11 +237,28 @@ async function fetchAddressesByCustomerId(customerId: number) {
     })
 }
 
+function fetchEmailsByCustomerId(customerId: number){
+  state.loading = true
+  state.error = null
+    
+  let userEmails = new Array();
+  for (let i = 0; i < state.emails.length; i++){
+    console.log(state.emails[i])
+
+    if(state.emails[i].customerId == customerId){
+      userEmails.push(state.emails[i]);
+    }
+  }
+  currentEmailAddresses = ref(userEmails);
+  state.loading = false
+}
+
 async function editCustomerUI(customer: CustomerModel){
     selectedCustomerId.value = customer.customerId!;
    
     getCustomerIndex(selectedCustomerId.value); 
     await fetchAddressesByCustomerId(customer.customerId!)
+    fetchEmailsByCustomerId(customer.customerId!);
 
     state.loading = true;
     displayCustomerDetails = ref(true);
@@ -304,26 +350,89 @@ function updateAddress(address: AddressModel){
     })
 }
 
-function updateCustomerInformation(currentID: number | undefined, newCustomer: CustomerModel, newAddress: AddressModel[], removedAddresses: number[]){
+//emails
+async function deleteEmail(emailID: number) {
+    state.loading = true
+    state.error = null  
+    await client
+    .deleteEmail(emailID)
+    .then(() => {
+        showSuccess('Email Deleted Successfully');
+    })
+    .catch((error) => {
+      showError(error);
+      state.error = error.message || 'An error occurred'
+    })
+    .finally(() => {
+      fetchEmailsByCustomerId(selectedCustomerId.value!)
+      state.loading = false
+    })
+}
+
+async function createEmail(email: EmailModel) {
+  state.loading = true
+  state.error = null  
+  await client
+  .createEmail(email)
+  .then(() => {
+        showSuccess('Email Created Successfully');
+    })
+    .catch((error) => {
+      showError(error);
+      state.error = error.message || 'An error occurred'
+    })
+    .finally(() => {
+      fetchEmailsByCustomerId(selectedCustomerId.value!)
+      state.loading = false
+    })
+}
+
+async function updateEmail(email: EmailModel) {
+  state.loading = true
+  state.error = null  
+  await client
+  .updateEmail(email)
+  .then(() => {
+      showSuccess('Email Updated Successfully');
+  })
+  .catch((error) => {
+    showError(error);
+    state.error = error.message || 'An error occurred'
+  })
+  .finally(() => {
+    fetchEmailsByCustomerId(selectedCustomerId.value!)
+    state.loading = false
+  })
+}
+
+function updateCustomerInformation(currentID: number | undefined, newCustomer: CustomerModel, newAddress: AddressModel[], removedAddresses: number[], newEmails: EmailModel[], removedEmails: number[]){
   //create new customer
   if(currentID == null){
-    createCustomer(newCustomer, newAddress);
+    createCustomer(newCustomer, newAddress, newEmails);
   }
   //update existing customer
   else{
-    updateCustomer(currentID, newCustomer, newAddress);
+      updateCustomer(currentID, newCustomer, newAddress, newEmails);
   }
+
   if (removedAddresses.length > 1){
     for (let i = 1; i < removedAddresses.length; i++){
       deleteAddress(removedAddresses[i]!);
     } 
   }
+
+  if (removedEmails.length > 1){
+    for (let i = 1; i < removedEmails.length; i++){
+      deleteEmail(removedEmails[i]!);
+    }
+  }
+
   fetchCustomers();
   fetchAddresses();
-  displayCustomerDetails = ref(false); 
+  displayCustomerDetails = ref(false);
 }
 
-async function createCustomer(newCustomer: CustomerModel, newAddress: AddressModel[]){
+async function createCustomer(newCustomer: CustomerModel, newAddress: AddressModel[], newEmails: EmailModel[]){
     newCustomer.customerId = 0;
     if (newCustomer.firstName != undefined && newCustomer.lastName != undefined && newCustomer.customerType != undefined){
       try {
@@ -344,10 +453,15 @@ async function createCustomer(newCustomer: CustomerModel, newAddress: AddressMod
         await fetchCustomers();
         
         for (let i = 0; i < newAddress.length; i++){
-          if (newAddress[i].city != undefined && newAddress[i].state != undefined && newAddress[i].postalCode != undefined && newAddress[i].addressType != undefined){
-            newAddress[i].customerId = state.customer[state.customer.length - 1].customerId;
-            createAddress(newAddress[i]);
-          }
+          newAddress[i].customerId = state.customer[state.customer.length - 1].customerId;
+          await createAddress(newAddress[i]);
+        }
+
+        for (let i = 0; i < newEmails.length; i++){
+          newEmails[i].customerId = state.customer[state.customer.length - 1].customerId;
+          await createEmail(newEmails[i]);
+          fetchEmails();
+
         }
       } 
       catch (error) {
@@ -356,7 +470,7 @@ async function createCustomer(newCustomer: CustomerModel, newAddress: AddressMod
     }
 }
 
-async function updateCustomer(currentID: number, newCustomer: CustomerModel, newAddress: AddressModel[]){
+async function updateCustomer(currentID: number, newCustomer: CustomerModel, newAddress: AddressModel[], newEmails: EmailModel[]){
     state.customer[currentCustomerIndex.value - 1] = newCustomer;
     state.customer[currentCustomerIndex.value - 1].customerId = currentID;
     state.loading = true;
@@ -387,7 +501,19 @@ async function updateCustomer(currentID: number, newCustomer: CustomerModel, new
           else{
             await updateAddress(newAddress[i]);
           }
+        }      
+      }
+      for (let i = 0; i < newEmails.length; i++){
+        if (newEmails[i].emailID! == undefined){
+          newEmails[i].customerId = state.customer[state.customer.length - 1].customerId;
+          await createEmail(newEmails[i]);
+          
         }
+        else{
+          await updateEmail(newEmails[i])
+        }
+        fetchEmails();
+
       }
     } 
     catch (error) {
@@ -413,6 +539,8 @@ function deleteCustomer(currentID: number){
     })
     .finally(() => {
       fetchCustomers();
+      fetchAddresses();
+      fetchEmails();
       state.loading = false
     })
   deleteConfirmation = ref(false); 
