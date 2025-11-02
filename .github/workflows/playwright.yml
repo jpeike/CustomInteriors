@@ -20,6 +20,11 @@ jobs:
         with:
           node-version: lts/*
           cache: 'npm'
+      
+      - name: Debug directory check
+        run: |
+          pwd
+          ls -la
 
       - name: Install dependencies
         working-directory: WebUI
