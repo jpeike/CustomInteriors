@@ -33,7 +33,7 @@ const items = ref([
   { label: 'Emails', icon: 'pi pi-envelope', command: () => router.push(RoutePaths.EMAILS) },
   { label: 'Employees', icon: 'pi pi-sitemap', command: () => router.push(RoutePaths.EMPLOYEES) },
   {
-    label: 'Login', icon: 'pi pi-sitemap', command: () =>  auth.logout()
+    label: 'Logout', icon: 'pi pi-sitemap', command: () =>  auth.logout()
   }
 ])
 
