@@ -3,6 +3,7 @@ using Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using Web;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,13 +13,36 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.Authority = "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_JPMU56Ifb";
+        options.Audience = "574mvan5pjeoifpt063t473se6";
+
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
+            ValidIssuer = "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_JPMU56Ifb",
+
             ValidateAudience = false,
-            ValidateLifetime = true
+
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true
+        };
+        options.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = context =>
+            {
+                var clientIdClaim = context.Principal?.Claims
+                    .FirstOrDefault(c => c.Type == "client_id")?.Value;
+
+                if (clientIdClaim != "574mvan5pjeoifpt063t473se6")
+                {
+                    context.Fail("Invalid client_id");
+                }
+
+                return Task.CompletedTask;
+            }
         };
     });
+
+
 
 // 2. Add role-based authorization policies
 builder.Services.AddAuthorization(options =>

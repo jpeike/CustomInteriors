@@ -216,7 +216,7 @@
 
         for (let i = 0; i < listOfAddresses.length; i++){
             if (!listOfAddresses[i].city || !listOfAddresses[i].postalCode || !listOfAddresses[i].addressType){
-                showWarning("Address " + (i+1) + " has one or more fields that are valid")
+                showWarning("Address " + (i+1) + " has one or more fields that are not valid")
                 return
             }
 
