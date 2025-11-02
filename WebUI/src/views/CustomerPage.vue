@@ -24,9 +24,7 @@
       @close="closeUpdateModal"
       @updated="updateAddress"
     />
-  </div>
-  
-  
+  </div>  
   
   <div class="flex column customerBody">
     <div class="flex row pageHeader">
@@ -73,7 +71,8 @@
             </div>
           </div>
           
-          <br/><p style="margin: 0;"> Address: {{getAddressString(customer.customerId!)}}</p>
+          <br/>
+          <p style="margin: 0;"> Address: {{getAddressString(customer.customerId!)}}</p>
           <br/>
           <p style="margin: 0;">Type: {{ customer.customerType }}</p>
           <br/>
