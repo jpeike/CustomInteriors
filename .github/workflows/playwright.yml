@@ -20,6 +20,7 @@ jobs:
         with:
           node-version: lts/*
           cache: 'npm'
+          cache-dependency-path: WebUI/package-lock.json
       
       - name: Debug directory check
         run: |
