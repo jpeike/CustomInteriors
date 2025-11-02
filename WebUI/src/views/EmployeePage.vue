@@ -9,6 +9,9 @@ import 'primeicons/primeicons.css'
 const client = new Client(import.meta.env.VITE_API_BASE_URL)
 let showEmployeeModal = ref(false)
 const selectedEmployee = ref(new EmployeeModel);
+import { useToast } from '@/composables/useToast.ts'
+
+const { showSuccess, showError } = useToast()
 
 const state = reactive({
   employees: [] as EmployeeModel[],
@@ -26,7 +29,7 @@ function fetchEmployees() {
   state.loading = true
   state.error = null
   client
-    .getEmployees()
+    .getAllEmployees()
     .then((response) => {
       state.employees = response
     })
@@ -51,7 +54,11 @@ function addDefaultEmployee() {
 
   // create employee
   client.createEmployee(newEmployee)
+    .then(() => {
+        showSuccess('Employee Created Successfully');
+      })
     .catch((error) => {
+      showError('Failed To Create Employee')
       state.error = error.message || 'An error occurred';
     })
     .finally(() => {
@@ -67,7 +74,11 @@ function updateEmployeeInformation(currentID: number, updatedEmployee: EmployeeM
   state.error = null;
   client
     .updateEmployee(updatedEmployee)
+    .then(() => {
+      showSuccess('Employee Updated Successfully');
+    })
     .catch((error) => {
+      showError('Failed To Update Employee')
       state.error = error.message || 'An error occurred';
     })
     .finally(() => {
@@ -83,7 +94,11 @@ state.loading = true;
 
   client
     .deleteEmployee(id)
+    .then(() => {
+      showSuccess('Employee Deleted Successfully');
+    })
     .catch((error) => {
+      showError('Failed To Delete Employee')
       state.error = error.message || 'An error occurred';
     })
     .finally(() => {
