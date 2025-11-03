@@ -4,11 +4,12 @@ public static class EmailExtensions
 {
     public static EmailModel ToModel(this Email email) => new EmailModel
     {
-        EmailID = email.EmailID,
+        EmailId = email.EmailId,
         CustomerId = email.CustomerId,
         EmailAddress = email.EmailAddress,
         EmailType = email.EmailType,
-        CreatedOn = email.CreatedOn
+        CreatedOn = email.CreatedOn,
+        // Customer = email.Customer.ToModel()
     };
 
     public static IEnumerable<EmailModel> ToModels(this IEnumerable<Email> emails)
@@ -18,10 +19,11 @@ public static class EmailExtensions
 
     public static Email ToEntity(this EmailModel model) => new Email
     {
-        EmailID = model.EmailID,
+        EmailId = model.EmailId,
         CustomerId = model.CustomerId,
         EmailAddress = model.EmailAddress,
         EmailType = model.EmailType,
-        CreatedOn = model.CreatedOn
+        CreatedOn = model.CreatedOn,
+        // Customer = model.Customer.ToEntity()
     };
 }

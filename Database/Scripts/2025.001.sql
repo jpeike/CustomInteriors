@@ -14,8 +14,9 @@ BEGIN TRY
     BEGIN TRANSACTION;
 
     -- START YOUR SQL
-    INSERT INTO [dbo].[Users] ([Username], [Email], [PasswordHash])
-    VALUES ('demoUser', 'demo@example.com', 'DEMO_HASHED_PASSWORD');
+    
+    -- Can do insert statements, column updates etc.
+
     -- END SQL
 
 

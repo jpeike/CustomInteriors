@@ -6,6 +6,8 @@ import Aura from '@primeuix/themes/aura'
 import { definePreset } from '@primeuix/themes'
 import App from './App.vue'
 import router from './router'
+import Toast from 'primevue/toast' 
+import ToastService from 'primevue/toastservice'
 
 import { useAuthStore } from './stores/auth' // <-- make sure to import
 
@@ -40,6 +42,9 @@ const pinia = createPinia()
 app.use(pinia)
 
 app.use(router)
+
+app.use(ToastService)
+app.component('Toast', Toast)
 
 const authStore = useAuthStore()
 authStore.init()

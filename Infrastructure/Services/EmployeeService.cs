@@ -28,9 +28,9 @@ public class EmployeeService :  IEmployeeService
         return employees.ToModels();
     }
 
-    public async Task<EmployeeModel> AddEmployee(Employee employee)
+    public async Task<EmployeeModel> CreateEmployee(EmployeeModel employee)
     {
-        Employee toReturn = await _employeeRepository.AddEmployee(employee);
+        Employee toReturn = await _employeeRepository.AddEmployee(employee.ToEntity());
         return toReturn.ToModel();
     }
 

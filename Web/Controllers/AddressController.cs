@@ -2,62 +2,52 @@
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
+// https://www.geeksforgeeks.org/system-design/difference-between-rest-api-and-rpc-api/
+//https://restfulapi.net/resource-naming/
+
 namespace Web;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/addresses")]
 public class AddressController : ControllerBase
 {
     private readonly IAddressService _addressService;
+    private readonly ICustomerService _customerService;
 
-    public AddressController(IAddressService addressService)
+    public AddressController(IAddressService addressService, ICustomerService customerService)
     {
         _addressService = addressService;
+        _customerService = customerService;
     }
 
-    [HttpGet("")]
+    // this is how you specify the name of the method in the ts client -> Name = "nameIWant"
+    [HttpGet("", Name = "GetAllAddresses")]
     public async Task<IEnumerable<AddressModel>> GetAllAddresses()
     {
         return await _addressService.GetAllAddresses();
     }
 
-    [HttpGet("{customerId:int}")]
-
+    [HttpGet("{customerId:int}", Name = "GetAddressesByCustomerId")]
     public async Task<IEnumerable<AddressModel>> GetAddressesByCustomerId(int customerId)
     {
         return await _addressService.GetAddressesByCustomerId(customerId);
     }
 
-    [HttpPost("CreateAddress")]
+    [HttpPost("", Name = "CreateAddress")]
     public async Task<AddressModel> CreateAddress([FromBody] AddressModel addressModel)
     {
-
-        var address = new Address
-        {
-            CustomerId = addressModel.CustomerId,
-            Street = addressModel.Street,
-            City = addressModel.City,
-            State = addressModel.State,
-            PostalCode = addressModel.PostalCode,
-            Country = addressModel.Country,
-            AddressType = addressModel.AddressType
-        };
-
-        return await _addressService.CreateAddress(address);
+        return await _addressService.CreateAddress(addressModel);
     }
 
-    [HttpPut("UpdateAddress")]
-
-public async Task UpdateAddress([FromBody] AddressModel addressModel)
+    [HttpPut("", Name = "UpdateAddress")]
+    public async Task UpdateAddress([FromBody] AddressModel addressModel)
     {
         await _addressService.UpdateAddress(addressModel);
     }
 
-    [HttpDelete("DeleteAddress/{addressId:int}")]
+    [HttpDelete("{addressId:int}", Name = "DeleteAddress")]
     public async Task<bool> DeleteAddress(int addressId)
     {
         return await _addressService.DeleteAddress(addressId);
     }
-
 }
-
