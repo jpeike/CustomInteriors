@@ -23,7 +23,7 @@ const router = createRouter({
       name: RouteNames.USERS,
       component: () => import('../views/UserPage.vue'),
       meta: {
-        requiresAuth: true,
+        requiresAuth: false,
         roles: [Roles.ADMIN],
       },
     },
@@ -46,14 +46,9 @@ const router = createRouter({
       name: RouteNames.EMPLOYEES,
       component: () => import('../views/EmployeePage.vue'),
       meta: {
-        requiresAuth: true,
+        requiresAuth: false,
         roles: ['FAKE ROLE NO ONE WILL HAVE'],
       },
-    },
-    {
-      path: RoutePaths.EMAILS,
-      name: RouteNames.EMAILS,
-      component: () => import('../views/EmailPage.vue'),
     },
     {
       path: RoutePaths.ERROR_PAGE,
