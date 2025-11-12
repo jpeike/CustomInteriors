@@ -35,20 +35,9 @@ public class CustomersController : ControllerBase
 
 
     [HttpPost("", Name = "CreateCustomer")]
-    public async Task<CustomerModel> CreateCustomer([FromBody] Customer customerModel)
+    public async Task<CustomerModel> CreateCustomer([FromBody] CustomerModel customerModel)
     {
-        CustomerModel customer = new()
-        {
-            FirstName = customerModel.FirstName,
-            LastName = customerModel.LastName,
-            CustomerType = customerModel.CustomerType,
-            PrefferedContactMethod = customerModel.PrefferedContactMethod,
-            CompanyName = customerModel.CompanyName,
-            Status = customerModel.Status,
-            CustomerNotes = customerModel.CustomerNotes
-        };
-
-        return await _customerService.CreateCustomer(customer);
+        return await _customerService.CreateCustomer(customerModel);
     }
 
     [HttpPut("", Name = "UpdateCustomer")]
