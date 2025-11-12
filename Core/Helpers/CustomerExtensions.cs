@@ -12,7 +12,7 @@ public static class CustomerExtensions
         CompanyName = customer.CompanyName,
         Status = customer.Status,
         CustomerNotes = customer.CustomerNotes,
-        Emails = customer.Emails.Select(x =>x.ToModel()).ToList()
+        // Emails = customer.Emails.Select(x =>x.ToModel()).ToList()
     };
 
     public static IEnumerable<CustomerModel> ToModels(this IEnumerable<Customer> customer)

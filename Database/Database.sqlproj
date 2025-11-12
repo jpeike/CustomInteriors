@@ -63,13 +63,21 @@
     <PostDeploy Include="PostDeployment.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Scripts\2025.001.sql" />
-  </ItemGroup>
-  <ItemGroup>
     <Build Include="Tables\Employees.sql" />
+    <Build Include="Tables\InvoiceItems.sql" />
+    <Build Include="Tables\Invoices.sql" />
+    <Build Include="Tables\JobAssignments.sql" />
+    <Build Include="Tables\JobInvoices.sql" />
+    <Build Include="Tables\Jobs.sql" />
+    <Build Include="Tables\Payments.sql" />
+    <Build Include="Tables\Phones.sql" />
+    <Build Include="Tables\QuoteRequests.sql" />
     <Build Include="Tables\Users.sql" />
     <Build Include="Tables\Addresses.sql" />
     <Build Include="Tables\Customers.sql" />
     <Build Include="Tables\Emails.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Scripts\2025.001.sql" />
   </ItemGroup>
 </Project>
