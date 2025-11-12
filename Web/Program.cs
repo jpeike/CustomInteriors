@@ -1,25 +1,37 @@
 using Core;
 using Infrastructure;
+using CustomInteriors.Web;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using Web;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
+var configPath = Path.Combine(AppContext.BaseDirectory, "BaseDefaultSettings.config");
+
+var env = builder.Environment.EnvironmentName switch
+{
+    "Development" => "Dev",
+    "Staging" => "Test",
+    "Production" => "Prod",
+    _ => "Dev"
+};
+
+builder.Configuration.AddXmlConfig(configPath, env);
 
 // 1. Add JWT bearer authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.Authority = "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_JPMU56Ifb";
-        options.Audience = "574mvan5pjeoifpt063t473se6";
+        options.Authority = builder.Configuration["CognitoAuthority"];
+        options.Audience = builder.Configuration["CognitoUserPoolId"]; ;
 
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
-            ValidIssuer = "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_JPMU56Ifb",
+            ValidIssuer = builder.Configuration["CognitoAuthority"],
 
             ValidateAudience = false,
 
@@ -33,7 +45,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 var clientIdClaim = context.Principal?.Claims
                     .FirstOrDefault(c => c.Type == "client_id")?.Value;
 
-                if (clientIdClaim != "574mvan5pjeoifpt063t473se6")
+                if (clientIdClaim != builder.Configuration["CognitoUserPoolId"])
                 {
                     context.Fail("Invalid client_id");
                 }
@@ -42,8 +54,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             }
         };
     });
-
-
 
 // 2. Add role-based authorization policies
 builder.Services.AddAuthorization(options =>
@@ -97,7 +107,6 @@ builder.Services.AddScoped<IQuoteRequestService, QuoteRequestService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
-
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -112,7 +121,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend",
         policy =>
         {
-            policy.WithOrigins("http://localhost:5173") // Vite dev server
+            policy.WithOrigins(builder.Configuration["FrontendHost"] ?? "")
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });
