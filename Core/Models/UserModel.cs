@@ -1,14 +1,23 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Core;
 
 public class UserModel
 {
     public int Id { get; set; }
+    
+    [Required]
+    [Range(1, int.MaxValue)]
     public int CustomerId { get; set; }
+    
+    [Required]
+    [StringLength(100)]
     public required string Username { get; set; }
+    
+    [EmailAddress]
+    [StringLength(255)]
     public required string Email { get; set; }
+    
     public DateTime CreatedOn { get; set; }
-
-    // public CustomerModel? Customer { get; set; }
-    // public ICollection<JobAssignmentModel> JobAssignments { get; set; } =  new List<JobAssignmentModel>();
 }
 
