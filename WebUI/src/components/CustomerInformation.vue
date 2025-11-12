@@ -10,16 +10,16 @@
             <div class = "flex row multipleFields">
                 <div>
                     <h3 class="fieldTitle">First Name*</h3>
-                    <InputText v-model="customer.firstName" required="true" type="text" class="inputValue" :placeholder="currentCustomerInformation?.firstName"></InputText>
+                    <InputText v-model="customer.firstName" required="true" type="text" class="inputValue" :placeholder="props.currentCustomerInformation?.firstName"></InputText>
                 </div>
                 <div>
                     <h3 class="fieldTitle">Last Name*</h3>
-                    <InputText v-model="customer.lastName" required="true" type="text" class="inputValue" :placeholder="currentCustomerInformation?.lastName"></InputText>
+                    <InputText v-model="customer.lastName" required="true" type="text" class="inputValue" :placeholder="props.currentCustomerInformation?.lastName"></InputText>
                 </div>
             </div>
             <div>
                 <h3 class="fieldTitle">Customer Type*</h3>
-                <InputText v-model="customer.customerType" required="true" type="text" class="inputValue" :placeholder="currentCustomerInformation?.customerType"></InputText>
+                <InputText v-model="customer.customerType" required="true" type="text" class="inputValue" :placeholder="props.currentCustomerInformation?.customerType"></InputText>
             </div>
             <div>
                 <h3 class="fieldTitle">Email</h3>
@@ -85,15 +85,15 @@
         <!--Company Name-->
             <div>
                 <h3 class="fieldTitle">Company Name</h3>
-                <InputText v-model="customer.companyName" type="text" class="inputValue" :placeholder="currentCustomerInformation?.companyName"></InputText>
+                <InputText v-model="customer.companyName" type="text" class="inputValue" :placeholder="props.currentCustomerInformation?.companyName"></InputText>
             </div>
             <div>
                 <h3 class="fieldTitle">Status</h3>
-                <InputText v-model="customer.status" type="text" class="inputValue" :placeholder="currentCustomerInformation?.status"></InputText>
+                <InputText v-model="customer.status" type="text" class="inputValue" :placeholder="props.currentCustomerInformation?.status"></InputText>
             </div>
             <div class="notesField">
                 <h3 class="fieldTitle">Notes</h3>
-                <textarea v-model="customer.customerNotes" type="text" class="p-inputtext p-component inputValue notes" :placeholder="currentCustomerInformation?.customerNotes"></textarea>
+                <textarea v-model="customer.customerNotes" type="text" class="p-inputtext p-component inputValue notes" :placeholder="props.currentCustomerInformation?.customerNotes"></textarea>
             </div>
             <div class="flex row buttons">
                 <button class = "cancelUpdateButton" @click="$emit('closePage')">
@@ -135,7 +135,7 @@
     let customer = ref(new CustomerModel);;
     let listOfAddresses = ref([new AddressModel]);
     let removedAddresses = [0];
-        
+    
     if (props.currentCustomerInformation != undefined){
         customer = ref(props.currentCustomerInformation);
     }
@@ -149,7 +149,6 @@
     }
 
     function deleteAddress(address: AddressModel){
-        //removedAddresses.push(listOfAddresses[index].addressId!); listOfAddresses.splice(index, 1);
         if (address.addressId! != undefined){
             console.log(removedAddresses);
             removedAddresses.push(address.addressId);
@@ -158,24 +157,31 @@
 
     function testInfo(customerId: number | undefined, customer: CustomerModel, listOfAddresses: AddressModel[], removedAddresses: number[]){
         if (!customer.firstName|| !customer.lastName || !customer.customerType){
-            showWarning('Customer information not valid')
+            showWarning('Customer information not valid');
             return;
         }
 
         for (let i = 0; i < listOfAddresses.length; i++){
+            if (props.currentAddresses != undefined){
+                if (listOfAddresses[i].addressType == props.currentAddresses![i].addressType &&  listOfAddresses[i].city == props.currentAddresses![i].city && listOfAddresses[i].country == props.currentAddresses![i].country && listOfAddresses[i].postalCode == props.currentAddresses![i].postalCode && listOfAddresses[i].state == props.currentAddresses![i].state && listOfAddresses[i].street == props.currentAddresses![i].street){
+                    listOfAddresses.splice(i, 1);
+                }
+            }
+        }
+    
+        for (let i = 0; i < listOfAddresses.length; i++){
             if (!listOfAddresses[i].city || !listOfAddresses[i].postalCode || !listOfAddresses[i].addressType){
-                showWarning("Address " + (i+1) + " has one or more fields that are not valid")
-                return
+                showWarning("Address " + (i+1) + " has one or more fields that are not valid");
+                return;
             }
 
             if (!/^\d{5}$/.test(listOfAddresses[i].postalCode?.toString()!) || listOfAddresses[i].postalCode! < 10000){
-                showWarning("Address " + (i + 1) + " ZIP Code must be a 5 digit integer")
-                return
+                showWarning("Address " + (i + 1) + " ZIP Code must be a 5 digit integer");
+                return;
             }
         }
         
         emit('updateCustomerInformation', customerId, customer, listOfAddresses, removedAddresses);
-
     }
 
 </script>

@@ -310,9 +310,10 @@ function updateCustomerInformation(currentID: number | undefined, newCustomer: C
     createCustomer(newCustomer, newAddress);
   }
   //update existing customer
-  else{
+  else {
     updateCustomer(currentID, newCustomer, newAddress);
   }
+  
   if (removedAddresses.length > 1){
     for (let i = 1; i < removedAddresses.length; i++){
       deleteAddress(removedAddresses[i]!);
@@ -357,12 +358,10 @@ async function createCustomer(newCustomer: CustomerModel, newAddress: AddressMod
 }
 
 async function updateCustomer(currentID: number, newCustomer: CustomerModel, newAddress: AddressModel[]){
-    state.customer[currentCustomerIndex.value - 1] = newCustomer;
-    state.customer[currentCustomerIndex.value - 1].customerId = currentID;
     state.loading = true;
 
     try {
-      if (newCustomer.firstName != undefined && newCustomer.lastName != undefined && newCustomer.customerType != undefined){
+      if (newCustomer.customerId != -1 && newCustomer.firstName != undefined && newCustomer.lastName != undefined && newCustomer.customerType != undefined){
         await client
         .updateCustomer(state.customer[currentCustomerIndex.value - 1])
          .then(() => {
