@@ -24,7 +24,7 @@ const router = createRouter({
       component: () => import('../views/UserPage.vue'),
       meta: {
         requiresAuth: false,
-        // roles: [Roles.ADMIN],
+        roles: [Roles.ADMIN],
       },
     },
     // ... your other routes
@@ -47,7 +47,7 @@ const router = createRouter({
       component: () => import('../views/EmployeePage.vue'),
       meta: {
         requiresAuth: false,
-        // roles: ['FAKE ROLE NO ONE WILL HAVE'],
+        roles: ['FAKE ROLE NO ONE WILL HAVE'],
       },
     },
     {

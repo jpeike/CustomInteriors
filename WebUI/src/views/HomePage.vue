@@ -131,9 +131,9 @@ const client = new Client(import.meta.env.VITE_API_BASE_URL)
 const state = reactive({
   totalCustomers: 0,
   activeJobs: 0,
-  pendingJobs: 2,
+  pendingJobs: 0,
   totalRevenue: 0,
-  totalJobs: 5,
+  totalJobs: 0,
   loading: false,
   error: null as string | null,
 })
