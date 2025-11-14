@@ -15,32 +15,38 @@ public class EmployeeController : ControllerBase
     }
 
     [HttpGet("", Name = "GetAllEmployees")]
-    public async Task<IEnumerable<EmployeeModel>> GetAllEmployees()
+    public async Task<ActionResult<IEnumerable<EmployeeModel>>> GetAllEmployees()
     {
-        return await _employeeService.GetAllEmployees();
+        if (!ModelState.IsValid) return BadRequest();
+        return Ok(await _employeeService.GetAllEmployees());
     }
 
     [HttpGet("{id:int}", Name = "GetEmployeeById")]
-    public async Task<EmployeeModel?> GetEmployeeById(int id)
+    public async Task<ActionResult<EmployeeModel?>> GetEmployeeById(int id)
     {
+        if (id <= 0) return BadRequest();
         return await _employeeService.GetEmployeeById(id);
     }
 
     [HttpPost("", Name = "CreateEmployee")]
-    public async Task<EmployeeModel> CreateEmployee([FromBody] EmployeeModel employeeModel)
+    public async Task<ActionResult<EmployeeModel>> CreateEmployee([FromBody] EmployeeModel employeeModel)
     {
+        if (!ModelState.IsValid) return BadRequest();
         return await _employeeService.CreateEmployee(employeeModel);
     }
 
     [HttpPut("", Name = "UpdateEmployee")]
-    public async Task UpdateEmployee([FromBody] EmployeeModel employeeModel)
+    public async Task<ActionResult> UpdateEmployee([FromBody] EmployeeModel employeeModel)
     {
+        if (!ModelState.IsValid) return BadRequest();
         await _employeeService.UpdateEmployee(employeeModel);
+        return NoContent();
     }
 
     [HttpDelete("{id:int}", Name = "DeleteEmployee")]
-    public async Task<bool> DeleteEmployee(int id)
+    public async Task<ActionResult<bool>> DeleteEmployee(int id)
     {
+        if (id <= 0) return BadRequest();
         return await _employeeService.DeleteEmployee(id);
     }
 }

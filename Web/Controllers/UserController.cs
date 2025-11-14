@@ -17,33 +17,39 @@ public class UsersController : ControllerBase
 
     [HttpGet("", Name = "GetAllUsers")]
     [Authorize(Policy = "AdminOnly")]
-    public async Task<IEnumerable<UserModel>> GetAllUsers()
+    public async Task<ActionResult<IEnumerable<UserModel>>> GetAllUsers()
     {
-        return await _userService.GetAllUsers();
+        if (!ModelState.IsValid) return BadRequest();
+        return Ok(await _userService.GetAllUsers());
     }
 
     [HttpGet("{id:int}", Name = "GetUserById")]
     [Authorize(Policy = "AdminOnly")]
-    public async Task<UserModel?> GetUserById(int id)
+    public async Task<ActionResult<UserModel?>> GetUserById(int id)
     {
+        if (id <= 0) return BadRequest();
         return await _userService.GetUserById(id);
     }
 
     [HttpPost("", Name = "CreateUser")]
-    public async Task<UserModel> CreateUser([FromBody] UserModel userModel)
+    public async Task<ActionResult<UserModel>> CreateUser([FromBody] UserModel userModel)
     {
+        if (!ModelState.IsValid) return BadRequest();
         return await _userService.CreateUser(userModel);
     }
 
     [HttpPut("", Name = "UpdateUser")]
-    public async Task UpdateUser([FromBody] UserModel userModel)
+    public async Task<ActionResult> UpdateUser([FromBody] UserModel userModel)
     {
+        if (!ModelState.IsValid) return BadRequest();
         await _userService.UpdateUser(userModel);
+        return NoContent();
     }
 
     [HttpDelete("{id:int}", Name = "DeleteUser")]
-    public async Task<bool> DeleteUser(int id)
+    public async Task<ActionResult<bool>> DeleteUser(int id)
     {
+        if (id <= 0) return BadRequest();
         return await _userService.DeleteUser(id);
     }
 }

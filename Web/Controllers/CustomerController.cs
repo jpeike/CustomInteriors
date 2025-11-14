@@ -15,40 +15,46 @@ public class CustomersController : ControllerBase
     }
 
     [HttpGet("", Name = "GetAllCustomers")]
-    public async Task<IEnumerable<CustomerModel>> GetAllCustomers()
+    public async Task<ActionResult<IEnumerable<CustomerModel>>> GetAllCustomers()
     {
-        return await _customerService.GetAllCustomers();
+        if (!ModelState.IsValid) return BadRequest();
+        return Ok(await _customerService.GetAllCustomers());
     }
 
     [HttpGet("{id:int}", Name = "GetCustomerById")]
-    public async Task<CustomerModel?> GetCustomerById(int id)
+    public async Task<ActionResult<CustomerModel?>> GetCustomerById(int id)
     {
+        if (id <= 0) return BadRequest();
         return await _customerService.GetCustomerById(id);
     }
 
     // todo look at this again, not really restful but I dont want to change too much with this one yet
     [HttpGet("with-addresses/{id:int}", Name = "GetCustomerWithAddresses")]
-    public async Task<CustomerWithFKsModel?> GetCustomerWithAddress(int id)
+    public async Task<ActionResult<CustomerWithFKsModel?>> GetCustomerWithAddress(int id)
     {
+        if (!ModelState.IsValid) return BadRequest();
         return await _customerService.GetCustomerWithAddress(id);
     }
 
-
     [HttpPost("", Name = "CreateCustomer")]
-    public async Task<CustomerModel> CreateCustomer([FromBody] CustomerModel customerModel)
+    public async Task<ActionResult<CustomerModel>> CreateCustomer([FromBody] CustomerModel customerModel)
     {
+        if (!ModelState.IsValid) return BadRequest();
         return await _customerService.CreateCustomer(customerModel);
     }
 
     [HttpPut("", Name = "UpdateCustomer")]
-    public async Task UpdateCustomer([FromBody] CustomerModel customerModel)
+    public async Task<ActionResult> UpdateCustomer([FromBody] CustomerModel customerModel)
     {
+        if (!ModelState.IsValid) return BadRequest();
         await _customerService.UpdateCustomer(customerModel);
+        return NoContent();
     }
 
     [HttpDelete("{id:int}", Name = "DeleteCustomer")]
-    public async Task<bool> DeleteCustomer(int id)
+    public async Task<ActionResult<bool>> DeleteCustomer(int id)
     {
+        if (id <= 0) return BadRequest();
         return await _customerService.DeleteCustomer(id);
     }
 }

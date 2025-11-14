@@ -15,34 +15,39 @@ public class EmailsController : ControllerBase
     }
 
     [HttpGet("", Name = "GetAllEmails")]
-    public async Task<IEnumerable<EmailModel>> GetAllEmails()
+    public async Task<ActionResult<IEnumerable<EmailModel>>> GetAllEmails()
     {
-        return await _emailService.GetAllEmails();
+        if (!ModelState.IsValid) return BadRequest();
+        return Ok(await _emailService.GetAllEmails());
     }
 
     [HttpGet("{id:int}", Name = "GetEmailById")]
-    public async Task<EmailModel?> GetEmailById(int id)
+    public async Task<ActionResult<EmailModel?>> GetEmailById(int id)
     {
+        if (id <= 0) return BadRequest();
         return await _emailService.GetEmailById(id);
     }
 
     [HttpPost("", Name = "CreateEmail")]
-    public async Task<EmailModel> CreateEmail([FromBody] EmailModel emailModel)
+    public async Task<ActionResult<EmailModel>> CreateEmail([FromBody] EmailModel emailModel)
     {
+        if (!ModelState.IsValid) return BadRequest();
         emailModel.CreatedOn = DateTime.UtcNow;
         return await _emailService.CreateEmail(emailModel);
     }
 
     [HttpPut("", Name = "UpdateEmail")]
-    public async Task UpdateEmail([FromBody] EmailModel emailModel)
-    { 
+    public async Task<ActionResult> UpdateEmail([FromBody] EmailModel emailModel)
+    {
+        if (!ModelState.IsValid) return BadRequest();
         await _emailService.UpdateEmail(emailModel);
+        return NoContent();
     }
 
     [HttpDelete("{id:int}", Name = "DeleteEmail")]
-    public async Task<bool> DeleteEmail(int id)
+    public async Task<ActionResult<bool>> DeleteEmail(int id)
     {
+        if (id <= 0) return BadRequest();
         return await _emailService.DeleteEmail(id);
     }
 }
-
