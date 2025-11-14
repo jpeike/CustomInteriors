@@ -10,7 +10,7 @@ public class JobAssignmentModel
     [Range(1, int.MaxValue)]
     public int JobId { get; set; }
     
-    // todo date validation
+    [DateBeforeNow]
     public DateTime? AssignmentDate { get; set; }
     
     [StringLength(100)]

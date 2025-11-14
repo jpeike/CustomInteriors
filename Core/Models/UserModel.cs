@@ -18,6 +18,7 @@ public class UserModel
     [StringLength(255)]
     public required string Email { get; set; }
     
+    [DateBeforeNow]
     public DateTime CreatedOn { get; set; }
 }
 

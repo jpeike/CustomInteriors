@@ -13,8 +13,10 @@ public class JobModel
     [StringLength(255)]
     public string? JobDescription { get; set; }
     
+    [DateBeforeNow]
     public DateTime? StartDate { get; set; }
     
+    [DateBeforeNow]
     public DateTime? EndDate { get; set; }
     
     [StringLength(100)]

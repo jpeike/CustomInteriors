@@ -6,7 +6,7 @@ public class InvoiceModel
 {
     public int InvoiceId { get; set; }
     
-    // todo date validation
+    [DateBeforeNow]
     public DateTime? DateIssued { get; set; }
     
     [StringLength(100)]

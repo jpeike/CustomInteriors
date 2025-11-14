@@ -12,7 +12,7 @@ public class JobInvoiceModel
     [Range(1, int.MaxValue)]
     public int InvoiceId { get; set; }
     
-    // todo date validation
+    [DateBeforeNow]
     public DateTime? CreatedDate { get; set; }
     
     [Range(0.0, 100.0)]

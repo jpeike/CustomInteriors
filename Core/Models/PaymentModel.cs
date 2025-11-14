@@ -10,6 +10,7 @@ public class PaymentModel
     [Range(1, int.MaxValue)]
     public int InvoiceId { get; set; }
     
+    [DateBeforeNow]
     public DateTime? PaymentDate { get; set; }
     
     [Range(typeof(decimal), "0.00", "999999999.99")]

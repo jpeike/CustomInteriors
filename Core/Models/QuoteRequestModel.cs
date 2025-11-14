@@ -10,6 +10,7 @@ public class QuoteRequestModel
     [Range(1, int.MaxValue)]
     public int JobId { get; set; }
     
+    [DateBeforeNow]
     public DateTime? RequestDate { get; set; }
     
     [StringLength(10000)]
