@@ -15,33 +15,38 @@ public class JobInvoiceController : ControllerBase
     }
 
     [HttpGet("", Name = "GetAllJobInvoices")]
-    public async Task<IEnumerable<JobInvoiceModel>> GetAllJobInvoices()
+    public async Task<ActionResult<IEnumerable<JobInvoiceModel>>> GetAllJobInvoices()
     {
-        return await _jobInvoiceService.GetAllJobInvoices();
+        if (!ModelState.IsValid) return BadRequest();
+        return Ok(await _jobInvoiceService.GetAllJobInvoices());
     }
 
     [HttpGet("{id:int}", Name = "GetJobInvoiceById")]
-    public async Task<JobInvoiceModel?> GetJobInvoiceById(int id)
+    public async Task<ActionResult<JobInvoiceModel?>> GetJobInvoiceById(int id)
     {
+        if (id <= 0) return BadRequest();
         return await _jobInvoiceService.GetJobInvoiceById(id);
     }
 
     [HttpPost("", Name = "CreateJobInvoice")]
-    public async Task<JobInvoiceModel> CreateJobInvoice([FromBody] JobInvoiceModel jobInvoiceModel)
+    public async Task<ActionResult<JobInvoiceModel>> CreateJobInvoice([FromBody] JobInvoiceModel jobInvoiceModel)
     {
+        if (!ModelState.IsValid) return BadRequest();
         return await _jobInvoiceService.CreateJobInvoice(jobInvoiceModel);
     }
 
     [HttpPut("", Name = "UpdateJobInvoice")]
-    public async Task UpdateJobInvoice([FromBody] JobInvoiceModel jobInvoiceModel)
-    { 
+    public async Task<ActionResult> UpdateJobInvoice([FromBody] JobInvoiceModel jobInvoiceModel)
+    {
+        if (!ModelState.IsValid) return BadRequest();
         await _jobInvoiceService.UpdateJobInvoice(jobInvoiceModel);
+        return NoContent();
     }
 
     [HttpDelete("{id:int}", Name = "DeleteJobInvoice")]
-    public async Task<bool> DeleteJobInvoice(int id)
+    public async Task<ActionResult<bool>> DeleteJobInvoice(int id)
     {
+        if (id <= 0) return BadRequest();
         return await _jobInvoiceService.DeleteJobInvoice(id);
     }
 }
-

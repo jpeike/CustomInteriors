@@ -12,42 +12,46 @@ namespace Web;
 public class AddressController : ControllerBase
 {
     private readonly IAddressService _addressService;
-    private readonly ICustomerService _customerService;
 
-    public AddressController(IAddressService addressService, ICustomerService customerService)
+    public AddressController(IAddressService addressService)
     {
         _addressService = addressService;
-        _customerService = customerService;
     }
 
     // this is how you specify the name of the method in the ts client -> Name = "nameIWant"
     [HttpGet("", Name = "GetAllAddresses")]
-    public async Task<IEnumerable<AddressModel>> GetAllAddresses()
+    public async Task<ActionResult<IEnumerable<AddressModel>>> GetAllAddresses()
     {
-        return await _addressService.GetAllAddresses();
+        return Ok(await _addressService.GetAllAddresses());
     }
 
-    [HttpGet("{customerId:int}", Name = "GetAddressesByCustomerId")]
-    public async Task<IEnumerable<AddressModel>> GetAddressesByCustomerId(int customerId)
+    // todo add lookup by address id
+    [HttpGet("{id:int}", Name = "GetAddressesByCustomerId")]
+    public async Task<ActionResult<IEnumerable<AddressModel>>> GetAddressesByCustomerId(int id)
     {
-        return await _addressService.GetAddressesByCustomerId(customerId);
+        if (id <= 0) return BadRequest();
+        return Ok(await _addressService.GetAddressesByCustomerId(id));
     }
 
     [HttpPost("", Name = "CreateAddress")]
-    public async Task<AddressModel> CreateAddress([FromBody] AddressModel addressModel)
+    public async Task<ActionResult<AddressModel>> CreateAddress([FromBody] AddressModel addressModel)
     {
+        if (!ModelState.IsValid) return BadRequest();
         return await _addressService.CreateAddress(addressModel);
     }
 
     [HttpPut("", Name = "UpdateAddress")]
-    public async Task UpdateAddress([FromBody] AddressModel addressModel)
+    public async Task<ActionResult> UpdateAddress([FromBody] AddressModel addressModel)
     {
+        if (!ModelState.IsValid) return BadRequest();
         await _addressService.UpdateAddress(addressModel);
+        return NoContent();
     }
 
-    [HttpDelete("{addressId:int}", Name = "DeleteAddress")]
-    public async Task<bool> DeleteAddress(int addressId)
+    [HttpDelete("{id:int}", Name = "DeleteAddress")]
+    public async Task<ActionResult<bool>> DeleteAddress(int id)
     {
-        return await _addressService.DeleteAddress(addressId);
+        if (id <= 0) return BadRequest();
+        return await _addressService.DeleteAddress(id);
     }
 }
