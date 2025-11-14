@@ -10,16 +10,16 @@
             <div class = "flex row multipleFields">
                 <div>
                     <h3 class="fieldTitle">First Name*</h3>
-                    <InputText v-model="customer.firstName" required="true" type="text" class="inputValue" :placeholder="currentCustomerInformation?.firstName"></InputText>
+                    <InputText v-model="customer.firstName" required="true" type="text" class="inputValue" :placeholder="currentCustomerInformation?.firstName" data-testid="customerFormFirstName"></InputText>
                 </div>
                 <div>
                     <h3 class="fieldTitle">Last Name*</h3>
-                    <InputText v-model="customer.lastName" required="true" type="text" class="inputValue" :placeholder="currentCustomerInformation?.lastName"></InputText>
+                    <InputText v-model="customer.lastName" required="true" type="text" class="inputValue" :placeholder="currentCustomerInformation?.lastName" data-testid="customerFormLastName"></InputText>
                 </div>
             </div>
             <div>
                 <h3 class="fieldTitle">Customer Type*</h3>
-                <InputText v-model="customer.customerType" required="true" type="text" class="inputValue" :placeholder="currentCustomerInformation?.customerType"></InputText>
+                <InputText v-model="customer.customerType" required="true" type="text" class="inputValue" :placeholder="currentCustomerInformation?.customerType" data-testid="customerFormType"></InputText>
             </div>
                         
         <!--Contact-->
@@ -27,11 +27,11 @@
                 <h3 class="fieldTitle">Preffered Contact Method</h3>
                 <div class="contactMethod">                    
                     <div>
-                        <input :checked="currentCustomerInformation?.prefferedContactMethod == 'Email'" type="radio" class = "contactMethodRadio" v-model="customer.prefferedContactMethod" id = "Email" name="contactMethod" value ="Email" variant="filled"/>
+                        <input :checked="currentCustomerInformation?.prefferedContactMethod == 'Email'" type="radio" class = "contactMethodRadio" v-model="customer.prefferedContactMethod" id = "Email" name="contactMethod" value ="Email" variant="filled" data-testid="customerFormEmailRadioButton"/>
                         <label for="Email">Email</label>
                     </div>
                     <div>
-                        <input :checked="currentCustomerInformation?.prefferedContactMethod == 'Phone'" type="radio" class = "contactMethodRadio" v-model="customer.prefferedContactMethod" id = "Phone" name="contactMethod" value ="Phone"/>
+                        <input :checked="currentCustomerInformation?.prefferedContactMethod == 'Phone'" type="radio" class = "contactMethodRadio" v-model="customer.prefferedContactMethod" id = "Phone" name="contactMethod" value ="Phone" data-testid="customerFormPhoneRadioButton"/>
                         <label for="Phone">Phone</label>
                     </div>
                 </div>
@@ -46,11 +46,11 @@
                 <div class="flex row multipleFields">
                     <div>
                         <h3 class="fieldTitle">Address * </h3>
-                        <InputText v-model="emailsAdresses.emailAddress" type="text" class="inputValue" :placeholder="listOfEmails[index].emailAddress"></InputText>
+                        <InputText v-model="emailsAdresses.emailAddress" type="text" class="inputValue" :placeholder="listOfEmails[index].emailAddress" data-testid="customerFormEmailAddress"></InputText>
                     </div>
                     <div>
                         <h3 class="fieldTitle">Type * </h3>
-                        <InputText v-model="emailsAdresses.emailType" type="text" class="inputValue" :placeholder="listOfEmails[index].emailType"></InputText>
+                        <InputText v-model="emailsAdresses.emailType" type="text" class="inputValue" :placeholder="listOfEmails[index].emailType" data-testid="customerFormEmailType"></InputText>
                     </div>  
                 </div>                  
             </div>
@@ -66,29 +66,29 @@
                 </div>
                 <div>
                     <h3 class="fieldTitle">Street Address *</h3>
-                    <InputText v-model="address.street" required="true" type="text" class="inputValue" :placeholder="address.street ?? 'Street'"></InputText>
+                    <InputText v-model="address.street" required="true" type="text" class="inputValue" :placeholder="address.street ?? 'Street'" data-testid="customerFormStreet"></InputText>
                 </div>
                 <div>
                     <h3 class="fieldTitle">Country</h3>
-                    <InputText v-model="address.country" type="text" class="inputValue" :placeholder="address.country ?? 'Country'"></InputText>
+                    <InputText v-model="address.country" type="text" class="inputValue" :placeholder="address.country ?? 'Country'" data-testid="customerFormCountry"></InputText>
                 </div>
                 <div class="flex row multipleFields">
                     <div class="tripleField">
                         <h3 class="fieldTitle">City *</h3>
-                        <InputText v-model="address.city" required="true" type="text" class="inputValue" :placeholder="address.city ?? 'City'"></InputText>
+                        <InputText v-model="address.city" required="true" type="text" class="inputValue" :placeholder="address.city ?? 'City'" data-testid="customerFormCity"></InputText>
                     </div>
                     <div class="tripleField">
                         <h3 class="fieldTitle">State *</h3>
-                        <InputText v-model="address.state" required="true" type="text" class="inputValue" :placeholder="address.state ?? 'State'"></InputText>
+                        <InputText v-model="address.state" required="true" type="text" class="inputValue" :placeholder="address.state ?? 'State'" data-testid="customerFormState"></InputText>
                     </div>
                     <div class="tripleField">
                         <h3 class="fieldTitle">Zip *</h3>
-                        <input v-model="address.postalCode" required="true" class="p-inputtext p-component inputValue" :placeholder="address.postalCode?.toString()"></input>
+                        <input v-model="address.postalCode" required="true" class="p-inputtext p-component inputValue" :placeholder="address.postalCode?.toString()" data-testid="customerFormPostalCode"></input>
                     </div>
                 </div> 
                  <div>
                     <h3 class="fieldTitle">Address Type *</h3>
-                    <InputText v-model="address.addressType" required="true" type="text" class="inputValue" :placeholder="address.addressType ?? 'Address Type'"></InputText>
+                    <InputText v-model="address.addressType" required="true" type="text" class="inputValue" :placeholder="address.addressType ?? 'Address Type'" data-testid="customerFormAddressType"></InputText>
                 </div>               
             </div>
 
@@ -99,15 +99,15 @@
         <!--Company Name-->
             <div>
                 <h3 class="fieldTitle">Company Name</h3>
-                <InputText v-model="customer.companyName" type="text" class="inputValue" :placeholder="currentCustomerInformation?.companyName"></InputText>
+                <InputText v-model="customer.companyName" type="text" class="inputValue" :placeholder="currentCustomerInformation?.companyName" data-testid="customerFormCompany"></InputText>
             </div>
             <div>
                 <h3 class="fieldTitle">Status</h3>
-                <InputText v-model="customer.status" type="text" class="inputValue" :placeholder="currentCustomerInformation?.status"></InputText>
+                <InputText v-model="customer.status" type="text" class="inputValue" :placeholder="currentCustomerInformation?.status" data-testid="customerFormStatus"></InputText>
             </div>
             <div class="notesField">
                 <h3 class="fieldTitle">Notes</h3>
-                <textarea v-model="customer.customerNotes" type="text" class="p-inputtext p-component inputValue notes" :placeholder="currentCustomerInformation?.customerNotes"></textarea>
+                <textarea v-model="customer.customerNotes" type="text" class="p-inputtext p-component inputValue notes" :placeholder="currentCustomerInformation?.customerNotes" data-testid="customerFormNotes"></textarea>
             </div>
             
             
