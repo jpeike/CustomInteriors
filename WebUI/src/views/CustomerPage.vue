@@ -33,7 +33,7 @@
             <p style="margin: 0;">Manage your customer information and contact details.</p>
         </div>
         <div class = "rightPanel">
-            <button class = "addButton" @click="currentEmailAddresses = undefined; currentCustomerAddresses = undefined; displayCustomerDetails = !displayCustomerDetails; currentCustomerIndex = -1; customerTitle = 'Create Customer'; customerDescription = 'Create customer information and contact details'; customerButtonDesc = 'Create'; console.log(state.customer)">
+            <button class = "addButton" @click="currentEmailAddresses = undefined; currentCustomerAddresses = undefined; displayCustomerDetails = !displayCustomerDetails; currentCustomerIndex = -1; customerTitle = 'Create Customer'; customerDescription = 'Create customer information and contact details'; customerButtonDesc = 'Create'; console.log(state.customer)" data-testid="addCustomerButton">
                 <p style="margin: 0; text-align: center;"> + Add Customers</p>
             </button>
         </div>
@@ -45,10 +45,10 @@
     </div>
  
     <div v-if="!state.loading" class="flex row customerDisplay">
-      <Card v-for="customer in filterCustomer()" :key="customer.customerId" class="mb-3">
+      <Card v-for="customer in filterCustomer()" :key="customer.customerId" class="mb-3" data-testid="customerCard">
         <template #header>  
           <div class = "flex row customCardHeader">
-            <p style="margin: 0; flex-grow: 2; font-size: 1.2rem; font-weight: bold;">{{ customer.firstName }} {{ customer.lastName }}</p>
+            <p style="margin: 0; flex-grow: 2; font-size: 1.2rem; font-weight: bold;" data-testid="customerName">{{ customer.firstName }} {{ customer.lastName }}</p>
             <div class="flex row" style="justify-content: left; flex-grow: 0; gap: 15%">
               <i class="pi pi-pen-to-square editButton" style="font-size: 1.1rem" @click="editCustomerUI(customer)"></i>
               <i class="pi pi-trash editButton" style="font-size: 1.1rem" @click="deleteConfirmation = !deleteConfirmation; getCustomerIndex(customer.customerId ?? 0);"></i>
@@ -60,10 +60,10 @@
             <div>
               <p style="margin: 0;">Contact: </p>
             </div>
-            <div v-if="customer.prefferedContactMethod == 'Email'">
+            <div v-if="customer.prefferedContactMethod == 'Email'" data-testid="customerEmail">
               {{getEmailString(customer.customerId!)}}
             </div>
-            <div v-else-if="customer.prefferedContactMethod == 'Phone'">
+            <div v-else-if="customer.prefferedContactMethod == 'Phone'" data-testid="customerPhone">
               Temp Phone
             </div>
             <div v-else>
@@ -72,15 +72,15 @@
           </div>
           
           <br/>
-          <p style="margin: 0;"> Address: {{getAddressString(customer.customerId!)}}</p>
+          <p style="margin: 0;" data-testid="customerAddress">Address: {{getAddressString(customer.customerId!)}}</p>
           <br/>
-          <p style="margin: 0;">Type: {{ customer.customerType }}</p>
+          <p style="margin: 0;" data-testid="customerType">Type: {{ customer.customerType }}</p>
           <br/>
-          <p style="margin: 0;">Company: {{ customer.companyName }}</p>
+          <p style="margin: 0;" data-testid="customerCompany">Company: {{ customer.companyName }}</p>
           <br/>
-          <p style="margin: 0;">Status: {{ customer.status }}</p>
+          <p style="margin: 0;" data-testid="customerStatus">Status: {{ customer.status }}</p>
           <br/>
-          <p style="margin: 0;">Notes: {{ customer.customerNotes }}</p>
+          <p style="margin: 0;" data-testid="customerNotes">Notes: {{ customer.customerNotes }}</p>
         </template>
       </Card>
     </div>
