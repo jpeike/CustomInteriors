@@ -76,6 +76,7 @@
     <Build Include="Tables\Addresses.sql" />
     <Build Include="Tables\Customers.sql" />
     <Build Include="Tables\Emails.sql" />
+    <None Include="Scripts\SeedTestDB.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Scripts\2025.001.sql" />

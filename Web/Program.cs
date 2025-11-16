@@ -7,6 +7,8 @@ using System.IdentityModel.Tokens.Jwt;
 using Web;
 
 var builder = WebApplication.CreateBuilder(args);
+var isE2ETest = Environment.GetEnvironmentVariable("RUNNING_E2E_TESTS") == "true";
+
 
 
 // 1. Add JWT bearer authentication
@@ -98,8 +100,24 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 
+//Checks EnvironmentName environment variable for which database to use.
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    string connectionString;
+
+    if (isE2ETest)
+    {
+        connectionString = builder.Configuration.GetConnectionString("E2ETestConnection");
+    }
+    else
+    {
+        connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    }
+
+    options.UseSqlServer(connectionString);
+});
+
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
