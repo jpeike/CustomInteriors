@@ -33,7 +33,7 @@
             <p style="margin: 0;">Manage your customer information and contact details.</p>
         </div>
         <div class = "rightPanel">
-            <button class = "addButton" @click="currentEmailAddresses = undefined; currentCustomerAddresses = undefined; displayCustomerDetails = !displayCustomerDetails; currentCustomerIndex = -1; customerTitle = 'Create Customer'; customerDescription = 'Create customer information and contact details'; customerButtonDesc = 'Create';">
+            <button class = "addButton" @click="createCustomerDisplay()">
                 <p style="margin: 0; text-align: center;"> + Add Customers</p>
             </button>
         </div>
@@ -72,7 +72,8 @@
           </div>
           
           <br/>
-          <p style="margin: 0;"> Address: {{getAddressString(customer.customerId!)}}</p>
+          
+          <p style="margin: 0;">Address: {{getAddressString(customer.customerId!)}}</p>
           <br/>
           <p style="margin: 0;">Type: {{ customer.customerType }}</p>
           <br/>
@@ -90,8 +91,8 @@
     </div>
   </div>
 
-  <div v-if="displayCustomerDetails" class="flex row customerWindowBlur">
-    <CustomerInformation :currentCustomerInformation="currentCustomer" :currentEmails="currentEmailAddresses" :currentAddresses = "currentCustomerAddresses" :title="customerTitle" :description="customerDescription" :buttonDesctipnion="customerButtonDesc" @closePage="displayCustomerDetails = !displayCustomerDetails" @updateCustomerInformation="updateCustomerInformation" @openAddressListModal="openAddressListModal"></CustomerInformation>
+  <div v-if="state.displayCustomerDetails" class="flex row customerWindowBlur">
+    <CustomerInformation :currentCustomerInformation="currentCustomer" :currentEmails="currentEmailAddresses" :currentAddresses = "currentCustomerAddresses" :title="customerTitle" :description="customerDescription" :buttonDesctipnion="customerButtonDesc" @closePage="closePage" @updateCustomerInformation="updateCustomerInformation" @openAddressListModal="openAddressListModal"></CustomerInformation>
   </div>
 
   <div v-if="deleteConfirmation" class="flex row customerWindowBlur">
@@ -123,7 +124,6 @@ const showUpdateAddressModal = ref(false)
 let selectedCustomerId = ref<number | null>(null)
 const selectedAddress = ref<AddressModel | null>(null)
 
-let displayCustomerDetails = ref(false);
 let deleteConfirmation = ref(false);
 
 let customerTitle = ref('');
@@ -143,6 +143,8 @@ const state = reactive({
   emails: [] as EmailModel[],
   loading: false,
   error: null as string | null,
+  displayCustomerDetails: false
+
 })
 
 onMounted(() => {
@@ -152,10 +154,17 @@ onMounted(() => {
   fetchEmails()
 })
 
+function closePage(){
+  state.displayCustomerDetails = false;
+  currentCustomer.value = undefined;
+  currentEmailAddresses.value = undefined;
+  currentCustomerAddresses.value = undefined;
+}
+
 function getCustomerIndex(customerID: number){
   for (let i = 0; i < state.customer.length; i++){
     if (state.customer[i].customerId == customerID){
-      currentCustomerIndex = ref(i);
+      currentCustomerIndex.value = i;
     }
   }  
 }
@@ -253,16 +262,27 @@ function fetchEmailsByCustomerId(customerId: number){
   state.loading = false
 }
 
+function createCustomerDisplay(){
+  currentEmailAddresses.value = undefined; 
+  currentCustomerAddresses.value = undefined; 
+  currentCustomerIndex.value = -1; 
+  state.displayCustomerDetails = true; 
+  customerTitle.value = 'Create Customer'; 
+  customerDescription.value = 'Create customer information and contact details'; 
+  customerButtonDesc.value = 'Create';
+}
+
 async function editCustomerUI(customer: CustomerModel){
+    console.log(customer.customerId + " " + customer.firstName);
     selectedCustomerId.value = customer.customerId!;
    
     //getCustomerIndex(selectedCustomerId.value);
-    await getSelectedCustomer(customer.customerId!); 
-    await fetchAddressesByCustomerId(customer.customerId!)
-    fetchEmailsByCustomerId(customer.customerId!);
+    await getSelectedCustomer(selectedCustomerId.value); 
+    await fetchAddressesByCustomerId(selectedCustomerId.value)
+    fetchEmailsByCustomerId(selectedCustomerId.value);
 
     state.loading = true;
-    displayCustomerDetails = ref(true);
+    state.displayCustomerDetails = true;
     state.loading = false;
     
     customerTitle = ref('Update Customer'); 
@@ -363,6 +383,7 @@ function updateAddress(address: AddressModel){
       state.error = error.message || 'An error occurred'
     })
     .finally(() => {
+      fetchAddresses();
       fetchAddressesByCustomerId(selectedCustomerId.value!)
       state.loading = false
     })
@@ -382,7 +403,8 @@ async function deleteEmail(emailID: number) {
       state.error = error.message || 'An error occurred'
     })
     .finally(() => {
-      fetchEmailsByCustomerId(selectedCustomerId.value!)
+      fetchEmails();
+      fetchEmailsByCustomerId(selectedCustomerId.value!);
       state.loading = false
     })
 }
@@ -400,6 +422,7 @@ async function createEmail(email: EmailModel) {
       state.error = error.message || 'An error occurred'
     })
     .finally(() => {
+      fetchEmails();
       fetchEmailsByCustomerId(selectedCustomerId.value!)
       state.loading = false
     })
@@ -435,7 +458,7 @@ function updateCustomerInformation(newCustomer: CustomerModel, newAddress: Addre
     }
     //update existing customer
     else{
-        updateCustomer(newCustomer, newAddress, newEmails);
+      updateCustomer(newCustomer, newAddress, newEmails);
     }
 
     if (removedAddresses.length > 1){
@@ -453,7 +476,7 @@ function updateCustomerInformation(newCustomer: CustomerModel, newAddress: Addre
 
   fetchCustomers();
   fetchAddresses();
-  displayCustomerDetails = ref(false);
+  closePage();
 }
 
 async function createCustomer(newCustomer: CustomerModel, newAddress: AddressModel[], newEmails: EmailModel[]){
@@ -475,14 +498,13 @@ async function createCustomer(newCustomer: CustomerModel, newAddress: AddressMod
         })
 
         await fetchCustomers();
-        
         for (let i = 0; i < newAddress.length; i++){
-          newAddress[i].customerId = state.customer[state.customer.length - 1].customerId;
+          newAddress[i].customerId = selectedCustomerId.value!;
           await createAddress(newAddress[i]);
         }
 
         for (let i = 0; i < newEmails.length; i++){
-          newEmails[i].customerId = state.customer[state.customer.length - 1].customerId;
+          newEmails[i].customerId = selectedCustomerId.value!;
           await createEmail(newEmails[i]);
           fetchEmails();
 
@@ -500,7 +522,7 @@ async function updateCustomer(newCustomer: CustomerModel, newAddress: AddressMod
     try {
       if (newCustomer.customerId != -1 && newCustomer.firstName != undefined && newCustomer.lastName != undefined && newCustomer.customerType != undefined){
         await client
-        .updateCustomer(state.customer[currentCustomerIndex.value - 1])
+        .updateCustomer(newCustomer)
          .then(() => {
           showSuccess('Customer Updated Successfully');
         })
@@ -517,7 +539,7 @@ async function updateCustomer(newCustomer: CustomerModel, newAddress: AddressMod
       for (let i = 0; i < newAddress.length; i++){
         if (newAddress[i].city != undefined && newAddress[i].state != undefined && newAddress[i].postalCode != undefined && newAddress[i].addressType != undefined){
           if (newAddress[i].addressId! == undefined){
-            newAddress[i].customerId = state.customer[state.customer.length - 1].customerId;
+            newAddress[i].customerId = selectedCustomerId.value!;
             await createAddress(newAddress[i]);
           }
           else{
@@ -526,8 +548,8 @@ async function updateCustomer(newCustomer: CustomerModel, newAddress: AddressMod
         }      
       }
       for (let i = 0; i < newEmails.length; i++){
-        if (newEmails[i].emailID! == undefined){
-          newEmails[i].customerId = state.customer[state.customer.length - 1].customerId;
+        if (newEmails[i].emailId! == undefined){
+          newEmails[i].customerId = selectedCustomerId.value!;
           await createEmail(newEmails[i]);
           
         }

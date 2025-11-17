@@ -277,7 +277,7 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    createCustomer(body?: Customer | undefined): Promise<CustomerModel> {
+    createCustomer(body?: CustomerModel | undefined): Promise<CustomerModel> {
         let url_ = this.baseUrl + "/api/customers";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2730,70 +2730,6 @@ export class Client {
     }
 }
 
-export class Address implements IAddress {
-    addressId!: number;
-    customerId!: number;
-    street!: string | undefined;
-    city!: string | undefined;
-    state!: string | undefined;
-    postalCode!: number;
-    country?: string | undefined;
-    addressType!: string | undefined;
-
-    constructor(data?: IAddress) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.addressId = _data["addressId"];
-            this.customerId = _data["customerId"];
-            this.street = _data["street"];
-            this.city = _data["city"];
-            this.state = _data["state"];
-            this.postalCode = _data["postalCode"];
-            this.country = _data["country"];
-            this.addressType = _data["addressType"];
-        }
-    }
-
-    static fromJS(data: any): Address {
-        data = typeof data === 'object' ? data : {};
-        let result = new Address();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["addressId"] = this.addressId;
-        data["customerId"] = this.customerId;
-        data["street"] = this.street;
-        data["city"] = this.city;
-        data["state"] = this.state;
-        data["postalCode"] = this.postalCode;
-        data["country"] = this.country;
-        data["addressType"] = this.addressType;
-        return data;
-    }
-}
-
-export interface IAddress {
-    addressId: number;
-    customerId: number;
-    street: string | undefined;
-    city: string | undefined;
-    state: string | undefined;
-    postalCode: number;
-    country?: string | undefined;
-    addressType: string | undefined;
-}
-
 export class AddressModel implements IAddressModel {
     addressId?: number;
     customerId?: number;
@@ -2858,82 +2794,6 @@ export interface IAddressModel {
     addressType: string | undefined;
 }
 
-export class Customer implements ICustomer {
-    customerId?: number;
-    firstName!: string | undefined;
-    lastName!: string | undefined;
-    customerType!: string | undefined;
-    prefferedContactMethod?: string | undefined;
-    companyName?: string | undefined;
-    status?: string | undefined;
-    customerNotes?: string | undefined;
-    addresses?: Address[] | undefined;
-
-    constructor(data?: ICustomer) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.customerId = _data["customerId"];
-            this.firstName = _data["firstName"];
-            this.lastName = _data["lastName"];
-            this.customerType = _data["customerType"];
-            this.prefferedContactMethod = _data["prefferedContactMethod"];
-            this.companyName = _data["companyName"];
-            this.status = _data["status"];
-            this.customerNotes = _data["customerNotes"];
-            if (Array.isArray(_data["addresses"])) {
-                this.addresses = [] as any;
-                for (let item of _data["addresses"])
-                    this.addresses!.push(Address.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): Customer {
-        data = typeof data === 'object' ? data : {};
-        let result = new Customer();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["customerId"] = this.customerId;
-        data["firstName"] = this.firstName;
-        data["lastName"] = this.lastName;
-        data["customerType"] = this.customerType;
-        data["prefferedContactMethod"] = this.prefferedContactMethod;
-        data["companyName"] = this.companyName;
-        data["status"] = this.status;
-        data["customerNotes"] = this.customerNotes;
-        if (Array.isArray(this.addresses)) {
-            data["addresses"] = [];
-            for (let item of this.addresses)
-                data["addresses"].push(item ? item.toJSON() : undefined as any);
-        }
-        return data;
-    }
-}
-
-export interface ICustomer {
-    customerId?: number;
-    firstName: string | undefined;
-    lastName: string | undefined;
-    customerType: string | undefined;
-    prefferedContactMethod?: string | undefined;
-    companyName?: string | undefined;
-    status?: string | undefined;
-    customerNotes?: string | undefined;
-    addresses?: Address[] | undefined;
-}
-
 export class CustomerModel implements ICustomerModel {
     customerId?: number;
     firstName!: string | undefined;
@@ -2943,7 +2803,6 @@ export class CustomerModel implements ICustomerModel {
     companyName?: string | undefined;
     status?: string | undefined;
     customerNotes?: string | undefined;
-    addresses?: AddressModel[] | undefined;
 
     constructor(data?: ICustomerModel) {
         if (data) {
@@ -2964,11 +2823,6 @@ export class CustomerModel implements ICustomerModel {
             this.companyName = _data["companyName"];
             this.status = _data["status"];
             this.customerNotes = _data["customerNotes"];
-            if (Array.isArray(_data["addresses"])) {
-                this.addresses = [] as any;
-                for (let item of _data["addresses"])
-                    this.addresses!.push(AddressModel.fromJS(item));
-            }
         }
     }
 
@@ -2989,11 +2843,6 @@ export class CustomerModel implements ICustomerModel {
         data["companyName"] = this.companyName;
         data["status"] = this.status;
         data["customerNotes"] = this.customerNotes;
-        if (Array.isArray(this.addresses)) {
-            data["addresses"] = [];
-            for (let item of this.addresses)
-                data["addresses"].push(item ? item.toJSON() : undefined as any);
-        }
         return data;
     }
 }
@@ -3007,7 +2856,6 @@ export interface ICustomerModel {
     companyName?: string | undefined;
     status?: string | undefined;
     customerNotes?: string | undefined;
-    addresses?: AddressModel[] | undefined;
 }
 
 export class CustomerWithFKsModel implements ICustomerWithFKsModel {

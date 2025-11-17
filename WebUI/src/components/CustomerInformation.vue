@@ -126,7 +126,7 @@
 
 <script setup lang="ts">
     import 'primeicons/primeicons.css';
-    import { Client, CustomerModel, AddressModel, EmailModel, Email } from '../client/client'
+    import { Client, CustomerModel, AddressModel, EmailModel} from '../client/client'
     import InputText from 'primevue/inputtext';
     import {reactive, ref} from 'vue'
     import { useToast } from '@/composables/useToast.ts'
@@ -194,8 +194,8 @@
     }
 
     function deleteEmail(email: EmailModel){
-        if (email.emailID! != undefined){
-            removedEmails.push(email.emailID);
+        if (email.emailId! != undefined){
+            removedEmails.push(email.emailId);
         }
     }
 
@@ -217,7 +217,7 @@
         }
     
         for (let i = 0; i < state.listOfAddresses.length; i++){
-            if (!state.listOfAddresses[i].city || !state.listOfAddresses[i].postalCode || !state.listOfAddresses[i].addressType){
+            if (!state.listOfAddresses[i].city || !state.listOfAddresses[i].postalCode || !state.listOfAddresses[i].addressType || !state.listOfAddresses[i].state){
                 showWarning("Address " + (i+1) + " has one or more fields that are not valid");
                 return;
             }
