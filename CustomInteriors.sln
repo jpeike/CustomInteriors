@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36310.24 d17.14
+VisualStudioVersion = 17.14.36310.24
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{3DC2FB83-7724-40FF-9120-685399491D38}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{7B3AB16C-E7F1-43EF-B2FD-8CD6A9FE78C3}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Database", "Database\Database.sqlproj", "{68DABD36-947B-46AC-8006-F5D03DB93E8B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{F93C3299-9D40-48BF-95A9-1AA0E5B8CC52}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,10 @@ Global
 		{68DABD36-947B-46AC-8006-F5D03DB93E8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68DABD36-947B-46AC-8006-F5D03DB93E8B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{68DABD36-947B-46AC-8006-F5D03DB93E8B}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{F93C3299-9D40-48BF-95A9-1AA0E5B8CC52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F93C3299-9D40-48BF-95A9-1AA0E5B8CC52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F93C3299-9D40-48BF-95A9-1AA0E5B8CC52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F93C3299-9D40-48BF-95A9-1AA0E5B8CC52}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
