@@ -1,18 +1,24 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Core;
 
 public class JobModel
 {
     public int JobId { get; set; }
+    
+    [Required]
+    [Range(1, int.MaxValue)]
     public int CustomerId { get; set; }
+    
+    [StringLength(255)]
     public string? JobDescription { get; set; }
+    
+    [DateBeforeNow]
     public DateTime? StartDate { get; set; }
+    
+    [DateBeforeNow]
     public DateTime? EndDate { get; set; }
+    
+    [StringLength(100)]
     public string? Status { get; set; }
-
-   // public CustomerModel Customer { get; set; } //required
-   // public ICollection<JobInvoiceModel>? JobInvoices { get; set; } = new List<JobInvoiceModel>();
-   // public ICollection<QuoteRequestModel>? QuoteRequests { get; set; } = new List<QuoteRequestModel>();
-   // public ICollection<JobAssignmentModel>? JobAssignments { get; set; } = new List<JobAssignmentModel>();
 }
