@@ -476,9 +476,6 @@ function updateCustomerInformation(newCustomer: CustomerModel, newAddress: Addre
       }
     }
   }
-
-  fetchCustomers();
-  fetchAddresses();
   closePage();
 }
 
