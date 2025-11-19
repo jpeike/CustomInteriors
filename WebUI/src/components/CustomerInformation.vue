@@ -163,7 +163,6 @@
     let removedAddresses = [0];    
     let removedEmails = [0];
 
-
     if (props.currentCustomerInformation != undefined){
         var temp = JSON.stringify(props.currentCustomerInformation);
         customer.value = JSON.parse(temp);

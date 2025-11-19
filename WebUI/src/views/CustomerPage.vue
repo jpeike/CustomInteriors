@@ -347,6 +347,7 @@ function deleteAddress(addressId: number){
       state.error = error.message || 'An error occurred'
     })
     .finally(() => {
+      fetchAddresses();
       fetchAddressesByCustomerId(selectedCustomerId.value!)
       state.loading = false
     })
@@ -365,6 +366,7 @@ function createAddress(address: AddressModel){
       state.error = error.message || 'An error occurred'
     })
     .finally(() => {
+      fetchAddresses();
       fetchAddressesByCustomerId(selectedCustomerId.value!)
       state.loading = false
     })
@@ -441,6 +443,7 @@ async function updateEmail(email: EmailModel) {
     state.error = error.message || 'An error occurred'
   })
   .finally(() => {
+    fetchEmails();
     fetchEmailsByCustomerId(selectedCustomerId.value!)
     state.loading = false
   })
@@ -496,18 +499,19 @@ async function createCustomer(newCustomer: CustomerModel, newAddress: AddressMod
           fetchCustomers();
           state.loading = false
         })
-
+        
         await fetchCustomers();
         for (let i = 0; i < newAddress.length; i++){
-          newAddress[i].customerId = selectedCustomerId.value!;
+          newAddress[i].customerId = state.customer[state.customer.length - 1].customerId;
+          console.log(state.customer[state.customer.length - 1].customerId);
           await createAddress(newAddress[i]);
         }
-
+        
         for (let i = 0; i < newEmails.length; i++){
-          newEmails[i].customerId = selectedCustomerId.value!;
+          newEmails[i].customerId = state.customer[state.customer.length - 1].customerId;
+          console.log(state.customer[state.customer.length - 1].customerId);
           await createEmail(newEmails[i]);
           fetchEmails();
-
         }
       } 
       catch (error) {
@@ -556,8 +560,6 @@ async function updateCustomer(newCustomer: CustomerModel, newAddress: AddressMod
         else{
           await updateEmail(newEmails[i])
         }
-        fetchEmails();
-
       }
     } 
     catch (error) {
