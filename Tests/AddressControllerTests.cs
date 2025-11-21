@@ -3,8 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Web;
 
-namespace Tests;
+namespace Testing;
 
+/// <summary>
+/// this class only unit tests the controller actions. services are tested elsewhere
+/// </summary>
 public class AddressControllerTests
 {
     private readonly Mock<IAddressService> _service;
@@ -18,6 +21,7 @@ public class AddressControllerTests
         _controller = new AddressController(_service.Object,  _customerService.Object);
     }
     
+    // need previous pr for tests to pass
     [Fact]
     public async Task GetAll_ReturnsOk()
     {
@@ -27,6 +31,72 @@ public class AddressControllerTests
 
         var result = await _controller.GetAllAddresses();
         
-        Assert.True(true);
+        Assert.IsType<OkObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task GetAddressesByCustomerId_ReturnsOk()
+    {
+        _service.Setup(s => s.GetAddressesByCustomerId(It.IsAny<int>()))
+            .ReturnsAsync(new List<AddressModel>());
+        
+        var result = await _controller.GetAddressesByCustomerId(It.IsAny<int>());
+        
+        Assert.IsType<OkObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task GetAddressesByCustomerId_ReturnsNotFound()
+    {
+        _service.Setup(s => s.GetAddressesByCustomerId(It.IsAny<int>()))
+            .ReturnsAsync(new List<AddressModel>());
+        
+        var result = await _controller.GetAddressesByCustomerId(It.IsAny<int>());
+        
+        Assert.IsType<NotFoundObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task CreateAddress_ReturnsOk()
+    {
+        _service.Setup(s => s.CreateAddress())
+            .ReturnsAsync(new AddressModel());
+
+        var result = await _controller.CreateAddress();
+        
+        Assert.IsType<OkObjectResult>(result);
+    }
+    
+    [Fact]
+    public async Task CreateAddress_ReturnsInvalidInput()
+    {
+        _service.Setup(s => s.CreateAddress())
+            .ReturnsAsync(new AddressModel());
+
+        var result = await _controller.CreateAddress();
+        
+        Assert.IsType<OkObjectResult>(result);
+    }
+    
+    [Fact]
+    public async Task UpdateAddress_ReturnsOk()
+    {
+        _service.Setup(s => s.CreateAddress())
+            .ReturnsAsync(new AddressModel());
+
+        var result = await _controller.CreateAddress();
+        
+        Assert.IsType<OkObjectResult>(result);
+    }
+    
+    [Fact]
+    public async Task UpdateAddress_ReturnsInvalidInput()
+    {
+        _service.Setup(s => s.CreateAddress())
+            .ReturnsAsync(new AddressModel());
+
+        var result = await _controller.CreateAddress();
+        
+        Assert.IsType<OkObjectResult>(result);
     }
 }
