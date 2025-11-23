@@ -7,7 +7,7 @@
                 <button class = "cancelUpdateButton" @click="$emit('closePage')">
                     <p style="margin: 0; text-align: center;">Cancel</p>
                 </button>  
-                <button class = "updateInfoButton" @click="$emit('deleteCustomer', currentCustomerInformation?.customerId)">
+                <button class = "updateInfoButton" @click="$emit('deleteCustomer', currentCustomerInformation?.customerId)" data-testid="deleteConfirmationButton">
                     <p style="margin: 0; text-align: center;">Delete</p>
                 </button>
             </div>

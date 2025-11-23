@@ -10,18 +10,6 @@ const mockCustomers = [
     companyName: "Custom Interiors LLC",
     status: "Active",
     customerNotes: "VIP client — prefers morning calls.",
-    addresses: [
-      {
-        addressId: 1,
-        customerId: 1,
-        street: "123 Maple St",
-        city: "Menomonie",
-        state: "WI",
-        postalCode: 54751,
-        country: "USA",
-        addressType: "Home"
-      }
-    ]
   },
   {
     customerId: 2,
@@ -32,18 +20,6 @@ const mockCustomers = [
     companyName: "Google",
     status: "Active",
     customerNotes: "VIP",
-    addresses: [
-      {
-        addressId: 2,
-        customerId: 2,
-        street: "1234 7th Avenue South",
-        city: "Minneapolis",
-        state: "MN",
-        postalCode: 55378,
-        country: "USA",
-        addressType: "Corporate Office"
-      }
-    ]
   }
 ];
 
@@ -163,5 +139,9 @@ test('Create New Customer', async ({ page }) => {
   await page.getByTestId('customerFormCompany').fill("Obama Games");
   await page.getByTestId('customerFormStatus').fill("Inactive");
   await page.getByTestId('customerFormNotes').fill("The former president?!?!");
+
+  await page.getByTestId('updateFormButton').click();
+
   await expect(page).toHaveScreenshot();
 });
+
