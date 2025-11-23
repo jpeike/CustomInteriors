@@ -10,7 +10,7 @@ BEGIN TRY
     INSERT INTO [dbo].[Customers]
         (FirstName, LastName, CustomerType, PrefferedContactMethod, CompanyName, Status, CustomerNotes)
     VALUES
-        ('Alice', 'Smith', 'Residential', 'Email', 'Smith Home Services', 'Active', 'VIP client – prefers email.'),
+        ('Alice', 'Smith', 'Residential', 'Email', 'Smith Home Services', 'Active', 'VIP client - prefers email.'),
         ('Cameron', 'Scott', 'Commercial', 'Email', 'Google', 'Active', 'Frequent customer.');
 
     INSERT INTO [dbo].[Addresses]
