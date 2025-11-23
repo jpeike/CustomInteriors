@@ -9,8 +9,6 @@ using Web;
 var builder = WebApplication.CreateBuilder(args);
 var isE2ETest = Environment.GetEnvironmentVariable("RUNNING_E2E_TESTS") == "true";
 
-
-
 // 1. Add JWT bearer authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

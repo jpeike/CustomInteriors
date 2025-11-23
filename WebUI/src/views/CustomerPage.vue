@@ -50,8 +50,8 @@
           <div class = "flex row customCardHeader">
             <p style="margin: 0; flex-grow: 2; font-size: 1.2rem; font-weight: bold;" data-testid="customerName">{{ customer.firstName }} {{ customer.lastName }}</p>
             <div class="flex row" style="justify-content: left; flex-grow: 0; gap: 15%">
-              <i class="pi pi-pen-to-square editButton" style="font-size: 1.1rem" @click="editCustomerUI(customer)"></i>
-              <i class="pi pi-trash editButton" style="font-size: 1.1rem" @click="deleteConfirmation = !deleteConfirmation; getCustomerIndex(customer.customerId ?? 0);"></i>
+              <i class="pi pi-pen-to-square editButton" style="font-size: 1.1rem" @click="editCustomerUI(customer)" data-testid="updateCustomerButton"></i>
+              <i class="pi pi-trash editButton" style="font-size: 1.1rem" @click="deleteConfirmation = !deleteConfirmation; getCustomerIndex(customer.customerId ?? 0);" data-testid="deleteCustomerButton"></i>
             </div>
           </div>
         </template>

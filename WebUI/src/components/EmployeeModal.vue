@@ -46,7 +46,7 @@ if (props.selectedEmployee) employee = new EmployeeModel(props.selectedEmployee)
       <div class="buttons">
         <Button label="Close" @click="$emit('closePage')"></Button>
         <Button label="Update" @click="$emit('updateFunction', selectedEmployee?.employeeId, employee)"></Button>
-        <Button label="Delete" @click="$emit('deleteFunction', selectedEmployee?.employeeId)" severity="danger"></Button>
+        <Button label="Delete" @click="$emit('deleteFunction', selectedEmployee?.employeeId)" severity="danger" data-testid="deleteCustomerButton"></Button>
       </div>
     </div>
   </div>
