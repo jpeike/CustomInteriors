@@ -27,14 +27,14 @@ public class PhoneController : ControllerBase
     public async Task<ActionResult<PhoneModel?>> GetPhoneById(int id)
     {
         if (id <= 0) return BadRequest();
-        return await _phoneService.GetPhoneById(id);
+        return Ok(await _phoneService.GetPhoneById(id));
     }
 
     [HttpPost("", Name = "CreatePhone")]
     public async Task<ActionResult<PhoneModel>> CreatePhone([FromBody] PhoneModel phoneModel)
     {
         if (!ModelState.IsValid) return BadRequest();
-        return await _phoneService.CreatePhone(phoneModel);
+        return Ok(await _phoneService.CreatePhone(phoneModel));
     }
 
     [HttpPut("", Name = "UpdatePhone")]
@@ -49,6 +49,6 @@ public class PhoneController : ControllerBase
     public async Task<ActionResult<bool>> DeletePhone(int id)
     {
         if (id <= 0) return BadRequest();
-        return await _phoneService.DeletePhone(id);
+        return Ok(await _phoneService.DeletePhone(id));
     }
 }

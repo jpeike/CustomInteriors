@@ -27,14 +27,14 @@ public class JobAssignmentController : ControllerBase
     public async Task<ActionResult<JobAssignmentModel?>> GetJobAssignmentById(int id)
     {
         if (id <= 0) return BadRequest();
-        return await _jobAssignmentService.GetJobAssignmentById(id);
+        return Ok(await _jobAssignmentService.GetJobAssignmentById(id));
     }
 
     [HttpPost("", Name = "CreateJobAssignment")]
     public async Task<ActionResult<JobAssignmentModel>> CreateJobAssignment([FromBody] JobAssignmentModel jobAssignmentModel)
     {
         if (!ModelState.IsValid) return BadRequest();
-        return await _jobAssignmentService.CreateJobAssignment(jobAssignmentModel);
+        return Ok(await _jobAssignmentService.CreateJobAssignment(jobAssignmentModel));
     }
 
     [HttpPut("", Name = "UpdateJobAssignment")]
@@ -49,6 +49,6 @@ public class JobAssignmentController : ControllerBase
     public async Task<ActionResult<bool>> DeleteJobAssignment(int id)
     {
         if (id <= 0) return BadRequest();
-        return await _jobAssignmentService.DeleteJobAssignment(id);
+        return Ok(await _jobAssignmentService.DeleteJobAssignment(id));
     }
 }

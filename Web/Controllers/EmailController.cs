@@ -28,7 +28,7 @@ public class EmailsController : ControllerBase
     public async Task<ActionResult<EmailModel?>> GetEmailById(int id)
     {
         if (id <= 0) return BadRequest();
-        return await _emailService.GetEmailById(id);
+        return Ok(await _emailService.GetEmailById(id));
     }
 
     [HttpPost("", Name = "CreateEmail")]
@@ -36,7 +36,7 @@ public class EmailsController : ControllerBase
     {
         if (!ModelState.IsValid) return BadRequest();
         emailModel.CreatedOn = DateTime.UtcNow;
-        return await _emailService.CreateEmail(emailModel);
+        return Ok(await _emailService.CreateEmail(emailModel));
     }
 
     [HttpPut("", Name = "UpdateEmail")]
@@ -51,6 +51,6 @@ public class EmailsController : ControllerBase
     public async Task<ActionResult<bool>> DeleteEmail(int id)
     {
         if (id <= 0) return BadRequest();
-        return await _emailService.DeleteEmail(id);
+        return Ok(await _emailService.DeleteEmail(id));
     }
 }

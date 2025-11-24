@@ -30,14 +30,14 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<UserModel?>> GetUserById(int id)
     {
         if (id <= 0) return BadRequest();
-        return await _userService.GetUserById(id);
+        return Ok(await _userService.GetUserById(id));
     }
 
     [HttpPost("", Name = "CreateUser")]
     public async Task<ActionResult<UserModel>> CreateUser([FromBody] UserModel userModel)
     {
         if (!ModelState.IsValid) return BadRequest();
-        return await _userService.CreateUser(userModel);
+        return Ok(await _userService.CreateUser(userModel));
     }
 
     [HttpPut("", Name = "UpdateUser")]
@@ -52,7 +52,7 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<bool>> DeleteUser(int id)
     {
         if (id <= 0) return BadRequest();
-        return await _userService.DeleteUser(id);
+        return Ok(await _userService.DeleteUser(id));
     }
 }
 

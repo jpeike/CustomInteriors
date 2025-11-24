@@ -27,14 +27,14 @@ public class EmployeeController : ControllerBase
     public async Task<ActionResult<EmployeeModel?>> GetEmployeeById(int id)
     {
         if (id <= 0) return BadRequest();
-        return await _employeeService.GetEmployeeById(id);
+        return Ok(await _employeeService.GetEmployeeById(id));
     }
 
     [HttpPost("", Name = "CreateEmployee")]
     public async Task<ActionResult<EmployeeModel>> CreateEmployee([FromBody] EmployeeModel employeeModel)
     {
         if (!ModelState.IsValid) return BadRequest();
-        return await _employeeService.CreateEmployee(employeeModel);
+        return Ok(await _employeeService.CreateEmployee(employeeModel));
     }
 
     [HttpPut("", Name = "UpdateEmployee")]
@@ -49,6 +49,6 @@ public class EmployeeController : ControllerBase
     public async Task<ActionResult<bool>> DeleteEmployee(int id)
     {
         if (id <= 0) return BadRequest();
-        return await _employeeService.DeleteEmployee(id);
+        return Ok(await _employeeService.DeleteEmployee(id));
     }
 }
