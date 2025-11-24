@@ -2,7 +2,7 @@
 using Infrastructure;
 using Moq;
 
-namespace Testing;
+namespace Testing.UnitTests;
 
 public class AddressServiceTests
 {

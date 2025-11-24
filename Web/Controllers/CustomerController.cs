@@ -27,7 +27,7 @@ public class CustomersController : ControllerBase
     public async Task<ActionResult<CustomerModel?>> GetCustomerById(int id)
     {
         if (id <= 0) return BadRequest();
-        return await _customerService.GetCustomerById(id);
+        return Ok(await _customerService.GetCustomerById(id));
     }
 
     // todo look at this again, not really restful but I dont want to change too much with this one yet
@@ -35,14 +35,14 @@ public class CustomersController : ControllerBase
     public async Task<ActionResult<CustomerWithFKsModel?>> GetCustomerWithAddress(int id)
     {
         if (!ModelState.IsValid) return BadRequest();
-        return await _customerService.GetCustomerWithAddress(id);
+        return Ok(await _customerService.GetCustomerWithAddress(id));
     }
 
     [HttpPost("", Name = "CreateCustomer")]
     public async Task<ActionResult<CustomerModel>> CreateCustomer([FromBody] CustomerModel customerModel)
     {
         if (!ModelState.IsValid) return BadRequest();
-        return await _customerService.CreateCustomer(customerModel);
+        return Ok(await _customerService.CreateCustomer(customerModel));
     }
 
     [HttpPut("", Name = "UpdateCustomer")]
@@ -57,6 +57,6 @@ public class CustomersController : ControllerBase
     public async Task<ActionResult<bool>> DeleteCustomer(int id)
     {
         if (id <= 0) return BadRequest();
-        return await _customerService.DeleteCustomer(id);
+        return Ok(await _customerService.DeleteCustomer(id));
     }
 }
