@@ -1,12 +1,24 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Core;
 
 public class EmailModel
 {
     public int EmailId { get; set; }
-    public int CustomerId { get; set; }
-    public required string EmailAddress { get; set; }
-    public required string EmailType { get; set; }
-    public DateTime CreatedOn { get; set; }
     
-    // public CustomerModel Customer { get; set; }  //required
+    [Required]
+    [Range(1, int.MaxValue)]
+    public int CustomerId { get; set; }
+    
+    [Required]
+    [StringLength(255)]
+    [EmailAddress]
+    public required string EmailAddress { get; set; }
+    
+    [Required]
+    [StringLength(100)]
+    public required string EmailType { get; set; }
+    
+    [DateBeforeNow]
+    public DateTime CreatedOn { get; set; }
 }
