@@ -1,7 +1,6 @@
 using Core;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Web;
 using Web.Controllers;
 
 namespace Testing.UnitTests.ControllerTests;
@@ -31,13 +30,13 @@ public class CustomerControllerTests
         _service = new Mock<ICustomerService>();
         _controller = new CustomersController(_service.Object);
     }
-    
+
     [Fact]
     public async Task GetAll_ReturnsOk()
     {
         // mock the return of the service to be a generic customer
         _service.Setup(s => s.GetAllCustomers())
-            .ReturnsAsync(new List<CustomerModel> { });
+            .ReturnsAsync(new List<CustomerModel>());
 
         var result = await _controller.GetAllCustomers();
 
