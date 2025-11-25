@@ -9,9 +9,9 @@ export function useCustomerEditFlow({ customersStore, addressesStore, emailsStor
   emailsStore: EmailsStore,
   customerModalsStore: ReturnType<typeof useCustomerModals>
 }) {
-  const { customers, fetchCustomers, createCustomer, updateCustomer } = customersStore
-  const { fetchAddresses, createAddress, updateAddress, deleteAddress } = addressesStore
-  const { fetchEmails, createEmail, updateEmail, deleteEmail } = emailsStore
+  const { createCustomer, updateCustomer } = customersStore
+  const { createAddress, updateAddress, deleteAddress } = addressesStore
+  const { createEmail, updateEmail, deleteEmail } = emailsStore
   const { showInfo } = useToast()
   const { closePage, selectedCustomerId } = customerModalsStore
 
