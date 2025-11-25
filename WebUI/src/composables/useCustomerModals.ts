@@ -47,7 +47,6 @@ export function useCustomerModals({addressesStore, emailsStore, customersStore}:
     console.log(customer.customerId + " " + customer.firstName);
     selectedCustomerId.value = customer.customerId!;
 
-    //getCustomerIndex(selectedCustomerId.value);
     await getSelectedCustomer(selectedCustomerId.value);
     await fetchAddressesByCustomerId(selectedCustomerId.value)
     await fetchEmailsByCustomerId(selectedCustomerId.value);
