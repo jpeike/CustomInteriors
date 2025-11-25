@@ -9,9 +9,9 @@ export function useCustomerEditFlow({ customersStore, addressesStore, emailsStor
   emailsStore: EmailsStore,
   customerModalsStore: ReturnType<typeof useCustomerModals>
 }) {
-  const { customers, fetchCustomers, createCustomer, updateCustomer } = customersStore
-  const { fetchAddresses, createAddress, updateAddress, deleteAddress } = addressesStore
-  const { fetchEmails, createEmail, updateEmail, deleteEmail } = emailsStore
+  const { customers, fetchCustomersWithDetails, createCustomer, updateCustomer } = customersStore
+  const { createAddress, updateAddress, deleteAddress } = addressesStore
+  const { createEmail, updateEmail, deleteEmail } = emailsStore
   const { showInfo } = useToast()
   const { closePage, selectedCustomerId } = customerModalsStore
 
@@ -19,7 +19,6 @@ export function useCustomerEditFlow({ customersStore, addressesStore, emailsStor
     if (newCustomer.customerId == -1 && newAddress.length == 0 && removedAddresses.length == 1 && newEmails.length == 0 && removedEmails.length == 1) {
       showInfo("No changes made");
     }
-
     else {
       //create new customer
       if (newCustomer.customerId == null) {
@@ -44,7 +43,7 @@ export function useCustomerEditFlow({ customersStore, addressesStore, emailsStor
       }
       //update existing customer
       else {
-        updateCustomer(newCustomer);
+        await updateCustomer(newCustomer);
 
         for (let i = 0; i < newAddress.length; i++) {
           if (newAddress[i].city != undefined && newAddress[i].state != undefined && newAddress[i].postalCode != undefined && newAddress[i].addressType != undefined) {
@@ -73,24 +72,23 @@ export function useCustomerEditFlow({ customersStore, addressesStore, emailsStor
 
     if (removedAddresses.length > 1) {
       for (let i = 1; i < removedAddresses.length; i++) {
-        deleteAddress(removedAddresses[i]!);
+        await deleteAddress(removedAddresses[i]!);
       }
     }
 
     if (removedEmails.length > 1) {
       for (let i = 1; i < removedEmails.length; i++) {
-        deleteEmail(removedEmails[i]!);
+        await deleteEmail(removedEmails[i]!);
       }
     }
   }
+  await fetchCustomersWithDetails()
   closePage();
 }
 
 async function handleDelete(customerId: number) {
   await customersStore.deleteCustomer(customerId)
-  await customersStore.fetchCustomers()
-  await addressesStore.fetchAddresses()
-  await emailsStore.fetchEmails()
+  await fetchCustomersWithDetails()
 
   customerModalsStore.closeDeleteModal()
 }

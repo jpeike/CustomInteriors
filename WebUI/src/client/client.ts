@@ -230,10 +230,15 @@ export class Client {
     }
 
     /**
+     * @param includeDetails (optional) 
      * @return OK
      */
-    getAllCustomers(): Promise<CustomerModel[]> {
-        let url_ = this.baseUrl + "/api/customers";
+    getAllCustomers(includeDetails?: boolean | undefined): Promise<CustomerModel[]> {
+        let url_ = this.baseUrl + "/api/customers?";
+        if (includeDetails === null)
+            throw new globalThis.Error("The parameter 'includeDetails' cannot be null.");
+        else if (includeDetails !== undefined)
+            url_ += "includeDetails=" + encodeURIComponent("" + includeDetails) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -354,13 +359,18 @@ export class Client {
     }
 
     /**
+     * @param includeDetails (optional) 
      * @return OK
      */
-    getCustomerById(id: number): Promise<CustomerModel> {
-        let url_ = this.baseUrl + "/api/customers/{id}";
+    getCustomerById(id: number, includeDetails?: boolean | undefined): Promise<CustomerModel> {
+        let url_ = this.baseUrl + "/api/customers/{id}?";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (includeDetails === null)
+            throw new globalThis.Error("The parameter 'includeDetails' cannot be null.");
+        else if (includeDetails !== undefined)
+            url_ += "includeDetails=" + encodeURIComponent("" + includeDetails) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -432,46 +442,6 @@ export class Client {
             });
         }
         return Promise.resolve<boolean>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    getCustomerWithAddresses(id: number): Promise<CustomerWithFKsModel> {
-        let url_ = this.baseUrl + "/api/customers/with-addresses/{id}";
-        if (id === undefined || id === null)
-            throw new globalThis.Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetCustomerWithAddresses(_response);
-        });
-    }
-
-    protected processGetCustomerWithAddresses(response: Response): Promise<CustomerWithFKsModel> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CustomerWithFKsModel.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<CustomerWithFKsModel>(null as any);
     }
 
     /**
@@ -2803,6 +2773,8 @@ export class CustomerModel implements ICustomerModel {
     companyName?: string | undefined;
     status?: string | undefined;
     customerNotes?: string | undefined;
+    addresses?: AddressModel[] | undefined;
+    emails?: EmailModel[] | undefined;
 
     constructor(data?: ICustomerModel) {
         if (data) {
@@ -2823,6 +2795,16 @@ export class CustomerModel implements ICustomerModel {
             this.companyName = _data["companyName"];
             this.status = _data["status"];
             this.customerNotes = _data["customerNotes"];
+            if (Array.isArray(_data["addresses"])) {
+                this.addresses = [] as any;
+                for (let item of _data["addresses"])
+                    this.addresses!.push(AddressModel.fromJS(item));
+            }
+            if (Array.isArray(_data["emails"])) {
+                this.emails = [] as any;
+                for (let item of _data["emails"])
+                    this.emails!.push(EmailModel.fromJS(item));
+            }
         }
     }
 
@@ -2843,6 +2825,16 @@ export class CustomerModel implements ICustomerModel {
         data["companyName"] = this.companyName;
         data["status"] = this.status;
         data["customerNotes"] = this.customerNotes;
+        if (Array.isArray(this.addresses)) {
+            data["addresses"] = [];
+            for (let item of this.addresses)
+                data["addresses"].push(item ? item.toJSON() : undefined as any);
+        }
+        if (Array.isArray(this.emails)) {
+            data["emails"] = [];
+            for (let item of this.emails)
+                data["emails"].push(item ? item.toJSON() : undefined as any);
+        }
         return data;
     }
 }
@@ -2856,70 +2848,8 @@ export interface ICustomerModel {
     companyName?: string | undefined;
     status?: string | undefined;
     customerNotes?: string | undefined;
-}
-
-export class CustomerWithFKsModel implements ICustomerWithFKsModel {
-    customerId?: number;
-    firstName?: string | undefined;
-    lastName?: string | undefined;
-    customerType?: string | undefined;
-    prefferedContactMethod?: string | undefined;
-    companyName?: string | undefined;
-    status?: string | undefined;
-    customerNotes?: string | undefined;
-
-    constructor(data?: ICustomerWithFKsModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.customerId = _data["customerId"];
-            this.firstName = _data["firstName"];
-            this.lastName = _data["lastName"];
-            this.customerType = _data["customerType"];
-            this.prefferedContactMethod = _data["prefferedContactMethod"];
-            this.companyName = _data["companyName"];
-            this.status = _data["status"];
-            this.customerNotes = _data["customerNotes"];
-        }
-    }
-
-    static fromJS(data: any): CustomerWithFKsModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new CustomerWithFKsModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["customerId"] = this.customerId;
-        data["firstName"] = this.firstName;
-        data["lastName"] = this.lastName;
-        data["customerType"] = this.customerType;
-        data["prefferedContactMethod"] = this.prefferedContactMethod;
-        data["companyName"] = this.companyName;
-        data["status"] = this.status;
-        data["customerNotes"] = this.customerNotes;
-        return data;
-    }
-}
-
-export interface ICustomerWithFKsModel {
-    customerId?: number;
-    firstName?: string | undefined;
-    lastName?: string | undefined;
-    customerType?: string | undefined;
-    prefferedContactMethod?: string | undefined;
-    companyName?: string | undefined;
-    status?: string | undefined;
-    customerNotes?: string | undefined;
+    addresses?: AddressModel[] | undefined;
+    emails?: EmailModel[] | undefined;
 }
 
 export class EmailModel implements IEmailModel {

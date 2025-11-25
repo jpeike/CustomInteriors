@@ -8,13 +8,13 @@ export function useCustomers() {
     const customersError = ref<string | null>(null)
     const customers = ref<CustomerModel[]>([])
     const client = new Client(import.meta.env.VITE_API_BASE_URL)
-    const { showSuccess, showError, showInfo, showWarning } = useToast()
+    const { showSuccess, showError} = useToast()
 
-    async function fetchCustomers() {
+    async function fetchCustomersWithDetails() {
         customersLoading.value = true
         customersError.value = null
         client
-            .getAllCustomers()
+            .getAllCustomers(true)
             .then((response) => {
                 customers.value = response
             })
@@ -41,7 +41,6 @@ export function useCustomers() {
                 return undefined
             } finally {
                 customersLoading.value = false
-                fetchCustomers();
             }
         }
         // ensure function always returns CustomerModel|null and that loading is reset
@@ -66,7 +65,6 @@ export function useCustomers() {
                     })
                     .finally(() => {
                         customersLoading.value = false
-                        fetchCustomers();
                     })
             }
 
@@ -100,7 +98,7 @@ export function useCustomers() {
         customers,
         customersLoading,
         customersError,
-        fetchCustomers,
+        fetchCustomersWithDetails,
         createCustomer,
         updateCustomer,
         deleteCustomer
