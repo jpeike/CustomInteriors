@@ -22,30 +22,20 @@ public class CustomerService : ICustomerService
         return await _customerRepository.DeleteCustomer(id);
     }
 
-    public async Task<IEnumerable<CustomerModel>> GetAllCustomers()
+    public async Task<IEnumerable<CustomerModel>> GetAllCustomers(bool includeDetails = false)
     {
-        var allCustomers = await _customerRepository.GetAllCustomers();
-        return allCustomers.ToModels();
+        var allCustomers = await _customerRepository.GetAllCustomers(includeDetails);
+        return allCustomers.ToModels(includeDetails);
     }
 
-    public async Task<CustomerModel?> GetCustomerById(int id)
+    public async Task<CustomerModel?> GetCustomerById(int id, bool includeDetails = false)
     {
-        Customer? customer = await _customerRepository.GetCustomerById(id);
+        Customer? customer = await _customerRepository.GetCustomerById(id, includeDetails);
         if (customer == null)
         {
             return null;
         }
-        return customer.ToModel();
-    }
-
-    public async Task<CustomerWithFKsModel?> GetCustomerWithAddress(int id)
-    {
-        Customer? customer = await _customerRepository.GetCustomerWithAddress(id);
-        if (customer == null)
-        {
-            return null;
-        }
-        return customer.FKsToModel();
+        return customer.ToModel(includeDetails);
     }
 
     public async Task UpdateCustomer(CustomerModel customerModel)

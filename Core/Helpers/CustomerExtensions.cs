@@ -2,7 +2,7 @@
 
 public static class CustomerExtensions
 {
-    public static CustomerModel ToModel(this Customer customer) => new CustomerModel
+    public static CustomerModel ToModel(this Customer customer, bool includeDetails = false) => new CustomerModel
     {
         CustomerId = customer.CustomerId,
         FirstName = customer.FirstName,
@@ -12,12 +12,13 @@ public static class CustomerExtensions
         CompanyName = customer.CompanyName,
         Status = customer.Status,
         CustomerNotes = customer.CustomerNotes,
-        // Emails = customer.Emails.Select(x =>x.ToModel()).ToList()
+        Addresses = includeDetails ? customer.Addresses?.Select(a => a.ToModel()).ToList() : null,
+        Emails = includeDetails ? customer.Emails?.Select(e => e.ToModel()).ToList() : null
     };
 
-    public static IEnumerable<CustomerModel> ToModels(this IEnumerable<Customer> customer)
+    public static IEnumerable<CustomerModel> ToModels(this IEnumerable<Customer> customer, bool includeDetails = false)
     {
-        return customer.Select(u => u.ToModel());
+        return customer.Select(u => u.ToModel(includeDetails));
     }
 
     public static Customer ToEntity(this CustomerModel model) => new Customer
