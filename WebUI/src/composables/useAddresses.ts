@@ -7,28 +7,9 @@ export function useAddresses() {
     const addressesLoading = ref(false)
     const addressesError = ref<string | null>(null)
 
-    //const addresses = ref<AddressModel[]>([])
-
     const client = new Client(import.meta.env.VITE_API_BASE_URL)
 
     const { showSuccess, showError, showInfo, showWarning } = useToast()
-
-    //No longer needed since fetchCustomers gets a customer with its addresses and emails.
-    // async function fetchAddresses() {
-    //     addressesLoading.value = true
-    //     addressesError.value = null
-    //     client
-    //         .getAllAddresses()
-    //         .then((response) => {
-    //             addresses.value = response
-    //         })
-    //         .catch((addressesError) => {
-    //             addressesError.value = addressesError.message || 'An addressesError occurred'
-    //         })
-    //         .finally(() => {
-    //             addressesLoading.value = false
-    //         })
-    // }
 
     async function createAddress(address: AddressModel) {
         addressesLoading.value = true
@@ -87,12 +68,12 @@ export function useAddresses() {
         const parts = [
             addr.street,
             addr.city,
-            addr.state,
+            addr.state + ',',
             addr.postalCode,
             addr.country
         ].filter(Boolean)
 
-        return parts.join(', ')
+        return parts.join(' ')
     }
 
     return {

@@ -75,7 +75,6 @@ import { useCustomerSearch } from '@/composables/useCustomerSearch'
 import { useCustomerEditFlow } from '@/composables/useCustomerEditFlow'
 import { useCustomerModals } from '@/composables/useCustomerModals'
 
-
 const customersStore = useCustomers()
 const { 
   customers, 
@@ -88,17 +87,15 @@ const {
 const addressesStore = useAddresses()
 const { 
   addressesLoading, 
-  addressesError, 
-  // fetchAddresses, 
-   formatAddress 
+  addressesError,
+  formatAddress 
 } = addressesStore
 
 const emailsStore = useEmails()
 const { 
   emailsLoading, 
   emailsError, 
-  // fetchEmails, 
-   formatEmail 
+  formatEmail 
 } = emailsStore
 
 const customerModalsStore = useCustomerModals({
