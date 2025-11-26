@@ -67,7 +67,7 @@ export function useAddresses() {
 
         const parts = [
             addr.street,
-            addr.city,
+            addr.city + ',',
             addr.state + ',',
             addr.postalCode,
             addr.country
