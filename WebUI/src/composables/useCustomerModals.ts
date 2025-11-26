@@ -70,56 +70,6 @@ export function useCustomerModals({addressesStore, emailsStore, customersStore}:
     }
   }
 
-  async function getSelectedCustomer(customerId: number) {
-    customersLoading.value = true
-    customersError.value = null
-    return await client
-      .getCustomerById(customerId)
-      .then((response) => {
-        currentCustomer.value = response;
-      })
-      .catch((error) => {
-        customersError.value = error.message || 'An error occurred'
-        return null;
-      })
-      .finally(() => {
-        customersLoading.value = false
-      })
-  }
-
-  // async function fetchAddressesByCustomerId(customerId: number) {
-  //   addressesLoading.value = true
-  //   addressesError.value = null
-  //   await client
-  //     .getAddressesByCustomerId(customerId)
-  //     .then((response) => {
-  //       currentCustomerAddresses.value =response;
-  //     })
-  //     .catch((addressesError) => {
-  //       addressesError.value = addressesError.message || 'An addressesError occurred'
-  //       return null;
-  //     })
-  //     .finally(() => {
-  //       addressesLoading.value = false
-  //     })
-  // }
-
-  //TODO change function to be similar to other fetch functions.
-  // function fetchEmailsByCustomerId(customerId: number) {
-  //   emailsLoading.value = true
-  //   emailsError.value = null
-
-  //   let userEmails = new Array();
-  //   for (let i = 0; i < emails.value.length; i++) {
-
-  //     if (emails.value[i].customerId == customerId) {
-  //       userEmails.push(emails.value[i]);
-  //     }
-  //   }
-  //   emailsLoading.value = false
-  //   currentEmailAddresses.value = userEmails;
-  // }
-
   function closeDeleteModal() {
     deleteConfirmation.value = false
   }
@@ -145,7 +95,6 @@ export function useCustomerModals({addressesStore, emailsStore, customersStore}:
     createCustomerDisplay,
     editCustomerUI,
     getCustomerIndex,
-    //fetchAddressesByCustomerId,
     closeDeleteModal,
     openDeleteModal,
 
