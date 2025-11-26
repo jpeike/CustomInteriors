@@ -16,8 +16,8 @@
             Customer ID: {{ group.customerId }}
           </template>
           <template #content>
-            <div v-for="email in group.emails" :key="email.emailID" class="mb-2">
-              <p><strong>Email ID:</strong> {{ email.emailID }}</p>
+            <div v-for="email in group.emails" :key="email.emailId" class="mb-2">
+              <p><strong>Email ID:</strong> {{ email.emailId }}</p>
               <p><strong>Email Address:</strong> {{ email.emailAddress }}</p>
               <p><strong>Email Type:</strong> {{ email.emailType }}</p>
               <p><strong>Created On:</strong> {{ email.createdOn }}</p>

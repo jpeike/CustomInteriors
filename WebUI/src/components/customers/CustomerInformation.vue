@@ -10,16 +10,16 @@
             <div class = "flex row multipleFields">
                 <div>
                     <h3 class="fieldTitle">First Name*</h3>
-                    <InputText v-model="customer.firstName" required="true" type="text" class="inputValue" :placeholder="currentCustomerInformation?.firstName" data-testid="customerFormFirstName"></InputText>
+                    <InputText v-model="customer.firstName" required="true" type="text" class="inputValue" :placeholder="props.currentCustomerInformation?.firstName" data-testid="customerFormFirstName"></InputText>
                 </div>
                 <div>
                     <h3 class="fieldTitle">Last Name*</h3>
-                    <InputText v-model="customer.lastName" required="true" type="text" class="inputValue" :placeholder="currentCustomerInformation?.lastName" data-testid="customerFormLastName"></InputText>
+                    <InputText v-model="customer.lastName" required="true" type="text" class="inputValue" :placeholder="props.currentCustomerInformation?.lastName" data-testid="customerFormLastName"></InputText>
                 </div>
             </div>
             <div>
                 <h3 class="fieldTitle">Customer Type*</h3>
-                <InputText v-model="customer.customerType" required="true" type="text" class="inputValue" :placeholder="currentCustomerInformation?.customerType" data-testid="customerFormType"></InputText>
+                <InputText v-model="customer.customerType" required="true" type="text" class="inputValue" :placeholder="props.currentCustomerInformation?.customerType" data-testid="customerFormType"></InputText>
             </div>
                         
         <!--Contact-->
@@ -37,20 +37,20 @@
                 </div>
             </div>
             
-            <div style="margin-bottom: 5%;" v-for="(emailsAdresses, index) in listOfEmails">
+            <div style="margin-bottom: 5%;" v-for="(emailsAdresses, index) in state.listOfEmails">
                 
                 <div class="flex row addressHeader">
                     <h2 style="margin: 0;">Email {{ index + 1 }}</h2>
-                    <i class="pi pi-trash editButton" @click="deleteEmail(listOfEmails[index]); listOfEmails.splice(index, 1);"></i>
+                    <i class="pi pi-trash editButton" @click="deleteEmail(state.listOfEmails[index]); state.listOfEmails.splice(index, 1);"></i>
                     </div>
                 <div class="flex row multipleFields">
                     <div>
                         <h3 class="fieldTitle">Address * </h3>
-                        <InputText v-model="emailsAdresses.emailAddress" type="text" class="inputValue" :placeholder="listOfEmails[index].emailAddress" data-testid="customerFormEmailAddress"></InputText>
+                        <InputText v-model="emailsAdresses.emailAddress" type="text" class="inputValue" :placeholder="state.listOfEmails[index].emailAddress" data-testid="customerFormEmailAddress"></InputText>
                     </div>
                     <div>
                         <h3 class="fieldTitle">Type * </h3>
-                        <InputText v-model="emailsAdresses.emailType" type="text" class="inputValue" :placeholder="listOfEmails[index].emailType" data-testid="customerFormEmailType"></InputText>
+                        <InputText v-model="emailsAdresses.emailType" type="text" class="inputValue" :placeholder="state.listOfEmails[index].emailType" data-testid="customerFormEmailType"></InputText>
                     </div>  
                 </div>                  
             </div>
@@ -59,10 +59,10 @@
             </div>
 
         <!--Address Section-->
-            <div class="addressField" v-for="(address, index) in listOfAddresses">
+            <div class="addressField" v-for="(address, index) in state.listOfAddresses">
                 <div class="flex row addressHeader">
                     <h2 style="margin: 0;">Address {{ index + 1 }}</h2>
-                    <i class="pi pi-trash editButton" @click="deleteAddress(listOfAddresses[index]); listOfAddresses.splice(index, 1);"></i>
+                    <i class="pi pi-trash editButton" @click="deleteAddress(state.listOfAddresses[index], index); "></i>
                 </div>
                 <div>
                     <h3 class="fieldTitle">Street Address *</h3>
@@ -99,24 +99,22 @@
         <!--Company Name-->
             <div>
                 <h3 class="fieldTitle">Company Name</h3>
-                <InputText v-model="customer.companyName" type="text" class="inputValue" :placeholder="currentCustomerInformation?.companyName" data-testid="customerFormCompany"></InputText>
+                <InputText v-model="customer.companyName" type="text" class="inputValue" :placeholder="props.currentCustomerInformation?.companyName" data-testid="customerFormCompany"></InputText>
             </div>
             <div>
                 <h3 class="fieldTitle">Status</h3>
-                <InputText v-model="customer.status" type="text" class="inputValue" :placeholder="currentCustomerInformation?.status" data-testid="customerFormStatus"></InputText>
+                <InputText v-model="customer.status" type="text" class="inputValue" :placeholder="props.currentCustomerInformation?.status" data-testid="customerFormStatus"></InputText>
             </div>
             <div class="notesField">
                 <h3 class="fieldTitle">Notes</h3>
-                <textarea v-model="customer.customerNotes" type="text" class="p-inputtext p-component inputValue notes" :placeholder="currentCustomerInformation?.customerNotes" data-testid="customerFormNotes"></textarea>
+                <textarea v-model="customer.customerNotes" type="text" class="p-inputtext p-component inputValue notes" :placeholder="props.currentCustomerInformation?.customerNotes" data-testid="customerFormNotes"></textarea>
             </div>
-            
-            
 
             <div class="flex row buttons">
                 <button class = "cancelUpdateButton" @click="$emit('closePage')">
                     <p style="margin: 0; text-align: center;">Cancel</p>
                 </button>  
-                <button class = "updateInfoButton" @click="testInfo(currentCustomerInformation?.customerId, customer, listOfAddresses, removedAddresses, listOfEmails, removedEmails)" data-testid="updateFormButton">
+                <button class = "updateInfoButton" @click="testInfo()" data-testid="updateFormButton">
                     <p style="margin: 0; text-align: center;">{{buttonDesctipnion}}</p>
                 </button>
             </div>
@@ -128,9 +126,9 @@
 
 <script setup lang="ts">
     import 'primeicons/primeicons.css';
-    import { Client, CustomerModel, AddressModel, EmailModel, Email } from '../client/client'
+    import { Client, CustomerModel, AddressModel, EmailModel} from '../../client/client'
     import InputText from 'primevue/inputtext';
-    import {ref} from 'vue'
+    import {reactive, ref} from 'vue'
     import { useToast } from '@/composables/useToast.ts'
 
     const { showWarning } = useToast()
@@ -146,89 +144,118 @@
     
     const emit = defineEmits<{
         closePage: []
-        updateCustomerInformation: [customerId: number | undefined, customer: CustomerModel, listOfAddresses: AddressModel[], removedAddresses: number[], listOfEmails: EmailModel[], removedEmails: number[]]
+        updateCustomerInformation: [customer: CustomerModel, listOfAddresses: AddressModel[], removedAddresses: number[], listOfEmails: EmailModel[], removedEmails: number[]]
     }>()
+
+    const state = reactive({
+        loading: false,
+        listOfEmails: ref([new EmailModel]),
+        listOfAddresses: ref([new AddressModel])
+    })
 
     const newEmail = ref('');
     const newPhone = ref('');
-    
-    let customer = ref(new CustomerModel);;
-    let listOfAddresses = ref([new AddressModel]);
-    let removedAddresses = [0];
-    
-    let listOfEmails = ref([new EmailModel]);
-    let removedEmails = [0];
-
     const message = ref('');
+    const customer = ref(new CustomerModel);;
+    
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+    let removedAddresses = [0];    
+    let removedEmails = [0];
 
     if (props.currentCustomerInformation != undefined){
-        customer = ref(props.currentCustomerInformation);
+        var temp = JSON.stringify(props.currentCustomerInformation);
+        customer.value = JSON.parse(temp);
     }
 
     if (props.currentAddresses != undefined){
-        listOfAddresses = ref(props.currentAddresses);
+        var temp = JSON.stringify(props.currentAddresses);
+        state.listOfAddresses = JSON.parse(temp);
     }
 
     if (props.currentEmails != undefined){
-        listOfEmails = ref(props.currentEmails);
+        var temp = JSON.stringify(props.currentEmails);
+        state.listOfEmails = JSON.parse(temp);
     }
     
     function addAddress(){
-        listOfAddresses.value.push(new AddressModel);
+        state.listOfAddresses.push(new AddressModel);
     }
 
-    function deleteAddress(address: AddressModel){
-        //removedAddresses.push(listOfAddresses[index].addressId!); listOfAddresses.splice(index, 1);
+    function deleteAddress(address: AddressModel, index: number){
+        state.listOfAddresses.splice(index, 1);
         if (address.addressId! != undefined){
-            console.log(removedAddresses);
             removedAddresses.push(address.addressId);
-        }
-    }
+        }    }
 
     function addEmail(){
-        listOfEmails.value.push(new EmailModel);
+        state.listOfEmails.push(new EmailModel);
     }
 
     function deleteEmail(email: EmailModel){
-        if (email.emailID! != undefined){
-            removedEmails.push(email.emailID);
+        if (email.emailId! != undefined){
+            removedEmails.push(email.emailId);
         }
     }
 
-    function testInfo(customerId: number | undefined, customer: CustomerModel, listOfAddresses: AddressModel[], removedAddresses: number[], listOfEmails: EmailModel[], removedEmails: number[]){
-        if (!customer.firstName|| !customer.lastName || !customer.customerType){
-            showWarning('Customer information not valid')
+    function testInfo(){
+        if (!customer.value.firstName || !customer.value.lastName || !customer.value.customerType){
+            showWarning('Customer information not valid');
             return;
         }
         
-        for (let i = 0; i < listOfEmails.length; i++){
-            if (!emailRegex.test(listOfEmails[i].emailAddress!)){
+        for (let i = 0; i < state.listOfEmails.length; i++){
+            if (!emailRegex.test(state.listOfEmails[i].emailAddress!)){
                 showWarning("Email " + (i+1) + " 's address is not valid")
                 return;
             }
-            if (!listOfEmails[i].emailAddress || !listOfEmails[i].emailType){
+            if (!state.listOfEmails[i].emailAddress || !state.listOfEmails[i].emailType){
                 showWarning("Email " + (i+1) + " has one or more fields that are not valid")
                 return;
             }
         }
-
-        for (let i = 0; i < listOfAddresses.length; i++){
-            if (!listOfAddresses[i].city || !listOfAddresses[i].postalCode || !listOfAddresses[i].addressType){
-                showWarning("Address " + (i+1) + " has one or more fields that are not valid")
-                return
+    
+        for (let i = 0; i < state.listOfAddresses.length; i++){
+            if (!state.listOfAddresses[i].city || !state.listOfAddresses[i].postalCode || !state.listOfAddresses[i].addressType || !state.listOfAddresses[i].state){
+                showWarning("Address " + (i+1) + " has one or more fields that are not valid");
+                return;
             }
 
-            if (!/^\d{5}$/.test(listOfAddresses[i].postalCode?.toString()!) || listOfAddresses[i].postalCode! < 10000){
-                showWarning("Address " + (i + 1) + " ZIP Code must be a 5 digit integer")
-                return
+            if (!/^\d{5}$/.test(state.listOfAddresses[i].postalCode?.toString()!) || state.listOfAddresses[i].postalCode! < 10000){
+                showWarning("Address " + (i + 1) + " ZIP Code must be a 5 digit integer");
+                return;
             }
         }
         
+        checkForNoChanges();
+        
         message.value = 'Address Successfully Created'
-        emit('updateCustomerInformation', customerId, customer, listOfAddresses, removedAddresses, listOfEmails, removedEmails);
+        console.log(customer.value);
+        emit('updateCustomerInformation', customer.value, state.listOfAddresses, removedAddresses, state.listOfEmails, removedEmails);
+    }
 
+    function checkForNoChanges(){
+        if (props.currentCustomerInformation != undefined){
+            if (JSON.stringify(customer.value) == JSON.stringify(props.currentCustomerInformation)){
+                customer.value.customerId = -1;
+            }
+        }
+
+        for (let i = 0; i < state.listOfAddresses.length; i++){
+            if (props.currentAddresses != undefined){
+                if (JSON.stringify(state.listOfAddresses[i]) == JSON.stringify(props.currentAddresses[i])){
+                    state.listOfAddresses.splice(i, 1);
+                }
+            }
+        }
+
+        for (let i = 0; i < state.listOfEmails.length; i++){
+            if (props.currentEmails != undefined){
+                if (JSON.stringify(state.listOfEmails[i]) == JSON.stringify(props.currentEmails[i])){
+                    state.listOfEmails.splice(i, 1);
+                }
+            }
+        }
     }
 </script>
 

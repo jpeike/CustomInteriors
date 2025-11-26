@@ -15,24 +15,16 @@ public class CustomersController : ControllerBase
     }
 
     [HttpGet("", Name = "GetAllCustomers")]
-    public async Task<IEnumerable<CustomerModel>> GetAllCustomers()
+    public async Task<IEnumerable<CustomerModel>> GetAllCustomers([FromQuery] bool includeDetails = false)
     {
-        return await _customerService.GetAllCustomers();
+        return await _customerService.GetAllCustomers(includeDetails);
     }
 
     [HttpGet("{id:int}", Name = "GetCustomerById")]
-    public async Task<CustomerModel?> GetCustomerById(int id)
+    public async Task<CustomerModel?> GetCustomerById(int id, [FromQuery] bool includeDetails = false)
     {
-        return await _customerService.GetCustomerById(id);
+        return await _customerService.GetCustomerById(id, includeDetails);
     }
-
-    // todo look at this again, not really restful but I dont want to change too much with this one yet
-    [HttpGet("with-addresses/{id:int}", Name = "GetCustomerWithAddresses")]
-    public async Task<CustomerWithFKsModel?> GetCustomerWithAddress(int id)
-    {
-        return await _customerService.GetCustomerWithAddress(id);
-    }
-
 
     [HttpPost("", Name = "CreateCustomer")]
     public async Task<CustomerModel> CreateCustomer([FromBody] CustomerModel customerModel)
