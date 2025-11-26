@@ -6,7 +6,7 @@
             <p style="margin: 0;">Manage your customer information and contact details.</p>
         </div>
         <div class = "rightPanel">
-            <button class = "addButton" @click="createCustomerDisplay()">
+            <button class = "addButton" @click="createCustomerDisplay()" data-testid="addCustomerButton">
                 <p style="margin: 0; text-align: center;"> + Add Customers</p>
             </button>
         </div>
