@@ -176,14 +176,13 @@ function fetchCustomers() {
     text-align: right;
   }
   .homePageBody{
-    width: 90vw;
+    width: 80vw;
     height: 90%;
     position: absolute;
     padding: 3%;
     flex-grow: 2;
     gap: 10px;
     margin-top: 1vh;
-    margin-left: 10%;
     border-radius: 10px;
 
   }

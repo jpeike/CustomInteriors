@@ -1,15 +1,18 @@
 <template>
-  <Menubar :model="items" class="app-header">
-    <template #start>
-      <h2 class="logo">Custom Interiors</h2>
-    </template>
-  </Menubar>
-  
+    <Menu :model="items" class="app-header" :pt="{
+            root: { class: 'test' }}">
+      <template #start>
+        <h2 class="logo">Custom Interiors</h2>
+      </template>
+    </Menu>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import Menubar from 'primevue/menubar'
+import Menu from 'primevue/menu'
+import type { MenuItem } from 'primevue/menuitem';
+
 import { useRouter } from 'vue-router'
 import 'primeicons/primeicons.css'
 import { RouteNames } from '@/enums/RouteNames'
@@ -49,13 +52,18 @@ function logout() {
 
 <style scoped>
 .app-header {
+  width: 15vw;
+  height: 100vh;
   padding: 0.5rem 1rem;
   border-radius: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .logo {
-  margin: 0;
+  margin: 5%;
   font-size: 1.25rem;
   font-weight: bold;
 }
+
 </style>
