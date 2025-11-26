@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const isE2E = process.env.TEST_TYPE === 'e2e';
+process.env.RUNNING_E2E_TESTS = "true";
 
 /**
  * Read environment variables from file.
