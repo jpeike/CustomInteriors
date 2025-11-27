@@ -1,6 +1,6 @@
 <template>
     <div class="flex row defaultColor scrollBar">
-        <div class = "flex column customerInfoWindow">
+        <div class = "flex column customerInfoWindow" data-testid="customerForm">
             <div class="flex row customerInfoBar">
                 <div class = "flex column customerInfoTitle">
                     <h2 style="margin: 0;">{{title}}</h2>

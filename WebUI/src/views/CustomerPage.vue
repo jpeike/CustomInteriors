@@ -14,7 +14,7 @@
     
     <div class = "flex row searchBarWrapper">
         <i class="pi pi-search"> </i>
-      <InputText v-model="searchValue"  type="text" class="searchBar" placeholder="Search"/>
+      <InputText v-model="searchValue"  type="text" class="searchBar" placeholder="Search" data-testid="customerSearchInput"/>
     </div>
  
     <div v-if="!isLoading" class="flex row customerDisplay">
