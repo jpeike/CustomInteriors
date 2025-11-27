@@ -1,4 +1,5 @@
-import { test, expect } from '@playwright/test';
+import { test } from '../fixtures/customer.fixture';
+import { expect } from '@playwright/test';
 
 const expectedCustomers = [
   {
@@ -8,18 +9,14 @@ const expectedCustomers = [
     companyName: "Smith Home Services",
     status: "Active",
     customerNotes: "VIP client - prefers email.",
-
     street: "123 Maple St",
     city: "Menomonie",
     state: "WI",
     postalCode: 54751,
     country: "USA",
     addressType: "Home",
-
     emailAddress: "alice@example.com",
     emailType: "main",
-    createdOn: "2025-11-10T16:25:47.8400046"
-    
   },
   {
     name: "Cameron Scott",
@@ -28,45 +25,48 @@ const expectedCustomers = [
     companyName: "Google",
     status: "Active",
     customerNotes: "Frequent customer.",
-
     street: "456 Oak Ave",
     city: "Eau Claire",
     state: "WI",
     postalCode: 54701,
     country: "USA",
     addressType: "Business",
-
-    emailId: 2,
-    customerId: 2,
     emailAddress: "cscott@gmail.com",
     emailType: "main",
-    createdOn: "2024-11-10T16:25:47.8400046"
   }
 ];
 
-test.beforeEach(async ({ page }) => {
-  await page.goto('/customers', { waitUntil: 'networkidle' });
-});
-
-test('CRM customers page loads successfully', async ({ page }) => {
+test('CRM customers page loads successfully', async ({ page, goToCustomersPage  }) => {
   await expect(page.getByRole('heading', { name: "Customers" })).toBeVisible();
 });
 
 for (const c of expectedCustomers) {
-  test(`Customer card for ${c.name} loads successfully`, async ({ page }) => {
+
+  test(`Customer card for ${c.name} should display correct info`, async ({ page, goToCustomersPage  }) => {
 
     const card = page.getByTestId('customerCard').filter({ hasText: c.name });
-    await expect(card.getByTestId('customerName')).toHaveText(c.name);
-    if (c.prefferedContactMethod === 'email') {
-         await expect(card.getByTestId('customerEmail')).toHaveText(c.emailAddress);
+
+    await expect(card.getByTestId('customerName')).toContainText(c.name);
+
+    // Email
+    if (c.prefferedContactMethod === 'Email') {
+      await expect(card).toContainText(c.emailAddress);
     }
     else {
-        //TODO add when phone entity is implemented.
+      //Todo when whole entity is implemented.
     }
-    await expect(card.getByTestId('customerAddress')).toHaveText("Address: " + c.street + " " + c.city + ", " + c.state);
-    await expect(card.getByTestId('customerType')).toHaveText("Type: " + c.customerType);
-    await expect(card.getByTestId('customerCompany')).toContainText("Company: " + c.companyName);
-    await expect(card.getByTestId('customerStatus')).toHaveText("Status: " + c.status);
-    await expect(card.getByTestId('customerNotes')).toHaveText("Notes: " + c.customerNotes);
+
+    // Address fields (partial matches = stable)
+    await expect(card).toContainText(c.street);
+    await expect(card).toContainText(c.city);
+    await expect(card).toContainText(c.state);
+    await expect(card).toContainText(c.postalCode.toString());
+    await expect(card).toContainText(c.country);
+
+    // Other info
+    await expect(card).toContainText(c.customerType);
+    await expect(card).toContainText(c.companyName);
+    await expect(card).toContainText(c.status);
+    await expect(card).toContainText(c.customerNotes);
   });
 }

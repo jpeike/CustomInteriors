@@ -1,5 +1,5 @@
 <template>
-    <Card class="mb-3" data-testid="customerCard">
+    <Card class="mb-3" data-testid="customerCard" :data-customer-id="customer.customerId">
         <template #header>
             <div class="flex row customCardHeader">
                 <p style="margin: 0; flex-grow: 2; font-size: 1.2rem; font-weight: bold;" data-testid="customerName">{{ customer.firstName }} {{
