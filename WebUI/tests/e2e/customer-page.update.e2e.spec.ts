@@ -2,6 +2,7 @@ import { expect } from '@playwright/test';
 import { test } from '../fixtures/customer.fixture';
 import { fillCustomerFormAndSubmit } from '../helpers/customer.form';
 import { expectCustomerCard } from '../helpers/customer.expect';
+import { customerFactory } from '../helpers/customer.factory';
 
 test('Update Customer', async ({ page, goToCustomersPage, createPopulatedCustomer, cleanupCustomer }) => {
 
@@ -15,7 +16,7 @@ test('Update Customer', async ({ page, goToCustomersPage, createPopulatedCustome
 
   await card.getByTestId('updateCustomerButton').click();
 
-  const updated = {
+  const updated = customerFactory({
     firstName: 'Gabe',
     lastName: 'Newell',
     customerType: 'Individual',
@@ -30,7 +31,7 @@ test('Update Customer', async ({ page, goToCustomersPage, createPopulatedCustome
     companyName: 'Steam',
     status: 'Active',
     customerNotes: 'Gabe!',
-  };
+  });
 
   await fillCustomerFormAndSubmit(page, updated, 'PUT');
 

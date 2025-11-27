@@ -3,11 +3,12 @@ import { expect } from '@playwright/test';
 import { deleteCustomerById } from '../helpers/customer.cleanup';
 import { fillCustomerFormAndSubmit } from '../helpers/customer.form';
 import { expectCustomerCard } from '../helpers/customer.expect';
+import { customerFactory } from '../helpers/customer.factory';
 
 test('Create Customer Using Fixture + Factory', async ({ page, goToCustomersPage, cleanupCustomer }) => {
   await page.getByTestId('addCustomerButton').click();
 
-  const data = {
+  const data = customerFactory({
     firstName: 'Test',
     lastName: 'User',
     customerType: 'Individual',
@@ -22,7 +23,7 @@ test('Create Customer Using Fixture + Factory', async ({ page, goToCustomersPage
     companyName: 'Test Inc',
     status: 'Active',
     customerNotes: 'E2E test'
-  };
+  });
 
   const customerId = await fillCustomerFormAndSubmit(page, data, 'POST');
 
