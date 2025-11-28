@@ -37,11 +37,11 @@
                 </div>
             </div>
             
-            <div style="margin-bottom: 5%;" v-for="(emailsAdresses, index) in state.listOfEmails">
+            <div style="margin-bottom: 5%;" v-for="(emailsAdresses, index) in state.listOfEmails" data-testid="customerEmailForm" :data-email-id="emailsAdresses.emailId">
                 
                 <div class="flex row addressHeader">
                     <h2 style="margin: 0;">Email {{ index + 1 }}</h2>
-                    <i class="pi pi-trash editButton" @click="deleteEmail(state.listOfEmails[index]); state.listOfEmails.splice(index, 1);"></i>
+                    <i class="pi pi-trash editButton" @click="deleteEmail(state.listOfEmails[index]); state.listOfEmails.splice(index, 1);" data-testid="removeEmailButton"></i>
                     </div>
                 <div class="flex row multipleFields">
                     <div>
@@ -55,14 +55,14 @@
                 </div>                  
             </div>
             <div class="addAddress">
-                <button @click="addEmail" class="cancelUpdateButton"> <p style="margin: 0; text-align: center;">Add Email</p></button>
+                <button @click="addEmail" class="cancelUpdateButton"> <p style="margin: 0; text-align: center;" data-testid="addEmailButton">Add Email</p></button>
             </div>
 
         <!--Address Section-->
-            <div class="addressField" v-for="(address, index) in state.listOfAddresses">
+            <div class="addressField" v-for="(address, index) in state.listOfAddresses" data-testid="customerAddressForm" :data-address-id="address.addressId">
                 <div class="flex row addressHeader">
                     <h2 style="margin: 0;">Address {{ index + 1 }}</h2>
-                    <i class="pi pi-trash editButton" @click="deleteAddress(state.listOfAddresses[index], index); "></i>
+                    <i class="pi pi-trash editButton" @click="deleteAddress(state.listOfAddresses[index], index); " data-testid="removeAddressButton"></i>
                 </div>
                 <div>
                     <h3 class="fieldTitle">Street Address *</h3>
@@ -93,7 +93,7 @@
             </div>
 
             <div class="addAddress">
-                <button @click="addAddress" class="cancelUpdateButton"> <p style="margin: 0; text-align: center;">Add Address</p></button>
+                <button @click="addAddress" class="cancelUpdateButton"> <p style="margin: 0; text-align: center;" data-testid="addAddressButton">Add Address</p></button>
             </div>
 
         <!--Company Name-->
@@ -111,7 +111,7 @@
             </div>
 
             <div class="flex row buttons">
-                <button class = "cancelUpdateButton" @click="$emit('closePage')">
+                <button class = "cancelUpdateButton" @click="$emit('closePage')" data-testid="cancelFormButton">
                     <p style="margin: 0; text-align: center;">Cancel</p>
                 </button>  
                 <button class = "updateInfoButton" @click="testInfo()" data-testid="updateFormButton">

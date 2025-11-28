@@ -9,15 +9,24 @@ export interface TestCustomer {
   status: string;
   customerNotes: string;
 
+  emails: TestEmail[];
+  addresses: TestAddress[];
+
+  //Todo add phone fields later
+}
+
+export interface TestEmail {
+  emailAddress: string;
+  emailType: string;
+}
+
+export interface TestAddress {
   street: string;
   city: string;
   state: string;
-  postalCode: number;
+  postalCode: number | string;
   country: string;
   addressType: string;
-
-  emailAddress: string;
-  emailType: string;
 }
 
 export function customerFactory(overrides: Partial<TestCustomer> = {}): TestCustomer {
@@ -30,16 +39,27 @@ export function customerFactory(overrides: Partial<TestCustomer> = {}): TestCust
     status: "Active",
     customerNotes: "Generated via factory",
 
-    street: "123 Test Lane",
-    city: "Testville",
-    state: "Testorado",
-    postalCode: 55555,
-    country: "USA",
-    addressType: "Primary",
+    emails: [
+      {
+        emailAddress: "test@example.com",
+        emailType: "main"
+      }
+    ],
 
-    emailAddress: "testuser@example.com",
-    emailType: "main",
+    addresses: [
+      {
+        street: "123 Test Lane",
+        city: "Testville",
+        state: "Testorado",
+        postalCode: 55555,
+        country: "USA",
+        addressType: "Primary"
+      }
+    ],
+
+    //Todo add phone fields later
 
     ...overrides
   };
 }
+
