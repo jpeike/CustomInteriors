@@ -115,5 +115,20 @@ const auth = useAuthStore()
 
 .navButton{
   width: 75%;
+  border: none;
+  border-radius: 7px;
+  padding: 0.5rem;
+  cursor: pointer;
+
+  /* Theme colors */
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.navButton:hover {
+  background-color: var(--secondary);
+  color: var(--foreground);
+  transform: scale(1.05);
 }
 </style>
