@@ -13,6 +13,7 @@ import { useRoute } from 'vue-router'
 // Import layouts
 import DefaultLayout from '@/components/layout/DefaultLayout.vue'
 import NoLayout from '@/components/layout/NoLayout.vue'
+import './components/style/Theme.css';
 
 const route = useRoute()
 

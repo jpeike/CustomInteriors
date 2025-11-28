@@ -1,22 +1,55 @@
 <template>
-    <Menu :model="items" class="app-header" :pt="{
-            root: { class: 'test' }}">
-      <template #start>
-        <h2 class="logo">Custom Interiors</h2>
-      </template>
-    </Menu>
+    
+    <div class="sideNav">
+      <h3 class="logo">Custom Interiors</h3>
+      <button class="btn-primary navButton" v-on:click="router.push(RoutePaths.HOME)">
+        <i class="pi pi-home"></i> <label>Home</label>
+      </button>
+      
+      <button class="btn-primary navButton" v-on:click="router.push(RoutePaths.ABOUT)">
+        <i class="pi pi-info-circle"></i> <label>About</label>
+      </button>
+
+      <button class="btn-primary navButton" v-on:click="router.push(RoutePaths.USERS)">
+        <i class="pi pi-users"></i> <label>Users</label>
+      </button>
+
+      <button class="btn-primary navButton" v-on:click="router.push('/jobs')">
+        <i class="pi pi-briefcase"></i> <label>Jobs</label>
+      </button>
+
+      <button class="btn-primary navButton" v-on:click="router.push('/billing')">
+        <i class="pi pi-wallet"></i> <label>Billing</label>
+      </button>
+
+      <button class="btn-primary navButton" v-on:click="router.push(RoutePaths.CUSTOMERS)">
+        <i class="pi pi-address-book"></i> <label>Customers</label>
+      </button>
+
+      <button class="btn-primary navButton" v-on:click="router.push(RoutePaths.EMAILS)">
+        <i class="pi pi-envelope"></i> <label>Emails</label>
+      </button>
+
+      <button class="btn-primary navButton" v-on:click="router.push(RoutePaths.EMPLOYEES)">
+        <i class="pi pi-sitemap"></i> <label>Employees</label>
+      </button>
+
+      <button class="btn-primary navButton" v-on:click="auth.logout()">
+        <i class="pi pi-sitemap"></i> <label>Logout</label>
+      </button>
+    </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import Menubar from 'primevue/menubar'
 import Menu from 'primevue/menu'
-import type { MenuItem } from 'primevue/menuitem';
 
 import { useRouter } from 'vue-router'
 import 'primeicons/primeicons.css'
 import { RouteNames } from '@/enums/RouteNames'
 import { RoutePaths } from '@/enums/RoutePaths'
+import '../style/Theme.css';
 
 const router = useRouter()
 
@@ -41,12 +74,9 @@ const items = ref([
 ])
 
 import { useAuthStore } from '@/stores/auth'
+import { label } from '@primeuix/themes/aura/metergroup'
 
 const auth = useAuthStore()
-
-function logout() {
-  auth.logout()
-}
 
 </script>
 
@@ -61,9 +91,29 @@ function logout() {
 }
 
 .logo {
-  margin: 5%;
+  margin: 0%;
+  margin-bottom: 5%;
   font-size: 1.25rem;
   font-weight: bold;
 }
 
+.sideNav{
+  width: 15vw;
+  height: 85vh;
+
+  padding: 0.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  
+  box-shadow: var(--p-card-shadow);
+
+  border: solid;
+  border-width: 1px;
+  border-color: rgb(222, 222, 222);
+  border-radius: 10px;
+}
+
+.navButton{
+  width: 75%;
+}
 </style>
