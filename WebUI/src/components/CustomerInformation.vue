@@ -43,10 +43,10 @@
                 </div>
             </div>
             
-            <div class="sectionMargin" style="margin-bottom: 5%;" v-for="(emailsAdresses, index) in state.listOfEmails">
+            <div class="sectionMargin" v-for="(emailsAdresses, index) in state.listOfEmails">
                 
                 <div class="flex row addressHeader">
-                    <h2 class="sectionHeader" style="margin: 0;">Email {{ index + 1 }}</h2>
+                    <h2 class="sectionHeader">Email {{ index + 1 }}</h2>
                     <i class="pi pi-trash editButton" @click="deleteEmail(state.listOfEmails[index]); state.listOfEmails.splice(index, 1);"></i>
                     </div>
                 <div class="flex row multipleFields">
@@ -70,7 +70,7 @@
         <!--Address Section-->
             <div class="addressField" v-for="(address, index) in state.listOfAddresses">
                 <div class="flex row addressHeader">
-                    <h2 class="sectionHeader" style="margin: 0;">Address {{ index + 1 }}</h2>
+                    <h2 class="sectionHeader">Address {{ index + 1 }}</h2>
                     <i class="pi pi-trash editButton" @click="deleteAddress(state.listOfAddresses[index], index); "></i>
                 </div>
 
