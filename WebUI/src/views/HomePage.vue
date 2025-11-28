@@ -188,10 +188,12 @@ function fetchCustomers() {
 
 /* Page layout */
 .homePageBody {
-  width: 90vw;
+  width: 80vw;
   min-height: 90vh;
   padding: 2rem;
   margin: 1vh auto 0 auto;
+  margin-left: 15vw;
+
   border-radius: var(--radius-lg);
   gap: 1rem;
   box-sizing: border-box;

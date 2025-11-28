@@ -1,21 +1,25 @@
 <template>
-  <div>
-    <h1>User Page</h1>
-    <p>This is the user page.</p>
+  <div class="usersPage">
+
+    <div>
+      <h1>User Page</h1>
+      <p>This is the user page.</p>
+    </div>
+    <div v-if="!state.loading">
+      <Card v-for="user in state.users" :key="user.id" class="mb-3">
+        <template #title>{{ user.id }}: {{ user.username }}</template>
+        <template #subtitle>{{ user.email }}</template>
+        <template #content>
+          <p>Created on: {{ user.createdOn }}</p>
+        </template>
+      </Card>
+    </div>
+    <div v-else-if="state.error">{{ state.error }}</div>
+    <div v-else>
+      <p>Loading...</p>
+    </div>
   </div>
-  <div v-if="!state.loading">
-    <Card v-for="user in state.users" :key="user.id" class="mb-3">
-      <template #title>{{ user.id }}: {{ user.username }}</template>
-      <template #subtitle>{{ user.email }}</template>
-      <template #content>
-        <p>Created on: {{ user.createdOn }}</p>
-      </template>
-    </Card>
-  </div>
-  <div v-else-if="state.error">{{ state.error }}</div>
-  <div v-else>
-    <p>Loading...</p>
-  </div>
+
 </template>
 
 <script setup lang="ts">
@@ -50,3 +54,11 @@ function fetchUsers() {
     })
 }
 </script>
+
+<style scoped>
+  .usersPage{
+  width: 85vw;
+  margin-left: 15vw;
+  padding: 3%;
+}
+</style>

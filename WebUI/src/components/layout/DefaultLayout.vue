@@ -3,7 +3,7 @@ import AppHeader from './AppHeader.vue'
 </script>
 
 <template>
-  <div>
+  <div style="display: flex; flex-direction: row;">
     <AppHeader></AppHeader>
     <main>
       <slot />
