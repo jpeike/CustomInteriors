@@ -24,8 +24,8 @@
       @close="closeUpdateModal"
       @updated="updateAddress"
     />
-  </div>  
-  
+  </div>
+
   <div class="flex column customerBody">
     <div class="flex row pageHeader">
         <div class = "flex column leftPanel">
@@ -38,15 +38,15 @@
             </button>
         </div>
     </div>
-    
+
     <div class = "flex row searchBarWrapper">
         <i class="pi pi-search"> </i>
       <InputText v-model="searchValue"  type="text" class="searchBar" placeholder="Search"/>
     </div>
- 
+
     <div v-if="!state.loading" class="flex row customerDisplay">
       <Card v-for="customer in filterCustomer()" :key="customer.customerId" class="mb-3">
-        <template #header>  
+        <template #header>
           <div class = "flex row customCardHeader">
             <p style="margin: 0; flex-grow: 2; font-size: 1.2rem; font-weight: bold;">{{ customer.firstName }} {{ customer.lastName }}</p>
             <div class="flex row" style="justify-content: left; flex-grow: 0; gap: 15%">
@@ -70,7 +70,7 @@
               Not Listed
             </div>
           </div>
-          
+
           <br/>
           
           <p style="margin: 0;">Address: {{getAddressString(customer.customerId!)}}</p>
@@ -166,7 +166,7 @@ function getCustomerIndex(customerID: number){
     if (state.customer[i].customerId == customerID){
       currentCustomerIndex.value = i;
     }
-  }  
+  }
 }
 
 function getAddressString(customerID: number){
@@ -174,7 +174,7 @@ function getAddressString(customerID: number){
     if (state.addresses[i].customerId == customerID){
       return state.addresses[i].street + " " + state.addresses[i].city + ", " + state.addresses[i].state;
     }
-  }  
+  }
 }
 
 function getEmailString(customerID: number){
@@ -182,7 +182,7 @@ function getEmailString(customerID: number){
     if (state.emails[i].customerId == customerID){
       return state.emails[i].emailAddress;
     }
-  }  
+  }
 }
 
 async function fetchCustomers() {
@@ -250,7 +250,7 @@ async function fetchAddressesByCustomerId(customerId: number) {
 function fetchEmailsByCustomerId(customerId: number){
   state.loading = true
   state.error = null
-    
+
   let userEmails = new Array();
   for (let i = 0; i < state.emails.length; i++){
 
@@ -284,9 +284,9 @@ async function editCustomerUI(customer: CustomerModel){
     state.loading = true;
     state.displayCustomerDetails = true;
     state.loading = false;
-    
-    customerTitle = ref('Update Customer'); 
-    customerDescription = ref('Update customer information and contact details'); 
+
+    customerTitle = ref('Update Customer');
+    customerDescription = ref('Update customer information and contact details');
     customerButtonDesc = ref('Update');
 }
 
@@ -394,7 +394,7 @@ function updateAddress(address: AddressModel){
 //emails
 async function deleteEmail(emailID: number) {
     state.loading = true
-    state.error = null  
+    state.error = null
     await client
     .deleteEmail(emailID)
     .then(() => {
@@ -413,7 +413,7 @@ async function deleteEmail(emailID: number) {
 
 async function createEmail(email: EmailModel) {
   state.loading = true
-  state.error = null  
+  state.error = null
   await client
   .createEmail(email)
   .then(() => {
@@ -432,7 +432,7 @@ async function createEmail(email: EmailModel) {
 
 async function updateEmail(email: EmailModel) {
   state.loading = true
-  state.error = null  
+  state.error = null
   await client
   .updateEmail(email)
   .then(() => {
@@ -510,7 +510,7 @@ async function createCustomer(newCustomer: CustomerModel, newAddress: AddressMod
           await createEmail(newEmails[i]);
           fetchEmails();
         }
-      } 
+      }
       catch (error) {
         console.error('Update failed:', error)
       }
@@ -536,7 +536,7 @@ async function updateCustomer(newCustomer: CustomerModel, newAddress: AddressMod
           state.loading = false
         })
       }
-      
+
       for (let i = 0; i < newAddress.length; i++){
         if (newAddress[i].city != undefined && newAddress[i].state != undefined && newAddress[i].postalCode != undefined && newAddress[i].addressType != undefined){
           if (newAddress[i].addressId! == undefined){
@@ -546,19 +546,19 @@ async function updateCustomer(newCustomer: CustomerModel, newAddress: AddressMod
           else{
             await updateAddress(newAddress[i]);
           }
-        }      
+        }
       }
       for (let i = 0; i < newEmails.length; i++){
         if (newEmails[i].emailId! == undefined){
           newEmails[i].customerId = selectedCustomerId.value!;
           await createEmail(newEmails[i]);
-          
+
         }
         else{
           await updateEmail(newEmails[i])
         }
       }
-    } 
+    }
     catch (error) {
       console.error('Update failed:', error)
     }
@@ -585,7 +585,7 @@ function deleteCustomer(currentID: number){
       fetchEmails();
       state.loading = false
     })
-  deleteConfirmation = ref(false); 
+  deleteConfirmation = ref(false);
 }
 
 function filterCustomer(){
@@ -600,99 +600,179 @@ function filterCustomer(){
 </script>
 
 <style scoped>
-  .flex{
-    display: flex;
-  }
+ /* Flex helpers */
+.flex {
+  display: flex;
+}
 
-  .row{
-    flex-direction: row;
-  }
+.row {
+  flex-direction: row;
+}
 
-  .column{
-    flex-direction: column;
-  }
+.column {
+  flex-direction: column;
+}
 
-  .pageHeader{
-      height: 15vh;
-      width: 100%;
-      justify-content: space-between;
+/* Page layout */
+.customerBody {
+  width: 90vw;
+  height: 90%;
+  position: absolute;
+  padding: 3%;
+  flex-grow: 2;
+  gap: 10px;
+  margin-top: 1vh;
+  margin-left: 10%;
+  border-radius: 10px;
+}
+
+.pageHeader {
+  height: 15vh;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.leftPanel {
+  flex-grow: 5;
+}
+
+.rightPanel {
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* Add Customers Button */
+.addButton {
+  border: none;
+  height: 50%;
+  width: 150px;
+  border-radius: 7px;
+  padding: 0.5rem 1rem;
+  margin-left: 1rem;
+  cursor: pointer;
+
+  /* Theme colors */
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.addButton:hover {
+  background-color: var(--secondary);
+  color: var(--foreground);
+  transform: scale(1.05);
+}
+
+/* Search bar */
+.searchBarWrapper {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border: solid 1px rgb(222, 222, 222);
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.searchBar {
+  width: 100%;
+  border: none;
+  box-shadow: none;
+  padding: 0.5rem;
+  border-radius: 5px;
+}
+
+/* Customer display cards */
+.customerDisplay {
+  width: 100%;
+  padding-right: 2%;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  column-gap: 2%;
+  overflow-y: auto;
+  height: calc(100% - 20vh);
+}
+
+/* Individual cards */
+.mb-3 {
+  border: solid 1px rgb(222, 222, 222);
+  border-radius: 10px;
+  width: 23.5%;
+  height: 50vh;
+  margin-bottom: 2%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Card header */
+.customCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+  margin-top: 1rem;
+  gap: 0.5rem;
+}
+
+.customCardHeader p {
+  flex-grow: 1;
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+  overflow-wrap: anywhere;
+}
+
+/* Edit/Delete icons */
+.editButton {
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: transform 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.editButton:hover {
+  transform: scale(1.25);
+  color: var(--primary);
+}
+
+/* Blur modal overlay */
+.customerWindowBlur {
+  position: fixed;
+  backdrop-filter: brightness(60%) blur(2px);
+  height: 100vh;
+  width: 100vw;
+  top: 0;
+  left: 0;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .mb-3 {
+    width: 48%;
   }
-  .leftPanel{
-      flex-grow: 5;
-  }
-  .rightPanel{
-    flex-grow: 1;
-    align-content: center;
-    text-align: right;
-  }
-  .addButton{
-    border: none;
-    height: 50%;
-    width: 75%;
-    align-content: center;
-    border-radius: 7px;
-  }
-  .customerBody{
-    width: 90vw;
-    height: 90%;
-    position: absolute;
-    padding: 3%;
-    flex-grow: 2;
-    gap: 10px;
-    margin-top: 1vh;
-    margin-left: 10%;
-    border-radius: 10px;
-  }
-  .searchBarWrapper{
-    align-items: center;
-    align-content: center;
-    padding: 1%;
-    border: solid;
-    border-width: 1px;
-    border-color: rgb(222, 222, 222);
-    border-radius: 10px;
-  }
-  .searchBar{
+}
+
+@media (max-width: 768px) {
+  .mb-3 {
     width: 100%;
-    box-shadow: none;
-    border: none;
   }
-  .customerDisplay{
-    width: 100%;
-    padding-right: 2%;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    column-gap: 2%;
-    overflow: scroll;
-    height: 100%;
-  }
-  .mb-3{
-    border: solid;
-    border-width: 1px;
-    border-color: rgb(222, 222, 222);
-    border-radius: 10px;
-    width: 23.5%;
-    height: 50vh;
-    margin-bottom: 2%;
-    overflow: scroll;
-  }
-  .customCardHeader{
-    padding: 10%;
-    padding-bottom: 0;
-    gap: 7%;
-    justify-content: space-between;
-  }
-  .editButton:hover{
-    scale: 1.25;
-  }
-  .customerWindowBlur{
-    position: fixed;
-    backdrop-filter: brightness(60%) blur(2px);
-    height: 100vh;
-    width: 100vw;
-    top: 0px;
-    left: 0px;
+
+  .rightPanel {
     justify-content: center;
-    align-items: center;
+    margin-top: 1rem;
   }
+
+  .addButton {
+    width: 100%;
+  }
+}
+
 </style>
