@@ -4,7 +4,7 @@
       <h2 class="logo">Custom Interiors</h2>
     </template>
   </Menubar>
-  
+
 </template>
 
 <script setup lang="ts">
@@ -30,7 +30,6 @@ const items = ref([
     icon: 'pi pi-address-book',
     command: () => router.push(RoutePaths.CUSTOMERS),
   },
-  { label: 'Emails', icon: 'pi pi-envelope', command: () => router.push(RoutePaths.EMAILS) },
   { label: 'Employees', icon: 'pi pi-sitemap', command: () => router.push(RoutePaths.EMPLOYEES) },
   {
     label: 'Logout', icon: 'pi pi-sitemap', command: () =>  auth.logout()
