@@ -90,11 +90,11 @@
             :style="{ width: completedPercent + '%' }"
           ></div>
           <div
-            class="jobCompletionStatus inProgress"
+            class="jobCompletionStatus inProgress bar"
             :style="{ width: inProgressPercent + '%' }"
           ></div>
           <div
-            class="jobCompletionStatus pending"
+            class="jobCompletionStatus pending bar"
             :style="{ width: pendingPercent + '%' }"
           ></div>
         </div>
@@ -296,6 +296,8 @@ function fetchCustomers() {
   border-radius: var(--radius-md);
   background-color: var(--secondary);
   overflow: hidden;
+  display: flex;
+  flex-direction: row;
 }
 
 .jobCompletionStatus {
@@ -336,6 +338,11 @@ function fetchCustomers() {
 
 .pending {
   background-color: var(--chart-3);
+}
+
+.bar{
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
 }
 
 /* Responsive adjustments */
