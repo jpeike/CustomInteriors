@@ -26,10 +26,6 @@
         <i class="pi pi-address-book"></i> <label>Customers</label>
       </button>
 
-      <button class="btn-primary navButton" v-on:click="router.push(RoutePaths.EMAILS)">
-        <i class="pi pi-envelope"></i> <label>Emails</label>
-      </button>
-
       <button class="btn-primary navButton" v-on:click="router.push(RoutePaths.EMPLOYEES)">
         <i class="pi pi-sitemap"></i> <label>Employees</label>
       </button>
@@ -80,14 +76,6 @@ const auth = useAuthStore()
 </script>
 
 <style scoped>
-.app-header {
-  width: 15vw;
-  height: 100vh;
-  padding: 0.5rem 1rem;
-  border-radius: 0;
-  display: flex;
-  flex-direction: column;
-}
 
 .logo {
   margin: 0%;
@@ -97,8 +85,10 @@ const auth = useAuthStore()
 }
 
 .sideNav{
+  position: fixed;
+
   width: 15vw;
-  height: 85vh;
+  height: 97%;
 
   padding: 0.5rem 1rem;
   display: flex;
