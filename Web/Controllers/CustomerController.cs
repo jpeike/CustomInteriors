@@ -24,10 +24,10 @@ public class CustomersController : ControllerBase
     }
 
     [HttpGet("{id:int}", Name = "GetCustomerById")]
-    public async Task<ActionResult<CustomerModel?>> GetCustomerById(int id, [FromQuery] bool includeDetails = false))
+    public async Task<ActionResult<CustomerModel?>> GetCustomerById(int id, [FromQuery] bool includeDetails = false)
     {
         if (id <= 0) return BadRequest();
-        return await _customerService.GetCustomerById(id, includeDetails);
+        return await _customerService.GetCustomerById(id);
     }
 
     [HttpPost("", Name = "CreateCustomer")]
