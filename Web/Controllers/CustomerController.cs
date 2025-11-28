@@ -31,17 +31,17 @@ public class CustomersController : ControllerBase
     }
 
     [HttpPost("", Name = "CreateCustomer")]
-    public async Task<ActionResult<CustomerModel>> CreateCustomer([FromBody] CustomerModel customerModel)
+    public async Task<ActionResult<CustomerModel>> CreateCustomer([FromBody] CustomerCreateModel customerCreateModel)
     {
         if (!ModelState.IsValid) return BadRequest();
-        return await _customerService.CreateCustomer(customerModel);
+        return await _customerService.CreateCustomer(customerCreateModel);
     }
 
     [HttpPut("", Name = "UpdateCustomer")]
-    public async Task<ActionResult> UpdateCustomer([FromBody] CustomerModel customerModel)
+    public async Task<ActionResult> UpdateCustomer([FromBody] CustomerUpdateModel customerUpdateModel)
     {
         if (!ModelState.IsValid) return BadRequest();
-        await _customerService.UpdateCustomer(customerModel);
+        await _customerService.UpdateCustomer(customerUpdateModel);
         return NoContent();
     }
 
