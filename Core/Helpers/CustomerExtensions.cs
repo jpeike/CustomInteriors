@@ -21,7 +21,18 @@ public static class CustomerExtensions
         return customer.Select(u => u.ToModel(includeDetails));
     }
 
-    public static Customer ToEntity(this CustomerModel model) => new Customer
+    public static Customer ToEntity(this CustomerCreateModel model) => new Customer
+    {
+        FirstName = model.FirstName,
+        LastName = model.LastName,
+        CustomerType = model.CustomerType,
+        PrefferedContactMethod = model.PrefferedContactMethod,
+        CompanyName = model.CompanyName,
+        Status = model.Status,
+        CustomerNotes = model.CustomerNotes
+    };
+
+    public static Customer UpdateToEntity(this CustomerUpdateModel model) => new Customer
     {
         CustomerId = model.CustomerId,
         FirstName = model.FirstName,
