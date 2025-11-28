@@ -175,14 +175,14 @@ const isError = computed(() =>
 
 /* Page layout */
 .customerBody {
-  width: 90vw;
+  width: 85vw;
+  margin-left: 15vw;
   height: 90%;
   position: absolute;
   padding: 3%;
   flex-grow: 2;
   gap: 10px;
   margin-top: 1vh;
-  margin-left: 10%;
   border-radius: 10px;
 }
 

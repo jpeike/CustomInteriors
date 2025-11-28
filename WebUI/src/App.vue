@@ -1,9 +1,9 @@
 <!-- src/App.vue -->
 <template>
-  <Toast />
-  <component :is="layoutComponent">
-    <router-view />
-  </component>
+    <Toast />
+    <component :is="layoutComponent">
+      <router-view />
+    </component>
 </template>
 
 <script setup lang="ts">
