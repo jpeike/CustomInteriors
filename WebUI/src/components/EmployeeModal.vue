@@ -43,61 +43,89 @@ if (props.selectedEmployee) employee = new EmployeeModel(props.selectedEmployee)
         <h3 class="fieldTitle">Account Id</h3>
         <InputText v-model="employee.accountId" type="number" class="inputValue"></InputText>
       </div>
-      <div class="buttons">
-        <Button label="Close" @click="$emit('closePage')"></Button>
-        <Button label="Update" @click="$emit('updateFunction', selectedEmployee?.employeeId, employee)"></Button>
-        <Button label="Delete" @click="$emit('deleteFunction', selectedEmployee?.employeeId)" severity="danger" data-testid="deleteCustomerButton"></Button>
+      <div class="flex row buttons">
+        <button class="cancelUpdateButton" @click="$emit('closePage')">
+          <p class="buttonText">Close</p>
+        </button>
+        <button class="updateInfoButton" @click="$emit('updateFunction', selectedEmployee?.employeeId, employee)">
+          <p class="buttonText">Update</p>
+        </button>
+        <button class="updateInfoButton destructive" @click="$emit('deleteFunction', selectedEmployee?.employeeId)">
+          <p class="buttonText">Delete</p>
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.modalBorder{
-  display: flex;
-  flex-direction: row;
-  padding: 4%;
-  width: 50vw;
-  height: 80vh;
-  background-color: var(--p-overlay-modal-background);
-  margin-left: 25vw;
-  margin-top: 10vh;
-  border-radius: 5vh;
+.titleText {
+margin: 0;
+font-weight: var(--font-weight-medium);
 }
 
-.infoDiv{
-  display: flex;
-  flex-direction: column;
+.subtitleText {
+margin: 0;
+font-weight: var(--font-weight-normal);
+}
 
-  overflow-x: hidden;
-  overflow-y: auto;
-  height: 100%;
-  width: 100%;
-  padding-right: 5%;
+.buttonText {
+margin: 0;
+text-align: center;
+font-weight: var(--font-weight-medium);
 }
-.customerInfoBar{
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+
+.destructive {
+background-color: var(--destructive);
+color: var(--destructive-foreground);
 }
-.customerInfoTitle{
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 2vh;
+
+.modalBorder {
+display: flex;
+flex-direction: row;
+padding: 4%;
+width: 50vw;
+height: 80vh;
+margin-left: 25vw;
+margin-top: 10vh;
+border-radius: 5vh;
 }
-.fieldTitle{
-  margin: 0vh;
-  margin-bottom: 1vh;
+
+.infoDiv {
+display: flex;
+flex-direction: column;
+overflow-x: hidden;
+overflow-y: auto;
+height: 100%;
+width: 100%;
+padding-right: 5%;
 }
-.inputValue{
-  margin-bottom: 3vh;
-  width: 100%;
+.cancelUpdateButton,
+.updateInfoButton {
+transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
 }
-.buttons{
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  justify-content: end;
-  gap: 5%;
+
+.cancelUpdateButton:hover {
+background-color: var(--secondary);
+color: var(--foreground);
+cursor: pointer;
 }
+
+.updateInfoButton:hover {
+background-color: var(--primary);
+color: var(--primary-foreground);
+cursor: pointer;
+}
+
+.updateInfoButton.destructive:hover {
+background-color: var(--destructive);
+color: var(--destructive-foreground);
+}
+
+.cancelUpdateButton:active,
+.updateInfoButton:active,
+.updateInfoButton.destructive:active {
+transform: scale(0.97);
+}
+
 </style>

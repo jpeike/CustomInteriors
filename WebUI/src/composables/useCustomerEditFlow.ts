@@ -28,6 +28,11 @@ export function useCustomerEditFlow({ customersStore, addressesStore, emailsStor
 
         const newCustomerId = createdCustomer.customerId
 
+        if (newCustomerId == null) {
+          showInfo("Failed to create customer: missing customerId");
+          return
+        }
+
         for (let i = 0; i < newAddress.length; i++) {
           newAddress[i].customerId = newCustomerId;
           console.log(newCustomerId);

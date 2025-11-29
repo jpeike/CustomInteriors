@@ -11,7 +11,7 @@
             </button>
         </div>
     </div>
-    
+
     <div class = "flex row searchBarWrapper">
         <i class="pi pi-search"> </i>
       <InputText v-model="searchValue"  type="text" class="searchBar" placeholder="Search" data-testid="customerSearchInput"/>
@@ -155,90 +155,179 @@ const isError = computed(() =>
 </script>
 
 <style scoped>
-  .flex{
-    display: flex;
-  }
+ /* Flex helpers */
+.flex {
+  display: flex;
+}
 
-  .row{
-    flex-direction: row;
-  }
+.row {
+  flex-direction: row;
+}
 
-  .column{
-    flex-direction: column;
-  }
+.column {
+  flex-direction: column;
+}
 
-  .pageHeader{
-      height: 15vh;
-      width: 100%;
-      justify-content: space-between;
+/* Page layout */
+.customerBody {
+  width: 85vw;
+  margin-left: 15vw;
+  height: 90%;
+  position: absolute;
+  padding: 3%;
+  flex-grow: 2;
+  gap: 10px;
+  margin-top: 1vh;
+  border-radius: 10px;
+}
+
+.pageHeader {
+  height: 15vh;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.leftPanel {
+  flex-grow: 5;
+}
+
+.rightPanel {
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* Add Customers Button */
+.addButton {
+  border: none;
+  height: 50%;
+  width: 150px;
+  border-radius: 7px;
+  padding: 0.5rem 1rem;
+  margin-left: 1rem;
+  cursor: pointer;
+
+  /* Theme colors */
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.addButton:hover {
+  background-color: var(--secondary);
+  color: var(--foreground);
+  transform: scale(1.05);
+}
+
+/* Search bar */
+.searchBarWrapper {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border: solid 1px rgb(222, 222, 222);
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.searchBar {
+  width: 100%;
+  border: none;
+  box-shadow: none;
+  padding: 0.5rem;
+  border-radius: 5px;
+}
+
+/* Customer display cards */
+.customerDisplay {
+  width: 100%;
+  padding-right: 2%;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  column-gap: 2%;
+  overflow-y: auto;
+  height: calc(100% - 20vh);
+}
+
+/* Individual cards */
+.mb-3 {
+  border: solid 1px rgb(222, 222, 222);
+  border-radius: 10px;
+  width: 23.5%;
+  height: 50vh;
+  margin-bottom: 2%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Card header */
+.customCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+  margin-top: 1rem;
+  gap: 0.5rem;
+}
+
+.customCardHeader p {
+  flex-grow: 1;
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+  overflow-wrap: anywhere;
+}
+
+/* Edit/Delete icons */
+.editButton {
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: transform 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.editButton:hover {
+  transform: scale(1.25);
+  color: var(--primary);
+}
+
+/* Blur modal overlay */
+.customerWindowBlur {
+  position: fixed;
+  backdrop-filter: brightness(60%) blur(2px);
+  height: 100vh;
+  width: 100vw;
+  top: 0;
+  left: 0;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .mb-3 {
+    width: 48%;
   }
-  .leftPanel{
-      flex-grow: 5;
-  }
-  .rightPanel{
-    flex-grow: 1;
-    align-content: center;
-    text-align: right;
-  }
-  .addButton{
-    border: none;
-    height: 50%;
-    width: 75%;
-    align-content: center;
-    border-radius: 7px;
-  }
-  .customerBody{
-    width: 90vw;
-    height: 90%;
-    position: absolute;
-    padding: 3%;
-    flex-grow: 2;
-    gap: 10px;
-    margin-top: 1vh;
-    margin-left: 10%;
-    border-radius: 10px;
-  }
-  .searchBarWrapper{
-    align-items: center;
-    align-content: center;
-    padding: 1%;
-    border: solid;
-    border-width: 1px;
-    border-color: rgb(222, 222, 222);
-    border-radius: 10px;
-  }
-  .searchBar{
+}
+
+@media (max-width: 768px) {
+  .mb-3 {
     width: 100%;
-    box-shadow: none;
-    border: none;
   }
-  .customerDisplay{
-    width: 100%;
-    padding-right: 2%;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    column-gap: 2%;
-    overflow: scroll;
-    height: 100%;
-  }
-  .mb-3{
-    border: solid;
-    border-width: 1px;
-    border-color: rgb(222, 222, 222);
-    border-radius: 10px;
-    width: 23.5%;
-    height: 50vh;
-    margin-bottom: 2%;
-    overflow: scroll;
-  }
-  .customerWindowBlur{
-    position: fixed;
-    backdrop-filter: brightness(60%) blur(2px);
-    height: 100vh;
-    width: 100vw;
-    top: 0px;
-    left: 0px;
+
+  .rightPanel {
     justify-content: center;
-    align-items: center;
+    margin-top: 1rem;
   }
+
+  .addButton {
+    width: 100%;
+  }
+}
+
 </style>
