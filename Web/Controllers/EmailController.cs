@@ -42,7 +42,15 @@ public class EmailsController : ControllerBase
     [HttpPut("", Name = "UpdateEmail")]
     public async Task<ActionResult> UpdateEmail([FromBody] EmailModel emailModel)
     {
-        if (!ModelState.IsValid) return BadRequest();
+        if (!ModelState.IsValid)
+        {
+            Console.WriteLine("MODEL STATE ERRORS:");
+            foreach (var kvp in ModelState)
+                foreach (var err in kvp.Value.Errors)
+                    Console.WriteLine($"{kvp.Key} → {err.ErrorMessage}");
+        }
+
+        //if (!ModelState.IsValid) return BadRequest();
         await _emailService.UpdateEmail(emailModel);
         return NoContent();
     }
