@@ -9,7 +9,7 @@ namespace Core
 {
     public class Address
     {
-        public required int AddressId { get; set; }
+        public int AddressId { get; set; }
         public required int CustomerId { get; set; }
         public required string Street { get; set; }
         public required string City { get; set; }

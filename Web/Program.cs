@@ -8,7 +8,6 @@ using Web;
 
 
 var builder = WebApplication.CreateBuilder(args);
-
 var configPath = Path.Combine(AppContext.BaseDirectory, "BaseDefaultSettings.config");
 
 var env = builder.Environment.EnvironmentName switch
@@ -108,7 +107,21 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    var aspnetEnv = builder.Environment.EnvironmentName; // "Development", "Test", "Production"
+
+    var connectionString = aspnetEnv switch
+    {
+        "Test" => builder.Configuration.GetConnectionString("E2ETestConnection"), // Playwright DB
+        "Development" => builder.Configuration.GetConnectionString("DefaultConnection"), // Dev DB
+        "Production" => builder.Configuration.GetConnectionString("DefaultConnection"), // Prod DB (usually same key)
+        _ => builder.Configuration.GetConnectionString("DefaultConnection")
+    };
+
+    options.UseSqlServer(connectionString);
+});
+
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

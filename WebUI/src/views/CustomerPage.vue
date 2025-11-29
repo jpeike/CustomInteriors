@@ -6,7 +6,7 @@
             <p style="margin: 0;">Manage your customer information and contact details.</p>
         </div>
         <div class = "rightPanel">
-            <button class = "addButton" @click="createCustomerDisplay()">
+            <button class = "addButton" @click="createCustomerDisplay()" data-testid="addCustomerButton">
                 <p style="margin: 0; text-align: center;"> + Add Customers</p>
             </button>
         </div>
@@ -14,7 +14,7 @@
 
     <div class = "flex row searchBarWrapper">
         <i class="pi pi-search"> </i>
-      <InputText v-model="searchValue"  type="text" class="searchBar" placeholder="Search"/>
+      <InputText v-model="searchValue"  type="text" class="searchBar" placeholder="Search" data-testid="customerSearchInput"/>
     </div>
  
     <div v-if="!isLoading" class="flex row customerDisplay">

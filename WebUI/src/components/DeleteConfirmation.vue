@@ -3,10 +3,10 @@
         <div class="flex column deleteWindowBody">
             <p style="margin: 0;">Are you sure you want to delete <span class="title">{{title}}</span>?</p>
             <div class="flex row buttons">
-              <button class="cancelUpdateButton" @click="$emit('closePage')">
+              <button class="cancelUpdateButton" @click="$emit('closePage')" data-testid="deleteCancelButton">
                 <p class="buttonText">Cancel</p>
               </button>
-              <button class="updateInfoButton" @click="$emit('deleteCustomer', currentCustomerInformation?.customerId)">
+              <button class="updateInfoButton" @click="$emit('deleteCustomer', currentCustomerInformation?.customerId)" data-testid="deleteConfirmationButton">
                 <p class="buttonText">Delete</p>
               </button>
             </div>
