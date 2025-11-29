@@ -1,10 +1,10 @@
 <template>
   <div class="flex column homePageBody">
     <div class="flex row pageHeader">
-        <div class = "flex column leftPanel">
-            <h2 style="margin: 0%;">Dashboard</h2>
-            <p style="margin: 0;">Welcome back! Here's what's happening with your painting business.</p>
-        </div>
+      <div class="flex column leftPanel">
+        <h2 style="margin: 0%">Dashboard</h2>
+        <p style="margin: 0">Welcome back! Here's what's happening with your painting business.</p>
+      </div>
     </div>
 
     <div class="flex column dashboardContainer">
@@ -76,9 +76,7 @@
 
       <div class="flex column jobCompletion justify-between">
         <div class="flex row justify-between">
-          <div class="title">
-            Job Completion Progress
-          </div>
+          <div class="title">Job Completion Progress</div>
           <div>
             <p class="compeltionTitle">Total: {{ state.totalJobs }}</p>
           </div>
@@ -99,39 +97,38 @@
           ></div>
         </div>
 
-
         <div class="flex row bottomBar">
           <div class="flex row completionTitle">
-            <div class = "circle completed"></div>
+            <div class="circle completed"></div>
             <p class="completionTitle">Completed</p>
           </div>
           <div class="flex row completionTitle">
-            <div class = "circle inProgress"></div>
+            <div class="circle inProgress"></div>
             <p class="completionTitle">In Progress</p>
           </div>
           <div class="flex row completionTitle">
-            <div class = "circle pending"></div>
+            <div class="circle pending"></div>
             <p class="completionTitle">Pending</p>
           </div>
         </div>
       </div>
     </div>
-
   </div>
-
 </template>
 
 <script setup lang="ts">
 import Card from 'primevue/card'
-import { Client, CustomerModel, AddressModel} from '../client/client'
+import { Client, CustomerModel, AddressModel } from '../client/client'
 import { onMounted, reactive } from 'vue'
 import { computed } from 'vue'
+import { JobStatus } from '@/enums/JobStatus'
 
 const client = new Client(import.meta.env.VITE_API_BASE_URL)
 const state = reactive({
   totalCustomers: 0,
   activeJobs: 0,
   pendingJobs: 0,
+  completedJobs: 0,
   totalRevenue: 0,
   totalJobs: 0,
   loading: false,
@@ -139,20 +136,22 @@ const state = reactive({
 })
 
 const completedPercent = computed(() =>
-  state.totalJobs ? ((state.totalJobs - state.activeJobs - state.pendingJobs) / state.totalJobs) * 100 : 0
+  state.totalJobs
+    ? ((state.totalJobs - state.activeJobs - state.pendingJobs) / state.totalJobs) * 100
+    : 0,
 )
 
 const inProgressPercent = computed(() =>
-  state.totalJobs ? (state.activeJobs / state.totalJobs) * 100 : 0
+  state.totalJobs ? (state.activeJobs / state.totalJobs) * 100 : 0,
 )
 
 const pendingPercent = computed(() =>
-  state.totalJobs ? (state.pendingJobs / state.totalJobs) * 100 : 0
+  state.totalJobs ? (state.pendingJobs / state.totalJobs) * 100 : 0,
 )
 
 onMounted(() => {
-  console.log('AboutView mounted')
   fetchCustomers()
+  fetchJobs()
 })
 
 function fetchCustomers() {
@@ -161,11 +160,31 @@ function fetchCustomers() {
   client
     .getAllCustomers()
     .then((response) => {
-      state.totalCustomers = response.length;
+      state.totalCustomers = response.length
     })
     .catch((error) => {
       state.error = error.message || 'An error occurred'
     })
+    .finally(() => {
+      state.loading = false
+    })
+}
+
+function fetchJobs() {
+  state.loading = true
+  state.error = null
+  client
+    .getAllJobs()
+    .then((jobs) => {
+      state.totalJobs = jobs.length
+      state.activeJobs = jobs.filter((j) => j.status === JobStatus.IN_PROGRESS).length
+      state.completedJobs = jobs.filter((j) => j.status === JobStatus.COMPLETED).length
+      // Anything NOT completed or in-progress is pending
+      state.pendingJobs = jobs.filter(
+        (j) => j.status !== JobStatus.IN_PROGRESS && j.status !== JobStatus.COMPLETED,
+      ).length
+    })
+    .catch((error) => (state.error = error.message || 'An error occurred'))
     .finally(() => {
       state.loading = false
     })
@@ -342,7 +361,7 @@ function fetchCustomers() {
   background-color: var(--chart-3);
 }
 
-.bar{
+.bar {
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
 }
@@ -382,5 +401,4 @@ function fetchCustomers() {
 .dark .icon {
   color: var(--primary);
 }
-
 </style>
