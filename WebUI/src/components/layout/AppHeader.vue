@@ -1,39 +1,45 @@
 <template>
-    
-    <div class="sideNav">
-      <h3 class="logo">Custom Interiors</h3>
-      <button class="btn-primary navButton" v-on:click="router.push(RoutePaths.HOME)">
-        <i class="pi pi-home"></i> <label>Home</label>
-      </button>
-      
-      <button class="btn-primary navButton" v-on:click="router.push(RoutePaths.ABOUT)">
-        <i class="pi pi-info-circle"></i> <label>About</label>
-      </button>
 
-      <button class="btn-primary navButton" v-on:click="router.push(RoutePaths.USERS)">
-        <i class="pi pi-users"></i> <label>Users</label>
-      </button>
+  <div class="sideNav">
+    <h3 class="logo">Custom Interiors</h3>
+    <button class="btn-primary navButton" v-on:click="router.push(RoutePaths.HOME)">
+      <i class="pi pi-home"></i> <label>Home</label>
+    </button>
 
-      <button class="btn-primary navButton" v-on:click="router.push('/jobs')">
-        <i class="pi pi-briefcase"></i> <label>Jobs</label>
-      </button>
+    <button class="btn-primary navButton" v-on:click="router.push(RoutePaths.ABOUT)">
+      <i class="pi pi-info-circle"></i> <label>About</label>
+    </button>
 
-      <button class="btn-primary navButton" v-on:click="router.push('/billing')">
-        <i class="pi pi-wallet"></i> <label>Billing</label>
-      </button>
+    <button class="btn-primary navButton" v-on:click="router.push(RoutePaths.USERS)">
+      <i class="pi pi-users"></i> <label>Users</label>
+    </button>
 
-      <button class="btn-primary navButton" v-on:click="router.push(RoutePaths.CUSTOMERS)">
-        <i class="pi pi-address-book"></i> <label>Customers</label>
-      </button>
+    <button class="btn-primary navButton" v-on:click="router.push('/jobs')">
+      <i class="pi pi-briefcase"></i> <label>Jobs</label>
+    </button>
 
-      <button class="btn-primary navButton" v-on:click="router.push(RoutePaths.EMPLOYEES)">
-        <i class="pi pi-sitemap"></i> <label>Employees</label>
-      </button>
+    <button class="btn-primary navButton" v-on:click="router.push('/billing')">
+      <i class="pi pi-wallet"></i> <label>Billing</label>
+    </button>
 
-      <button class="btn-primary navButton" v-on:click="auth.logout()">
-        <i class="pi pi-sitemap"></i> <label>Logout</label>
-      </button>
-    </div>
+    <button class="btn-primary navButton" v-on:click="router.push(RoutePaths.CUSTOMERS)">
+      <i class="pi pi-address-book"></i> <label>Customers</label>
+    </button>
+
+    <button class="btn-primary navButton" v-on:click="router.push(RoutePaths.EMPLOYEES)">
+      <i class="pi pi-sitemap"></i> <label>Employees</label>
+    </button>
+
+    <button v-if="!auth.isLoggedIn" class="btn-primary navButton" @click="auth.login()">
+      <i class="pi pi-sign-in"></i>
+      <label>Login</label>
+    </button>
+
+    <button v-else class="btn-primary navButton" @click="auth.logout()">
+      <i class="pi pi-sign-out"></i>
+      <label>Logout</label>
+    </button>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -64,7 +70,7 @@ const items = ref([
   },
   { label: 'Employees', icon: 'pi pi-sitemap', command: () => router.push(RoutePaths.EMPLOYEES) },
   {
-    label: 'Logout', icon: 'pi pi-sitemap', command: () =>  auth.logout()
+    label: 'Logout', icon: 'pi pi-sitemap', command: () => auth.logout()
   }
 ])
 
@@ -76,7 +82,6 @@ const auth = useAuthStore()
 </script>
 
 <style scoped>
-
 .logo {
   margin: 0%;
   margin-bottom: 5%;
@@ -84,7 +89,7 @@ const auth = useAuthStore()
   font-weight: bold;
 }
 
-.sideNav{
+.sideNav {
   position: fixed;
 
   width: 15vw;
@@ -93,7 +98,7 @@ const auth = useAuthStore()
   padding: 0.5rem 1rem;
   display: flex;
   flex-direction: column;
-  
+
   box-shadow: var(--p-card-shadow);
 
   border: solid;
@@ -102,7 +107,7 @@ const auth = useAuthStore()
   border-radius: 10px;
 }
 
-.navButton{
+.navButton {
   width: 75%;
   border: none;
   border-radius: 7px;
