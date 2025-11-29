@@ -99,10 +99,13 @@ async function apiCreateEmail(customerId: number, input: TestCustomerInput = {})
             customerId,
             emailAddress: input.emailAddress ?? 'test@example.com',
             emailType: input.emailType ?? 'main',
-            createdOn: new Date().toISOString()
         }
     });
 
+    if (!response.ok()) {
+        const body = await response.json();
+        console.log("Validation Errors:", body);
+    }
     expect(response.ok()).toBeTruthy();
     const body = await response.json();
     await api.dispose();
@@ -149,7 +152,7 @@ export const test = base.extend<{
     //
     createPopulatedCustomer: async ({ }, use) => {
         await use(async () => {
-            const customerId  = await apiCreateCustomer();
+            const customerId = await apiCreateCustomer();
             const addressId = await apiCreateAddress(customerId);
             const emailId = await apiCreateEmail(customerId);
 
