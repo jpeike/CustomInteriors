@@ -1,16 +1,9 @@
-using System.Linq;
-using System.Threading.Tasks;
 using Core;
 using Infrastructure;
 using CustomInteriors.Web;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using Web;
 
 namespace Web;
 
@@ -20,29 +13,30 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-var configPath = Path.Combine(AppContext.BaseDirectory, "BaseDefaultSettings.config");
+        var configPath = Path.Combine(AppContext.BaseDirectory, "BaseDefaultSettings.config");
 
-var env = builder.Environment.EnvironmentName switch
-{
-    "Development" => "Dev",
-    "Staging" => "Test",
-    "Production" => "Prod",
-    _ => "Dev"
-};
+        var env = builder.Environment.EnvironmentName switch
+        {
+            "Development" => "Dev",
+            "Staging" => "Test",
+            "Production" => "Prod",
+            _ => "Dev"
+        };
 
-builder.Configuration.AddXmlConfig(configPath, env);
+        builder.Configuration.AddXmlConfig(configPath, env);
 
 // 1. Add JWT bearer authentication
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.Authority = builder.Configuration["CognitoAuthority"];
-        options.Audience = builder.Configuration["CognitoUserPoolId"]; ;
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.Authority = builder.Configuration["CognitoAuthority"];
+                options.Audience = builder.Configuration["CognitoUserPoolId"];
+                ;
 
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidIssuer = builder.Configuration["CognitoAuthority"],
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = builder.Configuration["CognitoAuthority"],
 
                     ValidateAudience = false,
 
@@ -56,10 +50,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                         var clientIdClaim = context.Principal?.Claims
                             .FirstOrDefault(c => c.Type == "client_id")?.Value;
 
-                if (clientIdClaim != builder.Configuration["CognitoUserPoolId"])
-                {
-                    context.Fail("Invalid client_id");
-                }
+                        if (clientIdClaim != builder.Configuration["CognitoUserPoolId"])
+                        {
+                            context.Fail("Invalid client_id");
+                        }
 
                         return Task.CompletedTask;
                     }
@@ -117,23 +111,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IUserService, UserService>();
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    var aspnetEnv = builder.Environment.EnvironmentName; // "Development", "Test", "Production"
-
-    var connectionString = aspnetEnv switch
-    {
-        "Test" => builder.Configuration.GetConnectionString("E2ETestConnection"), // Playwright DB
-        "Development" => builder.Configuration.GetConnectionString("DefaultConnection"), // Dev DB
-        "Production" => builder.Configuration.GetConnectionString("DefaultConnection"), // Prod DB (usually same key)
-        _ => builder.Configuration.GetConnectionString("DefaultConnection")
-    };
-
-    options.UseSqlServer(connectionString);
-});
-
-
-        if (builder.Environment.IsEnvironment("Testing"))
+        // todo fix environment naming stuff
+        if (builder.Environment.IsEnvironment("IntegrationTesting"))
         {
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseInMemoryDatabase("TestDb"));
@@ -141,7 +120,20 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         else
         {
             builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            {
+                var aspnetEnv = builder.Environment.EnvironmentName; // "Development", "Test", "Production"
+
+                var connectionString = aspnetEnv switch
+                {
+                    "Test" => builder.Configuration.GetConnectionString("E2ETestConnection"), // Playwright DB
+                    "Development" => builder.Configuration.GetConnectionString("DefaultConnection"), // Dev DB
+                    "Production" => builder.Configuration
+                        .GetConnectionString("DefaultConnection"), // Prod DB (usually same key)
+                    _ => builder.Configuration.GetConnectionString("DefaultConnection")
+                };
+
+                options.UseSqlServer(connectionString);
+            });
         }
 
         builder.Services.AddControllers();
@@ -150,16 +142,16 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         builder.Services.AddSwaggerGen();
 
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowFrontend",
-        policy =>
+        builder.Services.AddCors(options =>
         {
-            policy.WithOrigins(builder.Configuration["FrontendHost"] ?? "")
-                .AllowAnyHeader()
-                .AllowAnyMethod();
+            options.AddPolicy("AllowFrontend",
+                policy =>
+                {
+                    policy.WithOrigins(builder.Configuration["FrontendHost"] ?? "")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
         });
-});
 
         var app = builder.Build();
 
