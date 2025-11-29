@@ -23,7 +23,7 @@ export function useCustomerModals({addressesStore, emailsStore, customersStore}:
   const customerButtonDesc = ref('')
 
   const { addressesLoading, addressesError } = addressesStore
-  const { emails, emailsLoading, emailsError } = emailsStore
+  const { emailsLoading, emailsError } = emailsStore
   const { customers, customersLoading, customersError } = customersStore
 
   function closePage() {
@@ -47,9 +47,11 @@ export function useCustomerModals({addressesStore, emailsStore, customersStore}:
     console.log(customer.customerId + " " + customer.firstName);
     selectedCustomerId.value = customer.customerId!;
 
-    await getSelectedCustomer(selectedCustomerId.value);
-    await fetchAddressesByCustomerId(selectedCustomerId.value)
-    await fetchEmailsByCustomerId(selectedCustomerId.value);
+    const selected = customersStore.customers.value.find(c => c.customerId === selectedCustomerId.value)
+
+    currentCustomer.value = selected
+    currentCustomerAddresses.value = JSON.parse(JSON.stringify(selected!.addresses ?? []))
+    currentEmailAddresses.value = JSON.parse(JSON.stringify(selected!.emails ?? []))
 
     customerModalLoading.value = true;
     displayCustomerDetails.value = true;
@@ -66,56 +68,6 @@ export function useCustomerModals({addressesStore, emailsStore, customersStore}:
         currentCustomerIndex.value = i;
       }
     }
-  }
-
-  async function getSelectedCustomer(customerId: number) {
-    customersLoading.value = true
-    customersError.value = null
-    return await client
-      .getCustomerById(customerId)
-      .then((response) => {
-        currentCustomer.value = response;
-      })
-      .catch((error) => {
-        customersError.value = error.message || 'An error occurred'
-        return null;
-      })
-      .finally(() => {
-        customersLoading.value = false
-      })
-  }
-
-  async function fetchAddressesByCustomerId(customerId: number) {
-    addressesLoading.value = true
-    addressesError.value = null
-    await client
-      .getAddressesByCustomerId(customerId)
-      .then((response) => {
-        currentCustomerAddresses.value =response;
-      })
-      .catch((addressesError) => {
-        addressesError.value = addressesError.message || 'An addressesError occurred'
-        return null;
-      })
-      .finally(() => {
-        addressesLoading.value = false
-      })
-  }
-
-  //TODO change function to be similar to other fetch functions.
-  function fetchEmailsByCustomerId(customerId: number) {
-    emailsLoading.value = true
-    emailsError.value = null
-
-    let userEmails = new Array();
-    for (let i = 0; i < emails.value.length; i++) {
-
-      if (emails.value[i].customerId == customerId) {
-        userEmails.push(emails.value[i]);
-      }
-    }
-    emailsLoading.value = false
-    currentEmailAddresses.value = userEmails;
   }
 
   function closeDeleteModal() {
@@ -143,8 +95,6 @@ export function useCustomerModals({addressesStore, emailsStore, customersStore}:
     createCustomerDisplay,
     editCustomerUI,
     getCustomerIndex,
-    fetchAddressesByCustomerId,
-    fetchEmailsByCustomerId,
     closeDeleteModal,
     openDeleteModal,
 

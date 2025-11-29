@@ -144,11 +144,11 @@ export class Client {
     /**
      * @return OK
      */
-    getAddressesByCustomerId(customerId: number): Promise<AddressModel[]> {
-        let url_ = this.baseUrl + "/api/addresses/{customerId}";
-        if (customerId === undefined || customerId === null)
-            throw new globalThis.Error("The parameter 'customerId' must be defined.");
-        url_ = url_.replace("{customerId}", encodeURIComponent("" + customerId));
+    getAddressesByCustomerId(id: number): Promise<AddressModel[]> {
+        let url_ = this.baseUrl + "/api/addresses/{id}";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -191,11 +191,11 @@ export class Client {
     /**
      * @return OK
      */
-    deleteAddress(addressId: number): Promise<boolean> {
-        let url_ = this.baseUrl + "/api/addresses/{addressId}";
-        if (addressId === undefined || addressId === null)
-            throw new globalThis.Error("The parameter 'addressId' must be defined.");
-        url_ = url_.replace("{addressId}", encodeURIComponent("" + addressId));
+    deleteAddress(id: number): Promise<boolean> {
+        let url_ = this.baseUrl + "/api/addresses/{id}";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -230,10 +230,15 @@ export class Client {
     }
 
     /**
+     * @param includeDetails (optional) 
      * @return OK
      */
-    getAllCustomers(): Promise<CustomerModel[]> {
-        let url_ = this.baseUrl + "/api/customers";
+    getAllCustomers(includeDetails?: boolean | undefined): Promise<CustomerModel[]> {
+        let url_ = this.baseUrl + "/api/customers?";
+        if (includeDetails === null)
+            throw new globalThis.Error("The parameter 'includeDetails' cannot be null.");
+        else if (includeDetails !== undefined)
+            url_ += "includeDetails=" + encodeURIComponent("" + includeDetails) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -277,7 +282,7 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    createCustomer(body?: CustomerModel | undefined): Promise<CustomerModel> {
+    createCustomer(body?: CustomerCreateModel | undefined): Promise<CustomerModel> {
         let url_ = this.baseUrl + "/api/customers";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -319,7 +324,7 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    updateCustomer(body?: CustomerModel | undefined): Promise<void> {
+    updateCustomer(body?: CustomerUpdateModel | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/customers";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -354,13 +359,18 @@ export class Client {
     }
 
     /**
+     * @param includeDetails (optional) 
      * @return OK
      */
-    getCustomerById(id: number): Promise<CustomerModel> {
-        let url_ = this.baseUrl + "/api/customers/{id}";
+    getCustomerById(id: number, includeDetails?: boolean | undefined): Promise<CustomerModel> {
+        let url_ = this.baseUrl + "/api/customers/{id}?";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (includeDetails === null)
+            throw new globalThis.Error("The parameter 'includeDetails' cannot be null.");
+        else if (includeDetails !== undefined)
+            url_ += "includeDetails=" + encodeURIComponent("" + includeDetails) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -432,46 +442,6 @@ export class Client {
             });
         }
         return Promise.resolve<boolean>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    getCustomerWithAddresses(id: number): Promise<CustomerWithFKsModel> {
-        let url_ = this.baseUrl + "/api/customers/with-addresses/{id}";
-        if (id === undefined || id === null)
-            throw new globalThis.Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetCustomerWithAddresses(_response);
-        });
-    }
-
-    protected processGetCustomerWithAddresses(response: Response): Promise<CustomerWithFKsModel> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CustomerWithFKsModel.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<CustomerWithFKsModel>(null as any);
     }
 
     /**
@@ -2732,13 +2702,13 @@ export class Client {
 
 export class AddressModel implements IAddressModel {
     addressId?: number;
-    customerId?: number;
-    street!: string | undefined;
-    city!: string | undefined;
-    state!: string | undefined;
+    customerId!: number;
+    street!: string;
+    city!: string;
+    state!: string;
     postalCode!: number;
     country?: string | undefined;
-    addressType!: string | undefined;
+    addressType!: string;
 
     constructor(data?: IAddressModel) {
         if (data) {
@@ -2785,24 +2755,86 @@ export class AddressModel implements IAddressModel {
 
 export interface IAddressModel {
     addressId?: number;
-    customerId?: number;
-    street: string | undefined;
-    city: string | undefined;
-    state: string | undefined;
+    customerId: number;
+    street: string;
+    city: string;
+    state: string;
     postalCode: number;
     country?: string | undefined;
-    addressType: string | undefined;
+    addressType: string;
 }
 
-export class CustomerModel implements ICustomerModel {
-    customerId?: number;
-    firstName!: string | undefined;
-    lastName!: string | undefined;
-    customerType!: string | undefined;
+export class CustomerCreateModel implements ICustomerCreateModel {
+    firstName!: string;
+    lastName!: string;
+    customerType!: string;
     prefferedContactMethod?: string | undefined;
     companyName?: string | undefined;
     status?: string | undefined;
     customerNotes?: string | undefined;
+
+    constructor(data?: ICustomerCreateModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+            this.customerType = _data["customerType"];
+            this.prefferedContactMethod = _data["prefferedContactMethod"];
+            this.companyName = _data["companyName"];
+            this.status = _data["status"];
+            this.customerNotes = _data["customerNotes"];
+        }
+    }
+
+    static fromJS(data: any): CustomerCreateModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new CustomerCreateModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["customerType"] = this.customerType;
+        data["prefferedContactMethod"] = this.prefferedContactMethod;
+        data["companyName"] = this.companyName;
+        data["status"] = this.status;
+        data["customerNotes"] = this.customerNotes;
+        return data;
+    }
+}
+
+export interface ICustomerCreateModel {
+    firstName: string;
+    lastName: string;
+    customerType: string;
+    prefferedContactMethod?: string | undefined;
+    companyName?: string | undefined;
+    status?: string | undefined;
+    customerNotes?: string | undefined;
+}
+
+export class CustomerModel implements ICustomerModel {
+    customerId?: number;
+    firstName!: string;
+    lastName!: string;
+    customerType!: string;
+    prefferedContactMethod?: string | undefined;
+    companyName?: string | undefined;
+    status?: string | undefined;
+    customerNotes?: string | undefined;
+    addresses?: AddressModel[] | undefined;
+    emails?: EmailModel[] | undefined;
 
     constructor(data?: ICustomerModel) {
         if (data) {
@@ -2823,6 +2855,16 @@ export class CustomerModel implements ICustomerModel {
             this.companyName = _data["companyName"];
             this.status = _data["status"];
             this.customerNotes = _data["customerNotes"];
+            if (Array.isArray(_data["addresses"])) {
+                this.addresses = [] as any;
+                for (let item of _data["addresses"])
+                    this.addresses!.push(AddressModel.fromJS(item));
+            }
+            if (Array.isArray(_data["emails"])) {
+                this.emails = [] as any;
+                for (let item of _data["emails"])
+                    this.emails!.push(EmailModel.fromJS(item));
+            }
         }
     }
 
@@ -2843,32 +2885,44 @@ export class CustomerModel implements ICustomerModel {
         data["companyName"] = this.companyName;
         data["status"] = this.status;
         data["customerNotes"] = this.customerNotes;
+        if (Array.isArray(this.addresses)) {
+            data["addresses"] = [];
+            for (let item of this.addresses)
+                data["addresses"].push(item ? item.toJSON() : undefined as any);
+        }
+        if (Array.isArray(this.emails)) {
+            data["emails"] = [];
+            for (let item of this.emails)
+                data["emails"].push(item ? item.toJSON() : undefined as any);
+        }
         return data;
     }
 }
 
 export interface ICustomerModel {
     customerId?: number;
-    firstName: string | undefined;
-    lastName: string | undefined;
-    customerType: string | undefined;
+    firstName: string;
+    lastName: string;
+    customerType: string;
     prefferedContactMethod?: string | undefined;
     companyName?: string | undefined;
     status?: string | undefined;
     customerNotes?: string | undefined;
+    addresses?: AddressModel[] | undefined;
+    emails?: EmailModel[] | undefined;
 }
 
-export class CustomerWithFKsModel implements ICustomerWithFKsModel {
-    customerId?: number;
-    firstName?: string | undefined;
-    lastName?: string | undefined;
-    customerType?: string | undefined;
+export class CustomerUpdateModel implements ICustomerUpdateModel {
+    customerId!: number;
+    firstName!: string;
+    lastName!: string;
+    customerType!: string;
     prefferedContactMethod?: string | undefined;
     companyName?: string | undefined;
     status?: string | undefined;
     customerNotes?: string | undefined;
 
-    constructor(data?: ICustomerWithFKsModel) {
+    constructor(data?: ICustomerUpdateModel) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2890,9 +2944,9 @@ export class CustomerWithFKsModel implements ICustomerWithFKsModel {
         }
     }
 
-    static fromJS(data: any): CustomerWithFKsModel {
+    static fromJS(data: any): CustomerUpdateModel {
         data = typeof data === 'object' ? data : {};
-        let result = new CustomerWithFKsModel();
+        let result = new CustomerUpdateModel();
         result.init(data);
         return result;
     }
@@ -2911,11 +2965,11 @@ export class CustomerWithFKsModel implements ICustomerWithFKsModel {
     }
 }
 
-export interface ICustomerWithFKsModel {
-    customerId?: number;
-    firstName?: string | undefined;
-    lastName?: string | undefined;
-    customerType?: string | undefined;
+export interface ICustomerUpdateModel {
+    customerId: number;
+    firstName: string;
+    lastName: string;
+    customerType: string;
     prefferedContactMethod?: string | undefined;
     companyName?: string | undefined;
     status?: string | undefined;
@@ -2924,9 +2978,9 @@ export interface ICustomerWithFKsModel {
 
 export class EmailModel implements IEmailModel {
     emailId?: number;
-    customerId?: number;
-    emailAddress!: string | undefined;
-    emailType!: string | undefined;
+    customerId!: number;
+    emailAddress!: string;
+    emailType!: string;
     createdOn?: Date;
 
     constructor(data?: IEmailModel) {
@@ -2968,9 +3022,9 @@ export class EmailModel implements IEmailModel {
 
 export interface IEmailModel {
     emailId?: number;
-    customerId?: number;
-    emailAddress: string | undefined;
-    emailType: string | undefined;
+    customerId: number;
+    emailAddress: string;
+    emailType: string;
     createdOn?: Date;
 }
 
@@ -3027,8 +3081,8 @@ export interface IEmployeeModel {
 }
 
 export class InvoiceItemModel implements IInvoiceItemModel {
-    itemId?: number;
-    invoiceId?: number;
+    itemId!: number;
+    invoiceId!: number;
     description?: string | undefined;
     amount?: number | undefined;
     price?: number | undefined;
@@ -3071,8 +3125,8 @@ export class InvoiceItemModel implements IInvoiceItemModel {
 }
 
 export interface IInvoiceItemModel {
-    itemId?: number;
-    invoiceId?: number;
+    itemId: number;
+    invoiceId: number;
     description?: string | undefined;
     amount?: number | undefined;
     price?: number | undefined;
@@ -3128,7 +3182,7 @@ export interface IInvoiceModel {
 
 export class JobAssignmentModel implements IJobAssignmentModel {
     jobAssignmentId?: number;
-    jobId?: number;
+    jobId!: number;
     assignmentDate?: Date | undefined;
     roleOnJob?: string | undefined;
 
@@ -3169,14 +3223,14 @@ export class JobAssignmentModel implements IJobAssignmentModel {
 
 export interface IJobAssignmentModel {
     jobAssignmentId?: number;
-    jobId?: number;
+    jobId: number;
     assignmentDate?: Date | undefined;
     roleOnJob?: string | undefined;
 }
 
 export class JobInvoiceModel implements IJobInvoiceModel {
-    jobId?: number;
-    invoiceId?: number;
+    jobId!: number;
+    invoiceId!: number;
     createdDate?: Date | undefined;
     percentageOfInvoice?: number | undefined;
 
@@ -3216,15 +3270,15 @@ export class JobInvoiceModel implements IJobInvoiceModel {
 }
 
 export interface IJobInvoiceModel {
-    jobId?: number;
-    invoiceId?: number;
+    jobId: number;
+    invoiceId: number;
     createdDate?: Date | undefined;
     percentageOfInvoice?: number | undefined;
 }
 
 export class JobModel implements IJobModel {
     jobId?: number;
-    customerId?: number;
+    customerId!: number;
     jobDescription?: string | undefined;
     startDate?: Date | undefined;
     endDate?: Date | undefined;
@@ -3271,7 +3325,7 @@ export class JobModel implements IJobModel {
 
 export interface IJobModel {
     jobId?: number;
-    customerId?: number;
+    customerId: number;
     jobDescription?: string | undefined;
     startDate?: Date | undefined;
     endDate?: Date | undefined;
@@ -3280,7 +3334,7 @@ export interface IJobModel {
 
 export class PaymentModel implements IPaymentModel {
     paymentId?: number;
-    invoiceId?: number;
+    invoiceId!: number;
     paymentDate?: Date | undefined;
     amountPaid?: number | undefined;
     method?: string | undefined;
@@ -3324,7 +3378,7 @@ export class PaymentModel implements IPaymentModel {
 
 export interface IPaymentModel {
     paymentId?: number;
-    invoiceId?: number;
+    invoiceId: number;
     paymentDate?: Date | undefined;
     amountPaid?: number | undefined;
     method?: string | undefined;
@@ -3332,7 +3386,7 @@ export interface IPaymentModel {
 
 export class PhoneModel implements IPhoneModel {
     phoneId?: number;
-    customerId?: number;
+    customerId!: number;
     phoneNumber?: string | undefined;
     phoneType?: string | undefined;
 
@@ -3373,14 +3427,14 @@ export class PhoneModel implements IPhoneModel {
 
 export interface IPhoneModel {
     phoneId?: number;
-    customerId?: number;
+    customerId: number;
     phoneNumber?: string | undefined;
     phoneType?: string | undefined;
 }
 
 export class QuoteRequestModel implements IQuoteRequestModel {
     quoteId?: number;
-    jobId?: number;
+    jobId!: number;
     requestDate?: Date | undefined;
     descriptionOfWork?: string | undefined;
     estimatedPrice?: number | undefined;
@@ -3424,7 +3478,7 @@ export class QuoteRequestModel implements IQuoteRequestModel {
 
 export interface IQuoteRequestModel {
     quoteId?: number;
-    jobId?: number;
+    jobId: number;
     requestDate?: Date | undefined;
     descriptionOfWork?: string | undefined;
     estimatedPrice?: number | undefined;
@@ -3432,8 +3486,8 @@ export interface IQuoteRequestModel {
 
 export class UserModel implements IUserModel {
     id?: number;
-    customerId?: number;
-    username!: string | undefined;
+    customerId!: number;
+    username!: string;
     email!: string | undefined;
     createdOn?: Date;
 
@@ -3476,8 +3530,8 @@ export class UserModel implements IUserModel {
 
 export interface IUserModel {
     id?: number;
-    customerId?: number;
-    username: string | undefined;
+    customerId: number;
+    username: string;
     email: string | undefined;
     createdOn?: Date;
 }

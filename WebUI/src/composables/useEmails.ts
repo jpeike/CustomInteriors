@@ -7,28 +7,10 @@ import type { EmailsStore } from '@/types/customerStores'
 export function useEmails() {
     const emailsLoading = ref(false)
     const emailsError = ref<string | null>(null)
-    const emails = ref<EmailModel[]>([])
 
     const client = new Client(import.meta.env.VITE_API_BASE_URL)
 
-    const { showSuccess, showError, showInfo, showWarning } = useToast()
-
-    async function fetchEmails() {
-        emailsLoading.value = true
-        emailsError.value = null
-        client
-            .getAllEmails()
-            .then((response) => {
-                console.log("Email response" + response);
-                emails.value = response
-            })
-            .catch((emailsError) => {
-                emailsError.value = emailsError.message || 'An emailsError occurred'
-            })
-            .finally(() => {
-                emailsLoading.value = false
-            })
-    }
+    const { showSuccess, showError } = useToast()
 
     async function createEmail(email: EmailModel) {
         emailsLoading.value = true
@@ -44,7 +26,6 @@ export function useEmails() {
             })
             .finally(() => {
                 emailsLoading.value = false
-                fetchEmails()
             })
     }
     async function updateEmail(email: EmailModel) {
@@ -61,7 +42,6 @@ export function useEmails() {
             })
             .finally(() => {
                 emailsLoading.value = false
-                fetchEmails()
             })
     }
     async function deleteEmail(emailId: number) {
@@ -78,27 +58,21 @@ export function useEmails() {
             })
             .finally(() => {
                 emailsLoading.value = false
-                fetchEmails()
             })
     }
 
-    function getEmailString(customerID: number): string {
-        for (let i = 0; i < emails.value.length; i++) {
-            if (emails.value[i].customerId == customerID) {
-                return emails.value[i].emailAddress + ''
-            }
-        }
-        return '';
+    function formatEmail(email: EmailModel | undefined): string {
+        if (!email) return ''
+
+        return `${email.emailAddress}`
     }
 
     return {
-        emails,
         emailsLoading,
         emailsError,
-        fetchEmails,
+        formatEmail,
         createEmail,
         updateEmail,
         deleteEmail,
-        getEmailString
     } satisfies EmailsStore
 }

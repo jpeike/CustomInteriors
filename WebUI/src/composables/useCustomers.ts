@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { CustomerModel, AddressModel, EmailModel, Client } from '@/client/client'
+import { CustomerModel, CustomerUpdateModel, CustomerCreateModel, AddressModel, EmailModel, Client } from '@/client/client'
 import { useToast } from '@/composables/useToast.ts'
 import type { CustomersStore } from '@/types/customerStores'
 
@@ -8,13 +8,13 @@ export function useCustomers() {
     const customersError = ref<string | null>(null)
     const customers = ref<CustomerModel[]>([])
     const client = new Client(import.meta.env.VITE_API_BASE_URL)
-    const { showSuccess, showError, showInfo, showWarning } = useToast()
+    const { showSuccess, showError } = useToast()
 
-    async function fetchCustomers() {
+    async function fetchCustomersWithDetails() {
         customersLoading.value = true
         customersError.value = null
         client
-            .getAllCustomers()
+            .getAllCustomers(true)
             .then((response) => {
                 customers.value = response
             })
@@ -32,7 +32,7 @@ export function useCustomers() {
         customersError.value = null
         if (newCustomer.firstName != undefined && newCustomer.lastName != undefined && newCustomer.customerType != undefined) {
             try {
-                const created: CustomerModel = await client.createCustomer(newCustomer)
+                const created: CustomerModel = await client.createCustomer(mapToCreateModel(newCustomer))
                 showSuccess("Customer Created Successfully")
                 return created
             } catch (err: any) {
@@ -41,7 +41,6 @@ export function useCustomers() {
                 return undefined
             } finally {
                 customersLoading.value = false
-                fetchCustomers();
             }
         }
         // ensure function always returns CustomerModel|null and that loading is reset
@@ -52,11 +51,12 @@ export function useCustomers() {
 
     async function updateCustomer(newCustomer: CustomerModel) {
         customersLoading.value = true;
+        customersError.value = null
 
         try {
             if (newCustomer.customerId != -1 && newCustomer.firstName != undefined && newCustomer.lastName != undefined && newCustomer.customerType != undefined) {
                 await client
-                    .updateCustomer(newCustomer)
+                    .updateCustomer(mapToUpdateModel(newCustomer))
                     .then(() => {
                         showSuccess('Customer Updated Successfully');
                     })
@@ -66,7 +66,6 @@ export function useCustomers() {
                     })
                     .finally(() => {
                         customersLoading.value = false
-                        fetchCustomers();
                     })
             }
 
@@ -96,11 +95,37 @@ export function useCustomers() {
             })
     }
 
+    function mapToCreateModel(customer: CustomerModel): CustomerCreateModel {
+        const model = new CustomerCreateModel();
+        model.firstName = customer.firstName;
+        model.lastName = customer.lastName;
+        model.customerType = customer.customerType;
+        model.prefferedContactMethod = customer.prefferedContactMethod;
+        model.companyName = customer.companyName;
+        model.status = customer.status;
+        model.customerNotes = customer.customerNotes;
+        return model;
+    }
+
+    function mapToUpdateModel(customer: CustomerModel): CustomerUpdateModel {
+        const model = new CustomerUpdateModel();
+        console.log("Mapping Customer ID: " + customer.customerId);
+        model.customerId = customer.customerId!;
+        model.firstName = customer.firstName;
+        model.lastName = customer.lastName;
+        model.customerType = customer.customerType;
+        model.prefferedContactMethod = customer.prefferedContactMethod;
+        model.companyName = customer.companyName;
+        model.status = customer.status;
+        model.customerNotes = customer.customerNotes;
+        return model;
+    }
+
     return {
         customers,
         customersLoading,
         customersError,
-        fetchCustomers,
+        fetchCustomersWithDetails,
         createCustomer,
         updateCustomer,
         deleteCustomer

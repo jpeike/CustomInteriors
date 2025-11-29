@@ -22,8 +22,8 @@
           v-for="customer in filteredCustomers" 
           :key="customer.customerId"
           :customer="customer"
-          :email="getEmailString(customer.customerId!)"
-          :address="getAddressString(customer.customerId!)"
+          :email="formatEmail(customer.emails?.[0])"
+          :address="formatAddress(customer.addresses?.[0])"
           @edit="editCustomerUI"
           @delete="openDeleteModal(); getCustomerIndex(customer.customerId ?? 0);"
         />
@@ -75,30 +75,27 @@ import { useCustomerSearch } from '@/composables/useCustomerSearch'
 import { useCustomerEditFlow } from '@/composables/useCustomerEditFlow'
 import { useCustomerModals } from '@/composables/useCustomerModals'
 
-
 const customersStore = useCustomers()
 const { 
   customers, 
   customersLoading, 
   customersError, 
-  fetchCustomers, 
+  fetchCustomersWithDetails, 
 } = customersStore
 
 
 const addressesStore = useAddresses()
 const { 
   addressesLoading, 
-  addressesError, 
-  fetchAddresses, 
-  getAddressString 
+  addressesError,
+  formatAddress 
 } = addressesStore
 
 const emailsStore = useEmails()
 const { 
   emailsLoading, 
   emailsError, 
-  fetchEmails, 
-  getEmailString 
+  formatEmail 
 } = emailsStore
 
 const customerModalsStore = useCustomerModals({
@@ -139,9 +136,7 @@ const { searchValue, filteredCustomers } = useCustomerSearch(customers)
 
 onMounted(() => {
   console.log('AboutView mounted')
-  fetchCustomers()
-  fetchAddresses()
-  fetchEmails()
+  fetchCustomersWithDetails()
 })
 
 const isLoading = computed(() =>

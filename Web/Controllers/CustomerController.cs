@@ -17,39 +17,31 @@ public class CustomersController : ControllerBase
     }
 
     [HttpGet("", Name = "GetAllCustomers")]
-    public async Task<ActionResult<IEnumerable<CustomerModel>>> GetAllCustomers()
+    public async Task<ActionResult<IEnumerable<CustomerModel>>> GetAllCustomers([FromQuery] bool includeDetails = false)
     {
         if (!ModelState.IsValid) return BadRequest();
-        return Ok(await _customerService.GetAllCustomers());
+        return Ok(await _customerService.GetAllCustomers(includeDetails));
     }
 
     [HttpGet("{id:int}", Name = "GetCustomerById")]
-    public async Task<ActionResult<CustomerModel?>> GetCustomerById(int id)
+    public async Task<ActionResult<CustomerModel?>> GetCustomerById(int id, [FromQuery] bool includeDetails = false)
     {
         if (id <= 0) return BadRequest();
-        return await _customerService.GetCustomerById(id);
-    }
-
-    // todo look at this again, not really restful but I dont want to change too much with this one yet
-    [HttpGet("with-addresses/{id:int}", Name = "GetCustomerWithAddresses")]
-    public async Task<ActionResult<CustomerWithFKsModel?>> GetCustomerWithAddress(int id)
-    {
-        if (!ModelState.IsValid) return BadRequest();
-        return await _customerService.GetCustomerWithAddress(id);
+        return await _customerService.GetCustomerById(id, includeDetails);
     }
 
     [HttpPost("", Name = "CreateCustomer")]
-    public async Task<ActionResult<CustomerModel>> CreateCustomer([FromBody] CustomerModel customerModel)
+    public async Task<ActionResult<CustomerModel>> CreateCustomer([FromBody] CustomerCreateModel customerCreateModel)
     {
         if (!ModelState.IsValid) return BadRequest();
-        return await _customerService.CreateCustomer(customerModel);
+        return await _customerService.CreateCustomer(customerCreateModel);
     }
 
     [HttpPut("", Name = "UpdateCustomer")]
-    public async Task<ActionResult> UpdateCustomer([FromBody] CustomerModel customerModel)
+    public async Task<ActionResult> UpdateCustomer([FromBody] CustomerUpdateModel customerUpdateModel)
     {
         if (!ModelState.IsValid) return BadRequest();
-        await _customerService.UpdateCustomer(customerModel);
+        await _customerService.UpdateCustomer(customerUpdateModel);
         return NoContent();
     }
 
