@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Core;
 using Infrastructure;
+using CustomInteriors.Web;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Web;
 
 namespace Web;
 
@@ -18,17 +20,29 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // 1. Add JWT bearer authentication
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.Authority = "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_JPMU56Ifb";
-                options.Audience = "574mvan5pjeoifpt063t473se6";
+var configPath = Path.Combine(AppContext.BaseDirectory, "BaseDefaultSettings.config");
 
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidIssuer = "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_JPMU56Ifb",
+var env = builder.Environment.EnvironmentName switch
+{
+    "Development" => "Dev",
+    "Staging" => "Test",
+    "Production" => "Prod",
+    _ => "Dev"
+};
+
+builder.Configuration.AddXmlConfig(configPath, env);
+
+// 1. Add JWT bearer authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = builder.Configuration["CognitoAuthority"];
+        options.Audience = builder.Configuration["CognitoUserPoolId"]; ;
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["CognitoAuthority"],
 
                     ValidateAudience = false,
 
@@ -42,10 +56,10 @@ public class Program
                         var clientIdClaim = context.Principal?.Claims
                             .FirstOrDefault(c => c.Type == "client_id")?.Value;
 
-                        if (clientIdClaim != "574mvan5pjeoifpt063t473se6")
-                        {
-                            context.Fail("Invalid client_id");
-                        }
+                if (clientIdClaim != builder.Configuration["CognitoUserPoolId"])
+                {
+                    context.Fail("Invalid client_id");
+                }
 
                         return Task.CompletedTask;
                     }
@@ -119,16 +133,17 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
-        builder.Services.AddCors(options =>
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
         {
-            options.AddPolicy("AllowFrontend",
-                policy =>
-                {
-                    policy.WithOrigins("http://localhost:5173") // Vite dev server
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                });
+            policy.WithOrigins(builder.Configuration["FrontendHost"] ?? "")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
         });
+});
 
         var app = builder.Build();
 

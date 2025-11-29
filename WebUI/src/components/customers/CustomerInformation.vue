@@ -1,13 +1,14 @@
 <template>
     <div class="flex row defaultColor scrollBar">
-        <div class = "flex column customerInfoWindow">
+        <div class="flex column customerInfoWindow">
             <div class="flex row customerInfoBar">
-                <div class = "flex column customerInfoTitle">
-                    <h2 style="margin: 0;">{{title}}</h2>
-                    <p style="margin: 0;">{{description}}</p>
+                <div class="flex column customerInfoTitle">
+                    <h2 class="titleText">{{ title }}</h2>
+                    <p class="subtitleText">{{ description }}</p>
                 </div>
             </div>
-            <div class = "flex row multipleFields">
+
+            <div class="flex row multipleFields">
                 <div>
                     <h3 class="fieldTitle">First Name*</h3>
                     <InputText v-model="customer.firstName" required="true" type="text" class="inputValue" :placeholder="props.currentCustomerInformation?.firstName"></InputText>
@@ -17,30 +18,35 @@
                     <InputText v-model="customer.lastName" required="true" type="text" class="inputValue" :placeholder="props.currentCustomerInformation?.lastName"></InputText>
                 </div>
             </div>
+
             <div>
                 <h3 class="fieldTitle">Customer Type*</h3>
                 <InputText v-model="customer.customerType" required="true" type="text" class="inputValue" :placeholder="props.currentCustomerInformation?.customerType"></InputText>
             </div>
-                        
+
         <!--Contact-->
-            <div style="margin-bottom: 5%;">
+            <div class="sectionMargin">
                 <h3 class="fieldTitle">Preffered Contact Method</h3>
-                <div class="contactMethod">                    
+                <div class="contactMethod">
                     <div>
-                        <input :checked="currentCustomerInformation?.prefferedContactMethod == 'Email'" type="radio" class = "contactMethodRadio" v-model="customer.prefferedContactMethod" id = "Email" name="contactMethod" value ="Email" variant="filled"/>
+                        <input :checked="currentCustomerInformation?.prefferedContactMethod == 'Email'" type="radio"
+                            class="contactMethodRadio" v-model="customer.prefferedContactMethod" id="Email"
+                            name="contactMethod" value="Email" variant="filled" />
                         <label for="Email">Email</label>
                     </div>
                     <div>
-                        <input :checked="currentCustomerInformation?.prefferedContactMethod == 'Phone'" type="radio" class = "contactMethodRadio" v-model="customer.prefferedContactMethod" id = "Phone" name="contactMethod" value ="Phone"/>
+                        <input :checked="currentCustomerInformation?.prefferedContactMethod == 'Phone'" type="radio"
+                            class="contactMethodRadio" v-model="customer.prefferedContactMethod" id="Phone"
+                            name="contactMethod" value="Phone" />
                         <label for="Phone">Phone</label>
                     </div>
                 </div>
             </div>
             
-            <div style="margin-bottom: 5%;" v-for="(emailsAdresses, index) in state.listOfEmails">
+            <div class="sectionMargin" v-for="(emailsAdresses, index) in state.listOfEmails">
                 
                 <div class="flex row addressHeader">
-                    <h2 style="margin: 0;">Email {{ index + 1 }}</h2>
+                    <h2 class="sectionHeader">Email {{ index + 1 }}</h2>
                     <i class="pi pi-trash editButton" @click="deleteEmail(state.listOfEmails[index]); state.listOfEmails.splice(index, 1);"></i>
                     </div>
                 <div class="flex row multipleFields">
@@ -54,46 +60,60 @@
                     </div>  
                 </div>                  
             </div>
+
             <div class="addAddress">
-                <button @click="addEmail" class="cancelUpdateButton"> <p style="margin: 0; text-align: center;">Add Email</p></button>
+                <button @click="addEmail" class="cancelUpdateButton">
+                    <p class="buttonText">Add Email</p>
+                </button>
             </div>
 
         <!--Address Section-->
             <div class="addressField" v-for="(address, index) in state.listOfAddresses">
                 <div class="flex row addressHeader">
-                    <h2 style="margin: 0;">Address {{ index + 1 }}</h2>
+                    <h2 class="sectionHeader">Address {{ index + 1 }}</h2>
                     <i class="pi pi-trash editButton" @click="deleteAddress(state.listOfAddresses[index], index); "></i>
                 </div>
+
                 <div>
                     <h3 class="fieldTitle">Street Address *</h3>
-                    <InputText v-model="address.street" required="true" type="text" class="inputValue" :placeholder="address.street ?? 'Street'"></InputText>
+                    <InputText v-model="address.street" required type="text" class="inputValue"
+                        :placeholder="address.street ?? 'Street'" />
                 </div>
                 <div>
                     <h3 class="fieldTitle">Country</h3>
-                    <InputText v-model="address.country" type="text" class="inputValue" :placeholder="address.country ?? 'Country'"></InputText>
+                    <InputText v-model="address.country" type="text" class="inputValue"
+                        :placeholder="address.country ?? 'Country'" />
                 </div>
+
                 <div class="flex row multipleFields">
                     <div class="tripleField">
                         <h3 class="fieldTitle">City *</h3>
-                        <InputText v-model="address.city" required="true" type="text" class="inputValue" :placeholder="address.city ?? 'City'"></InputText>
+                        <InputText v-model="address.city" required type="text" class="inputValue"
+                            :placeholder="address.city ?? 'City'" />
                     </div>
                     <div class="tripleField">
                         <h3 class="fieldTitle">State *</h3>
-                        <InputText v-model="address.state" required="true" type="text" class="inputValue" :placeholder="address.state ?? 'State'"></InputText>
+                        <InputText v-model="address.state" required type="text" class="inputValue"
+                            :placeholder="address.state ?? 'State'" />
                     </div>
                     <div class="tripleField">
                         <h3 class="fieldTitle">Zip *</h3>
-                        <input v-model="address.postalCode" required="true" class="p-inputtext p-component inputValue" :placeholder="address.postalCode?.toString()"></input>
+                        <input v-model="address.postalCode" required class="p-inputtext p-component inputValue"
+                            :placeholder="address.postalCode?.toString()" />
                     </div>
-                </div> 
-                 <div>
+                </div>
+
+                <div>
                     <h3 class="fieldTitle">Address Type *</h3>
-                    <InputText v-model="address.addressType" required="true" type="text" class="inputValue" :placeholder="address.addressType ?? 'Address Type'"></InputText>
-                </div>               
+                    <InputText v-model="address.addressType" required type="text" class="inputValue"
+                        :placeholder="address.addressType ?? 'Address Type'" />
+                </div>
             </div>
 
             <div class="addAddress">
-                <button @click="addAddress" class="cancelUpdateButton"> <p style="margin: 0; text-align: center;">Add Address</p></button>
+                <button @click="addAddress" class="cancelUpdateButton">
+                    <p class="buttonText">Add Address</p>
+                </button>
             </div>
 
         <!--Company Name-->
@@ -105,6 +125,7 @@
                 <h3 class="fieldTitle">Status</h3>
                 <InputText v-model="customer.status" type="text" class="inputValue" :placeholder="props.currentCustomerInformation?.status"></InputText>
             </div>
+
             <div class="notesField">
                 <h3 class="fieldTitle">Notes</h3>
                 <textarea v-model="customer.customerNotes" type="text" class="p-inputtext p-component inputValue notes" :placeholder="props.currentCustomerInformation?.customerNotes"></textarea>
@@ -112,21 +133,186 @@
 
             <div class="flex row buttons">
                 <button class = "cancelUpdateButton" @click="$emit('closePage')">
-                    <p style="margin: 0; text-align: center;">Cancel</p>
+                    <p class="buttonText">Cancel</p>
                 </button>  
                 <button class = "updateInfoButton" @click="testInfo()">
-                    <p style="margin: 0; text-align: center;">{{buttonDesctipnion}}</p>
+                    <p class="buttonText">{{buttonDesctipnion}}</p>
                 </button>
             </div>
-            
         </div>
-        <button class = "exitButton" @click="$emit('closePage')"><h4 style="margin: 0;">X</h4></button>
+
+        <button class="exitButton" @click="$emit('closePage')">
+            <h4 class="exitText">X</h4>
+        </button>
     </div>
 </template>
 
+<style scoped>
+  /* Message Styles */
+  .message {
+  padding: 0.875rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-medium);
+  }
+
+  .message.success {
+  background-color: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+  }
+
+  .message.error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+  }
+
+  /* Flex Helpers */
+  .flex {
+  display: flex;
+  }
+  .row {
+  flex-direction: row;
+  }
+  .column {
+  flex-direction: column;
+  }
+
+  /* Scroll & Layout */
+  .scrollBar {
+  padding: 4%;
+  width: 50vw;
+  height: 80vh;
+  border-radius: var(--radius-lg);
+  }
+  .customerInfoWindow {
+  overflow: auto;
+  height: 100%;
+  width: 100%;
+  padding-right: 5%;
+  }
+  .customerInfoBar {
+  justify-content: space-between;
+  }
+  .customerInfoTitle {
+  margin-bottom: 2vh;
+  }
+
+  /* Address & Email Headers */
+  .addressHeader {
+  margin-bottom: 2%;
+  justify-content: space-between;
+  align-items: center;
+  }
+
+  /* Buttons & Controls */
+  .exitButton {
+  background: none;
+  border: none;
+  height: fit-content;
+  }
+  .editButton {
+  font-size: 1.1rem;
+  height: 100%;
+  }
+  .editButton:hover {
+  transform: scale(1.25);
+  }
+  .addAddress {
+  height: 5vh;
+  margin-bottom: 5%;
+  }
+  .buttons {
+  width: 100%;
+  justify-content: flex-end;
+  gap: 5%;
+  }
+  .updateInfoButton {
+  width: 20%;
+  height: 5vh;
+  border: none;
+  border-radius: var(--radius-md);
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  }
+  .cancelUpdateButton {
+  width: 20%;
+  height: 5vh;
+  border: none;
+  border-radius: var(--radius-md);
+  background-color: var(--secondary);
+  color: var(--foreground);
+  }
+  .buttonText {
+  margin: 0;
+  text-align: center;
+  }
+
+  /* Input & Form Fields */
+  .multipleFields {
+  justify-content: space-between;
+  }
+  .fieldTitle {
+  margin: 0vh;
+  margin-bottom: 1vh;
+  }
+  .inputValue {
+  margin-bottom: 2vh;
+  width: 100%;
+  }
+  .p-inputnumber-input {
+  width: 25px;
+  }
+  .tripleField {
+  width: 30%;
+  }
+  .notes {
+  height: 10vh;
+  resize: none;
+  }
+
+  /* Contact Method */
+  .contactMethod {
+  display: flex;
+  justify-content: start;
+  gap: 5%;
+  margin-bottom: 2vh;
+  }
+
+  /* Addresses */
+  .addressField {
+  margin-bottom: 5%;
+  }
+
+  /* Theme Colors */
+  .defaultColor {
+  background-color: var(--card);
+  color: var(--foreground);
+  }
+  .invertColor {
+  background-color: var(--foreground);
+  color: var(--card);
+  }
+
+  /* Dark Mode Overrides */
+  @media (prefers-color-scheme: dark) {
+  .defaultColor {
+  background-color: var(--card);
+  color: var(--foreground);
+  }
+  .invertColor {
+  background-color: var(--foreground);
+  color: var(--card);
+  }
+  }
+
+</style>
+
+
 <script setup lang="ts">
     import 'primeicons/primeicons.css';
-    import { Client, CustomerModel, AddressModel, EmailModel} from '../client/client'
+    import { Client, CustomerModel, AddressModel, EmailModel} from '../../client/client'
     import InputText from 'primevue/inputtext';
     import {reactive, ref} from 'vue'
     import { useToast } from '@/composables/useToast.ts'
@@ -141,7 +327,7 @@
         description: String,
         buttonDesctipnion: String
     }>();
-    
+
     const emit = defineEmits<{
         closePage: []
         updateCustomerInformation: [customer: CustomerModel, listOfAddresses: AddressModel[], removedAddresses: number[], listOfEmails: EmailModel[], removedEmails: number[]]
@@ -177,7 +363,7 @@
         var temp = JSON.stringify(props.currentEmails);
         state.listOfEmails = JSON.parse(temp);
     }
-    
+
     function addAddress(){
         state.listOfAddresses.push(new AddressModel);
     }
@@ -243,166 +429,23 @@
 
         for (let i = 0; i < state.listOfAddresses.length; i++){
             if (props.currentAddresses != undefined){
-                if (JSON.stringify(state.listOfAddresses[i]) == JSON.stringify(props.currentAddresses[i])){
-                    state.listOfAddresses.splice(i, 1);
+                for (let j = i; j < props.currentAddresses.length; j++){
+                    if (JSON.stringify(state.listOfAddresses[i]) == JSON.stringify(props.currentAddresses[j])){
+                        state.listOfAddresses.splice(i, 1);
+                    }
                 }
             }
         }
 
         for (let i = 0; i < state.listOfEmails.length; i++){
             if (props.currentEmails != undefined){
-                if (JSON.stringify(state.listOfEmails[i]) == JSON.stringify(props.currentEmails[i])){
-                    state.listOfEmails.splice(i, 1);
+                for (let j = i; j < props.currentEmails.length; j++){
+                    if (JSON.stringify(state.listOfEmails[i]) == JSON.stringify(props.currentEmails[j])){
+                        state.listOfEmails.splice(i, 1);
+                    }
                 }
             }
         }
     }
 </script>
 
-<style scoped>
-
-    .message {
-        padding: 0.875rem 1rem;
-        border-radius: 6px;
-        font-size: 0.875rem;
-        font-weight: 500;
-    }
-
-    .message.success {
-        background-color: #d1fae5;
-        color: #065f46;
-        border: 1px solid #a7f3d0;
-    }
-
-    .message.error {
-        background-color: #fee2e2;
-        color: #991b1b;
-        border: 1px solid #fecaca;
-    }
-
-    .flex{
-        display: flex;
-    }
-    .row {
-        flex-direction: row;
-    }
-    .column{
-        flex-direction: column;
-    }
-    .scrollBar{
-        padding: 4%;
-        width: 50vw;
-        height: 80vh;  
-        border-radius: 5vh;
-    }
-    .customerInfoWindow{
-        overflow: scroll;
-        height: 100%;
-        width: 100%;
-        padding-right: 5%;
-    }
-    .customerInfoBar{
-        justify-content: space-between;
-    }
-    .customerInfoTitle{
-        margin-bottom: 2vh;
-    }
-    .addressHeader{
-        margin-bottom: 2%;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .exitButton{
-        background: none;
-        border: none;
-        height: fit-content;
-    }
-    .multipleFields{
-        justify-content: space-between;
-    }
-    .fieldTitle{
-        margin: 0vh;
-        margin-bottom: 1vh;
-    }
-    .inputValue{
-        margin-bottom: 2vh;
-        width: 100%;
-    }
-    .p-inputnumber-input{
-        width: 25px;
-    }
-    .tripleField{
-        width: 30%;
-    }
-    .notes{
-        height: 10vh;
-        resize: none;
-    }
-    .buttons{
-        width: 100%;
-        justify-content: end;
-        gap: 5%;
-    }
-    .updateInfoButton{
-        width: 20%;
-        height: 5vh;
-        border: none;
-        align-content: center;
-        border-radius: 7px;
-    }
-    .cancelUpdateButton{
-        width: 20%;
-        height: 5vh;
-        border: none;
-        align-content: center;
-        border-radius: 7px;
-    }
-    .addressField{
-        margin-bottom: 5%;
-        height: 100vh;    
-    }
-    .addressHeader{
-        margin-bottom: 2%;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .editButton{
-        font-size: 1.1rem;
-        height: 100%;
-    }
-    .editButton:hover{
-        scale: 1.25;
-    }
-    .addAddress{
-        height: 5vh;
-        margin-bottom: 5%;
-    }
-    .contactMethod{
-        display: flex;
-        justify-content:start;
-        gap: 5%;
-        margin-bottom: 2vh;
-    }
-    
-    .defaultColor{
-        background-color: rgb(255, 255, 255);
-        color: black;
-    }
-    .invertColor{
-        background-color: rgb(0, 0, 0);  
-        color: white;
-    }
-
-    @media (prefers-color-scheme: dark) {
-        .defaultColor{
-            background-color: rgb(16, 16, 16);   
-            color: white;
-        }
-        .invertColor{
-            background-color: rgb(255, 255, 255);
-            color: black;
-        }
-    }
-    
-    
-</style>
