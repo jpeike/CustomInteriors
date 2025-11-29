@@ -10,7 +10,30 @@ namespace Testing.UnitTests.ControllerTests;
 /// </summary>
 public class CustomerControllerTests
 {
-    private CustomerModel Customer { get; } = new()
+    private CustomerCreateModel CustomerCreateModel { get; } = new()
+    {
+        CompanyName = "CompanyName",
+        CustomerNotes = "CustomerNotes",
+        CustomerType = "CustomerType",
+        FirstName = "FirstName",
+        LastName = "LastName",
+        PrefferedContactMethod = "PrefferedContactMethod",
+        Status = "Status"
+    };
+    
+    private CustomerUpdateModel CustomerUpdateModel { get; } = new()
+    {
+        CustomerId = 1,
+        CompanyName = "CompanyName",
+        CustomerNotes = "CustomerNotes",
+        CustomerType = "CustomerType",
+        FirstName = "FirstName",
+        LastName = "LastName",
+        PrefferedContactMethod = "PrefferedContactMethod",
+        Status = "Status"
+    };
+    
+    private CustomerModel CustomerModel { get; } = new()
     {
         CustomerId = 1,
         CompanyName = "CompanyName",
@@ -35,7 +58,7 @@ public class CustomerControllerTests
     public async Task GetAll_ReturnsOk()
     {
         // mock the return of the service to be a generic customer
-        _service.Setup(s => s.GetAllCustomers())
+        _service.Setup(s => s.GetAllCustomers(It.IsAny<bool>()))
             .ReturnsAsync(new List<CustomerModel>());
 
         var result = await _controller.GetAllCustomers();
@@ -46,8 +69,8 @@ public class CustomerControllerTests
     [Fact]
     public async Task GetCustomerById_IdGreaterThanEqualsOne_ReturnsOk()
     {
-        _service.Setup(s => s.GetCustomerById(It.IsAny<int>()))
-            .ReturnsAsync(Customer);
+        _service.Setup(s => s.GetCustomerById(It.IsAny<int>(), It.IsAny<bool>()))
+            .ReturnsAsync(CustomerModel);
 
         var result = await _controller.GetCustomerById(1);
 
@@ -57,8 +80,8 @@ public class CustomerControllerTests
     [Fact]
     public async Task GetCustomerById_IdLessThanOne_ReturnsBadRequest()
     {
-        _service.Setup(s => s.GetCustomerById(It.IsAny<int>()))
-            .ReturnsAsync(Customer);
+        _service.Setup(s => s.GetCustomerById(It.IsAny<int>(), It.IsAny<bool>()))
+            .ReturnsAsync(CustomerModel);
 
         var result = await _controller.GetCustomerById(0);
 
@@ -68,10 +91,10 @@ public class CustomerControllerTests
     [Fact]
     public async Task CreateCustomer_ReturnsOk()
     {
-        _service.Setup(s => s.CreateCustomer(It.IsAny<CustomerModel>()))
-            .ReturnsAsync(Customer);
+        _service.Setup(s => s.CreateCustomer(It.IsAny<CustomerCreateModel>()))
+            .ReturnsAsync(CustomerModel);
 
-        var result = await _controller.CreateCustomer(Customer);
+        var result = await _controller.CreateCustomer(CustomerCreateModel);
 
         Assert.IsType<OkObjectResult>(result.Result);
     }
@@ -79,10 +102,10 @@ public class CustomerControllerTests
     [Fact]
     public async Task UpdateCustomer_ReturnsNoContent()
     {
-        _service.Setup(s => s.UpdateCustomer(It.IsAny<CustomerModel>()))
+        _service.Setup(s => s.UpdateCustomer(It.IsAny<CustomerUpdateModel>()))
             .Returns(Task.CompletedTask);
 
-        var result = await _controller.UpdateCustomer(Customer);
+        var result = await _controller.UpdateCustomer(CustomerUpdateModel);
 
         Assert.IsType<NoContentResult>(result);
     }
