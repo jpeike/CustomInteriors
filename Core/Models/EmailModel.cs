@@ -19,6 +19,6 @@ public class EmailModel
     [StringLength(100)]
     public required string EmailType { get; set; }
     
-    //[DateBeforeNow]
+    [DateBeforeNow]
     public DateTime CreatedOn { get; set; }
 }
