@@ -1,15 +1,15 @@
 <template>
-    <Card class="mb-3">
+    <Card class="mb-3" data-testid="customerCard" :data-customer-id="customer.customerId">
         <template #header>
             <div class="flex row customCardHeader">
-                <p style="margin: 0; flex-grow: 2; font-size: 1.2rem; font-weight: bold;">{{ customer.firstName }} {{
+                <p style="margin: 0; flex-grow: 2; font-size: 1.2rem; font-weight: bold;" data-testid="customerName">{{ customer.firstName }} {{
                     customer.lastName }}</p>
 
                 <div class="flex row" style="justify-content: left; flex-grow: 0; gap: 15%">
                     <i class="pi pi-pen-to-square editButton" style="font-size: 1.1rem"
-                        @click="emit('edit', customer)"></i>
+                        @click="emit('edit', customer)" data-testid="updateCustomerButton"></i>
                     <i class="pi pi-trash editButton" style="font-size: 1.1rem"
-                        @click="emit('delete', customer)"></i>
+                        @click="emit('delete', customer)" data-testid="deleteCustomerButton"></i>
                 </div>
             </div>
         </template>
@@ -18,10 +18,10 @@
                 <div>
                     <p style="margin: 0;">Contact: </p>
                 </div>
-                <div v-if="customer.prefferedContactMethod == 'Email'">
+                <div v-if="customer.prefferedContactMethod == 'Email'" data-testid="customerEmail">
                     {{ email }}
                 </div>
-                <div v-else-if="customer.prefferedContactMethod == 'Phone'">
+                <div v-else-if="customer.prefferedContactMethod == 'Phone'" data-testid="customerPhone">
                     Temp Phone
                 </div>
                 <div v-else>
@@ -31,15 +31,15 @@
 
             <br />
 
-            <p style="margin: 0;">Address: {{ address }}</p>
+            <p style="margin: 0;" data-testid="customerAddress">Address: {{ address }}</p>
             <br />
-            <p style="margin: 0;">Type: {{ customer.customerType }}</p>
+            <p style="margin: 0;" data-testid="customerType">Type: {{ customer.customerType }}</p>
             <br />
-            <p style="margin: 0;">Company: {{ customer.companyName }}</p>
+            <p style="margin: 0;" data-testid="customerCompany">Company: {{ customer.companyName }}</p>
             <br />
-            <p style="margin: 0;">Status: {{ customer.status }}</p>
+            <p style="margin: 0;" data-testid="customerStatus">Status: {{ customer.status }}</p>
             <br />
-            <p style="margin: 0;">Notes: {{ customer.customerNotes }}</p>
+            <p style="margin: 0;" data-testid="customerNotes">Notes: {{ customer.customerNotes }}</p>
         </template>
     </Card>
 </template>

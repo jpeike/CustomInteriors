@@ -117,6 +117,22 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IUserService, UserService>();
 
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    var aspnetEnv = builder.Environment.EnvironmentName; // "Development", "Test", "Production"
+
+    var connectionString = aspnetEnv switch
+    {
+        "Test" => builder.Configuration.GetConnectionString("E2ETestConnection"), // Playwright DB
+        "Development" => builder.Configuration.GetConnectionString("DefaultConnection"), // Dev DB
+        "Production" => builder.Configuration.GetConnectionString("DefaultConnection"), // Prod DB (usually same key)
+        _ => builder.Configuration.GetConnectionString("DefaultConnection")
+    };
+
+    options.UseSqlServer(connectionString);
+});
+
+
         if (builder.Environment.IsEnvironment("Testing"))
         {
             builder.Services.AddDbContext<AppDbContext>(options =>

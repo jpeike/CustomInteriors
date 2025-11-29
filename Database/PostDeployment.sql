@@ -16,6 +16,15 @@ GO
 
 -- === Script Runner Template ===
 :r .\Scripts\2025.001.sql
+GO
+
+IF DB_NAME() LIKE '%Test'
+BEGIN
+    PRINT 'Detected Test database – seeding test data...';
+    :r .\Scripts\SeedTestDB.sql
+END
+GO
 
 
 PRINT '========== PostDeployment.sql Complete =========='
+GO
