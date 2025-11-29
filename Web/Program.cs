@@ -8,7 +8,6 @@ using Web;
 
 
 var builder = WebApplication.CreateBuilder(args);
-var isE2ETest = Environment.GetEnvironmentVariable("RUNNING_E2E_TESTS") == "true";
 var configPath = Path.Combine(AppContext.BaseDirectory, "BaseDefaultSettings.config");
 
 var env = builder.Environment.EnvironmentName switch
@@ -109,16 +108,15 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    string connectionString;
+    var aspnetEnv = builder.Environment.EnvironmentName; // "Development", "Test", "Production"
 
-    if (isE2ETest)
+    var connectionString = aspnetEnv switch
     {
-        connectionString = builder.Configuration.GetConnectionString("E2ETestConnection");
-    }
-    else
-    {
-        connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    }
+        "Test" => builder.Configuration.GetConnectionString("E2ETestConnection"), // Playwright DB
+        "Development" => builder.Configuration.GetConnectionString("DefaultConnection"), // Dev DB
+        "Production" => builder.Configuration.GetConnectionString("DefaultConnection"), // Prod DB (usually same key)
+        _ => builder.Configuration.GetConnectionString("DefaultConnection")
+    };
 
     options.UseSqlServer(connectionString);
 });

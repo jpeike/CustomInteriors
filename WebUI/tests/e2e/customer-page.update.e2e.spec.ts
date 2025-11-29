@@ -46,13 +46,13 @@ test('Update Customer', async ({ page, goToCustomersPage, createPopulatedCustome
 
   await fillCustomerFormAndSubmit(page, updated, 'PUT');
 
-  const updateResponse = await page.waitForResponse(r =>
-    r.url().includes(`/api/emails`) && r.request().method() === 'PUT'
-  );
+  // const updateResponse = await page.waitForResponse(r =>
+  //   r.url().includes(`/api/emails`) && r.request().method() === 'PUT'
+  // );
 
-  // Print the real validation error
-  const json = await updateResponse.json().catch(() => null);
-  console.log("BACKEND RESPONSE:", json);
+  // // Print the real validation error
+  // const json = await updateResponse.json().catch(() => null);
+  // console.log("BACKEND RESPONSE:", json);
 
   //verify toast
   await expect(

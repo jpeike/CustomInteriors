@@ -1,7 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const isE2E = process.env.TEST_TYPE === 'e2e';
-process.env.RUNNING_E2E_TESTS = "true";
 
 /**
  * Read environment variables from file.
@@ -75,10 +74,11 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  webServer: isE2E ? [
+  webServer: [
   {
-    command: 'cross-env RUNNING_E2E_TESTS=true dotnet run --project ../Web',
-    url: 'https://localhost:44351/swagger/index.html',
+    command: 'dotnet run --project ../Web --launch-profile "CustomInteriors-Web (Test)"',
+    //replace later with a health check endpoint
+    url: 'https://localhost:44351/api/customers',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000, // wait up to 2 min for backend to boot
     ignoreHTTPSErrors: true,
@@ -89,14 +89,6 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     timeout: 60 * 1000,
   }
-] : [
-      // 🧪 For integration: start only the frontend
-      {
-        command: 'npm run dev',
-        url: 'http://localhost:5173',
-        reuseExistingServer: !process.env.CI,
-        timeout: 60 * 1000,
-      },
-    ],
+]
 
 });
