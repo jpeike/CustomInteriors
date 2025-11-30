@@ -27,14 +27,14 @@ public class InvoiceController : ControllerBase
     public async Task<ActionResult<InvoiceModel?>> GetInvoiceById(int id)
     {
         if (id <= 0) return BadRequest();
-        return await _invoiceService.GetInvoiceById(id);
+        return Ok(await _invoiceService.GetInvoiceById(id));
     }
 
     [HttpPost("", Name = "CreateInvoice")]
     public async Task<ActionResult<InvoiceModel>> CreateInvoice([FromBody] InvoiceModel invoiceModel)
     {
         if (!ModelState.IsValid) return BadRequest();
-        return await _invoiceService.CreateInvoice(invoiceModel);
+        return Ok(await _invoiceService.CreateInvoice(invoiceModel));
     }
 
     [HttpPut("", Name = "UpdateInvoice")]
@@ -49,6 +49,6 @@ public class InvoiceController : ControllerBase
     public async Task<ActionResult<bool>> DeleteInvoice(int id)
     {
         if (id <= 0) return BadRequest();
-        return await _invoiceService.DeleteInvoice(id);
+        return Ok(await _invoiceService.DeleteInvoice(id));
     }
 }

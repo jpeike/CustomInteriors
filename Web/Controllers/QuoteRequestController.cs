@@ -27,14 +27,14 @@ public class QuoteRequestController : ControllerBase
     public async Task<ActionResult<QuoteRequestModel?>> GetQuoteRequestById(int id)
     {
         if (id <= 0) return BadRequest();
-        return await _quoteRequestService.GetQuoteRequestById(id);
+        return Ok(await _quoteRequestService.GetQuoteRequestById(id));
     }
 
     [HttpPost("", Name = "CreateQuoteRequest")]
     public async Task<ActionResult<QuoteRequestModel>> CreateQuoteRequest([FromBody] QuoteRequestModel quoteRequestModel)
     {
         if (!ModelState.IsValid) return BadRequest();
-        return await _quoteRequestService.CreateQuoteRequest(quoteRequestModel);
+        return Ok(await _quoteRequestService.CreateQuoteRequest(quoteRequestModel));
     }
 
     [HttpPut("", Name = "UpdateQuoteRequest")]
@@ -49,6 +49,6 @@ public class QuoteRequestController : ControllerBase
     public async Task<ActionResult<bool>> DeleteQuoteRequest(int id)
     {
         if (id <= 0) return BadRequest();
-        return await _quoteRequestService.DeleteQuoteRequest(id);
+        return Ok(await _quoteRequestService.DeleteQuoteRequest(id));
     }
 }

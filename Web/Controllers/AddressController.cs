@@ -39,7 +39,7 @@ public class AddressController : ControllerBase
     public async Task<ActionResult<AddressModel>> CreateAddress([FromBody] AddressModel addressModel)
     {
         if (!ModelState.IsValid) return BadRequest();
-        return await _addressService.CreateAddress(addressModel);
+        return Ok(await _addressService.CreateAddress(addressModel));
     }
 
     [HttpPut("", Name = "UpdateAddress")]
@@ -54,6 +54,6 @@ public class AddressController : ControllerBase
     public async Task<ActionResult<bool>> DeleteAddress(int id)
     {
         if (id <= 0) return BadRequest();
-        return await _addressService.DeleteAddress(id);
+        return Ok(await _addressService.DeleteAddress(id));
     }
 }

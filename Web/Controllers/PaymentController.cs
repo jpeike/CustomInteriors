@@ -27,14 +27,14 @@ public class PaymentController : ControllerBase
     public async Task<ActionResult<PaymentModel?>> GetPaymentById(int id)
     {
         if (id <= 0) return BadRequest();
-        return await _paymentService.GetPaymentById(id);
+        return Ok(await _paymentService.GetPaymentById(id));
     }
 
     [HttpPost("", Name = "CreatePayment")]
     public async Task<ActionResult<PaymentModel>> CreatePayment([FromBody] PaymentModel paymentModel)
     {
         if (!ModelState.IsValid) return BadRequest();
-        return await _paymentService.CreatePayment(paymentModel);
+        return Ok(await _paymentService.CreatePayment(paymentModel));
     }
 
     [HttpPut("", Name = "UpdatePayment")]
@@ -49,6 +49,6 @@ public class PaymentController : ControllerBase
     public async Task<ActionResult<bool>> DeletePayment(int id)
     {
         if (id <= 0) return BadRequest();
-        return await _paymentService.DeletePayment(id);
+        return Ok(await _paymentService.DeletePayment(id));
     }
 }

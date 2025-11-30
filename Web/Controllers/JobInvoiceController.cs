@@ -27,14 +27,14 @@ public class JobInvoiceController : ControllerBase
     public async Task<ActionResult<JobInvoiceModel?>> GetJobInvoiceById(int id)
     {
         if (id <= 0) return BadRequest();
-        return await _jobInvoiceService.GetJobInvoiceById(id);
+        return Ok(await _jobInvoiceService.GetJobInvoiceById(id));
     }
 
     [HttpPost("", Name = "CreateJobInvoice")]
     public async Task<ActionResult<JobInvoiceModel>> CreateJobInvoice([FromBody] JobInvoiceModel jobInvoiceModel)
     {
         if (!ModelState.IsValid) return BadRequest();
-        return await _jobInvoiceService.CreateJobInvoice(jobInvoiceModel);
+        return Ok(await _jobInvoiceService.CreateJobInvoice(jobInvoiceModel));
     }
 
     [HttpPut("", Name = "UpdateJobInvoice")]
@@ -49,6 +49,6 @@ public class JobInvoiceController : ControllerBase
     public async Task<ActionResult<bool>> DeleteJobInvoice(int id)
     {
         if (id <= 0) return BadRequest();
-        return await _jobInvoiceService.DeleteJobInvoice(id);
+        return Ok(await _jobInvoiceService.DeleteJobInvoice(id));
     }
 }

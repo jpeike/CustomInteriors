@@ -27,14 +27,14 @@ public class CustomersController : ControllerBase
     public async Task<ActionResult<CustomerModel?>> GetCustomerById(int id, [FromQuery] bool includeDetails = false)
     {
         if (id <= 0) return BadRequest();
-        return await _customerService.GetCustomerById(id, includeDetails);
+        return Ok(await _customerService.GetCustomerById(id, includeDetails));
     }
 
     [HttpPost("", Name = "CreateCustomer")]
     public async Task<ActionResult<CustomerModel>> CreateCustomer([FromBody] CustomerCreateModel customerCreateModel)
     {
         if (!ModelState.IsValid) return BadRequest();
-        return await _customerService.CreateCustomer(customerCreateModel);
+        return Ok(await _customerService.CreateCustomer(customerCreateModel));
     }
 
     [HttpPut("", Name = "UpdateCustomer")]
@@ -49,6 +49,6 @@ public class CustomersController : ControllerBase
     public async Task<ActionResult<bool>> DeleteCustomer(int id)
     {
         if (id <= 0) return BadRequest();
-        return await _customerService.DeleteCustomer(id);
+        return Ok(await _customerService.DeleteCustomer(id));
     }
 }
