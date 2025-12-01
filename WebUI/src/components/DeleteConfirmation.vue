@@ -2,20 +2,18 @@
     <div class = "flex row defaultColor deleteWindow">
         <div class="flex column deleteWindowBody">
             <p style="margin: 0;">Are you sure you want to delete <span class="title">{{title}}</span>?</p>
-            
             <div class="flex row buttons">
-                <button class = "cancelUpdateButton" @click="$emit('closePage')">
-                    <p style="margin: 0; text-align: center;">Cancel</p>
-                </button>  
-                <button class = "updateInfoButton" @click="$emit('deleteCustomer', currentCustomerInformation?.customerId)">
-                    <p style="margin: 0; text-align: center;">Delete</p>
-                </button>
+              <button class="cancelUpdateButton" @click="$emit('closePage')" data-testid="deleteCancelButton">
+                <p class="buttonText">Cancel</p>
+              </button>
+              <button class="updateInfoButton" @click="$emit('deleteCustomer', currentCustomerInformation?.customerId)" data-testid="deleteConfirmationButton">
+                <p class="buttonText">Delete</p>
+              </button>
             </div>
-        </div>
-        <button class = "exitButton" @click="$emit('closePage')"><h4 style="margin: 0;">X</h4></button>
+          </div>
+      <button class="exitButton" @click="$emit('closePage')"> <h4 class="exitText">X</h4> </button>
     </div>
 </template>
-
 
 <script setup lang="ts">
     import { Client, CustomerModel } from '../client/client'
@@ -30,71 +28,97 @@
 
 
 <style scoped>
-    .flex{
-        display: flex;
-    }
-    .row {
-        flex-direction: row;
-    }
-    .column{
-        flex-direction: column;
-    }
-    .deleteWindow{
-        padding: 3%;
-        gap: 5%;
-        width: 30vw;
-        height: 30vh; 
-        border-radius: 5vh;
-        justify-content: space-between;
-    }
-    .deleteWindowBody{
-        justify-content: space-between;
-    }
-    .title{
-        font-weight: bold;
-    }
-    .buttons{
-        width: 100%;
-        justify-content: end;
-        gap: 5%;
-    }
-    .updateInfoButton{
-        width: 50%;
-        height: 5vh;
-        border: none;
-        align-content: center;
-        border-radius: 7px;
-    }
-    .cancelUpdateButton{
-        width: 50%;
-        height: 5vh;
-        border: none;
-        align-content: center;
-        border-radius: 7px;
-    }
-    .exitButton{
-        background: none;
-        border: none;
-        height: fit-content;
-    }
+    /* Flex Helpers */
+.flex {
+display: flex;
+}
+.row {
+flex-direction: row;
+}
+.column {
+flex-direction: column;
+}
 
-    .defaultColor{
-        background-color: rgb(255, 255, 255);
-        color: black;
-    }
-    .invertColor{
-        background-color: rgb(0, 0, 0);  
-        color: white;
-    }
+/* Delete Confirmation Window */
+.deleteWindow {
+padding: 3%;
+gap: 5%;
+width: 30vw;
+height: 30vh;
+border-radius: var(--radius-lg);
+justify-content: space-between;
+}
 
-    @media (prefers-color-scheme: dark) {
-        .defaultColor{
-            background-color: rgb(16, 16, 16);   
-            color: white;
-        }
-        .invertColor{
-            background-color: rgb(255, 255, 255);
-            color: black;
-        }
-    }
+/* Window Body */
+.deleteWindowBody {
+justify-content: space-between;
+}
+
+/* Title Text */
+.title {
+font-weight: var(--font-weight-medium);
+}
+
+/* Buttons */
+.buttons {
+width: 100%;
+justify-content: flex-end;
+gap: 5%;
+}
+.updateInfoButton {
+width: 50%;
+height: 5vh;
+border: none;
+border-radius: var(--radius-md);
+background-color: var(--destructive);
+color: var(--destructive-foreground);
+}
+.cancelUpdateButton {
+width: 50%;
+height: 5vh;
+border: none;
+border-radius: var(--radius-md);
+background-color: var(--secondary);
+color: var(--foreground);
+}
+
+/* Exit Button */
+.exitButton {
+background: none;
+border: none;
+height: fit-content;
+}
+
+/* Theme Colors */
+.defaultColor {
+background-color: var(--card);
+color: var(--foreground);
+}
+.invertColor {
+background-color: var(--foreground);
+color: var(--card);
+}
+.buttonText {
+margin: 0;
+text-align: center;
+font-weight: var(--font-weight-medium);
+}
+
+.exitText {
+margin: 0;
+font-weight: var(--font-weight-medium);
+}
+
+/* Dark Mode Overrides */
+@media (prefers-color-scheme: dark) {
+.defaultColor {
+background-color: var(--card);
+color: var(--foreground);
+}
+.invertColor {
+background-color: var(--foreground);
+color: var(--card);
+}
+}
+
 </style>

@@ -1,4 +1,6 @@
-﻿using Core;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Core;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web;
@@ -15,32 +17,38 @@ public class QuoteRequestController : ControllerBase
     }
 
     [HttpGet("", Name = "GetAllQuoteRequests")]
-    public async Task<IEnumerable<QuoteRequestModel>> GetAllQuoteRequests()
+    public async Task<ActionResult<IEnumerable<QuoteRequestModel>>> GetAllQuoteRequests()
     {
-        return await _quoteRequestService.GetAllQuoteRequests();
+        if (!ModelState.IsValid) return BadRequest();
+        return Ok(await _quoteRequestService.GetAllQuoteRequests());
     }
 
     [HttpGet("{id:int}", Name = "GetQuoteRequestById")]
-    public async Task<QuoteRequestModel?> GetQuoteRequestById(int id)
+    public async Task<ActionResult<QuoteRequestModel?>> GetQuoteRequestById(int id)
     {
-        return await _quoteRequestService.GetQuoteRequestById(id);
+        if (id <= 0) return BadRequest();
+        return Ok(await _quoteRequestService.GetQuoteRequestById(id));
     }
 
     [HttpPost("", Name = "CreateQuoteRequest")]
-    public async Task<QuoteRequestModel> CreateQuoteRequest([FromBody] QuoteRequestModel quoteRequestModel)
+    public async Task<ActionResult<QuoteRequestModel>> CreateQuoteRequest([FromBody] QuoteRequestModel quoteRequestModel)
     {
-        return await _quoteRequestService.CreateQuoteRequest(quoteRequestModel);
+        if (!ModelState.IsValid) return BadRequest();
+        return Ok(await _quoteRequestService.CreateQuoteRequest(quoteRequestModel));
     }
 
     [HttpPut("", Name = "UpdateQuoteRequest")]
-    public async Task UpdateQuoteRequest([FromBody] QuoteRequestModel quoteRequestModel)
+    public async Task<ActionResult> UpdateQuoteRequest([FromBody] QuoteRequestModel quoteRequestModel)
     {
+        if (!ModelState.IsValid) return BadRequest();
         await _quoteRequestService.UpdateQuoteRequest(quoteRequestModel);
+        return NoContent();
     }
 
     [HttpDelete("{id:int}", Name = "DeleteQuoteRequest")]
-    public async Task<bool> DeleteQuoteRequest(int id)
+    public async Task<ActionResult<bool>> DeleteQuoteRequest(int id)
     {
-        return await _quoteRequestService.DeleteQuoteRequest(id);
+        if (id <= 0) return BadRequest();
+        return Ok(await _quoteRequestService.DeleteQuoteRequest(id));
     }
 }

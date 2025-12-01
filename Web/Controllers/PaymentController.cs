@@ -1,4 +1,6 @@
-﻿using Core;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Core;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web;
@@ -15,33 +17,38 @@ public class PaymentController : ControllerBase
     }
 
     [HttpGet("", Name = "GetAllPayments")]
-    public async Task<IEnumerable<PaymentModel>> GetAllPayments()
+    public async Task<ActionResult<IEnumerable<PaymentModel>>> GetAllPayments()
     {
-        return await _paymentService.GetAllPayments();
+        if (!ModelState.IsValid) return BadRequest();
+        return Ok(await _paymentService.GetAllPayments());
     }
 
     [HttpGet("{id:int}", Name = "GetPaymentById")]
-    public async Task<PaymentModel?> GetPaymentById(int id)
+    public async Task<ActionResult<PaymentModel?>> GetPaymentById(int id)
     {
-        return await _paymentService.GetPaymentById(id);
+        if (id <= 0) return BadRequest();
+        return Ok(await _paymentService.GetPaymentById(id));
     }
 
     [HttpPost("", Name = "CreatePayment")]
-    public async Task<PaymentModel> CreatePayment([FromBody] PaymentModel paymentModel)
+    public async Task<ActionResult<PaymentModel>> CreatePayment([FromBody] PaymentModel paymentModel)
     {
-        return await _paymentService.CreatePayment(paymentModel);
+        if (!ModelState.IsValid) return BadRequest();
+        return Ok(await _paymentService.CreatePayment(paymentModel));
     }
 
     [HttpPut("", Name = "UpdatePayment")]
-    public async Task UpdatePayment([FromBody] PaymentModel paymentModel)
-    { 
+    public async Task<ActionResult> UpdatePayment([FromBody] PaymentModel paymentModel)
+    {
+        if (!ModelState.IsValid) return BadRequest();
         await _paymentService.UpdatePayment(paymentModel);
+        return NoContent();
     }
 
     [HttpDelete("{id:int}", Name = "DeletePayment")]
-    public async Task<bool> DeletePayment(int id)
+    public async Task<ActionResult<bool>> DeletePayment(int id)
     {
-        return await _paymentService.DeletePayment(id);
+        if (id <= 0) return BadRequest();
+        return Ok(await _paymentService.DeletePayment(id));
     }
 }
-

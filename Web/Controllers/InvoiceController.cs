@@ -1,4 +1,6 @@
-﻿using Core;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Core;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web;
@@ -15,33 +17,38 @@ public class InvoiceController : ControllerBase
     }
 
     [HttpGet("", Name = "GetAllInvoices")]
-    public async Task<IEnumerable<InvoiceModel>> GetAllInvoices()
+    public async Task<ActionResult<IEnumerable<InvoiceModel>>> GetAllInvoices()
     {
-        return await _invoiceService.GetAllInvoices();
+        if (!ModelState.IsValid) return BadRequest();
+        return Ok(await _invoiceService.GetAllInvoices());
     }
 
     [HttpGet("{id:int}", Name = "GetInvoiceById")]
-    public async Task<InvoiceModel?> GetInvoiceById(int id)
+    public async Task<ActionResult<InvoiceModel?>> GetInvoiceById(int id)
     {
-        return await _invoiceService.GetInvoiceById(id);
+        if (id <= 0) return BadRequest();
+        return Ok(await _invoiceService.GetInvoiceById(id));
     }
 
     [HttpPost("", Name = "CreateInvoice")]
-    public async Task<InvoiceModel> CreateInvoice([FromBody] InvoiceModel invoiceModel)
+    public async Task<ActionResult<InvoiceModel>> CreateInvoice([FromBody] InvoiceModel invoiceModel)
     {
-        return await _invoiceService.CreateInvoice(invoiceModel);
+        if (!ModelState.IsValid) return BadRequest();
+        return Ok(await _invoiceService.CreateInvoice(invoiceModel));
     }
 
     [HttpPut("", Name = "UpdateInvoice")]
-    public async Task UpdateInvoice([FromBody] InvoiceModel invoiceModel)
-    { 
+    public async Task<ActionResult> UpdateInvoice([FromBody] InvoiceModel invoiceModel)
+    {
+        if (!ModelState.IsValid) return BadRequest();
         await _invoiceService.UpdateInvoice(invoiceModel);
+        return NoContent();
     }
 
     [HttpDelete("{id:int}", Name = "DeleteInvoice")]
-    public async Task<bool> DeleteInvoice(int id)
+    public async Task<ActionResult<bool>> DeleteInvoice(int id)
     {
-        return await _invoiceService.DeleteInvoice(id);
+        if (id <= 0) return BadRequest();
+        return Ok(await _invoiceService.DeleteInvoice(id));
     }
 }
-

@@ -1,9 +1,9 @@
 <!-- src/App.vue -->
 <template>
-  <Toast />
-  <component :is="layoutComponent">
-    <router-view />
-  </component>
+    <Toast />
+    <component :is="layoutComponent">
+      <router-view />
+    </component>
 </template>
 
 <script setup lang="ts">
@@ -13,6 +13,7 @@ import { useRoute } from 'vue-router'
 // Import layouts
 import DefaultLayout from '@/components/layout/DefaultLayout.vue'
 import NoLayout from '@/components/layout/NoLayout.vue'
+import './components/style/Theme.css';
 
 const route = useRoute()
 

@@ -1,4 +1,6 @@
-﻿using Core;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Core;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web;
@@ -15,33 +17,38 @@ public class JobController : ControllerBase
     }
 
     [HttpGet("", Name = "GetAllJobs")]
-    public async Task<IEnumerable<JobModel>> GetAllJobs()
+    public async Task<ActionResult<IEnumerable<JobModel>>> GetAllJobs()
     {
-        return await _jobService.GetAllJobs();
+        if (!ModelState.IsValid) return BadRequest();
+        return Ok(await _jobService.GetAllJobs());
     }
 
     [HttpGet("{id:int}", Name = "GetJobById")]
-    public async Task<JobModel?> GetJobById(int id)
+    public async Task<ActionResult<JobModel?>> GetJobById(int id)
     {
-        return await _jobService.GetJobById(id);
+        if (id <= 0) return BadRequest();
+        return Ok(await _jobService.GetJobById(id));
     }
 
     [HttpPost("", Name = "CreateJob")]
-    public async Task<JobModel> CreateJob([FromBody] JobModel jobModel)
+    public async Task<ActionResult<JobModel>> CreateJob([FromBody] JobModel jobModel)
     {
-        return await _jobService.CreateJob(jobModel);
+        if (!ModelState.IsValid) return BadRequest();
+        return Ok(await _jobService.CreateJob(jobModel));
     }
 
     [HttpPut("", Name = "UpdateJob")]
-    public async Task UpdateJob([FromBody] JobModel jobModel)
-    { 
+    public async Task<ActionResult> UpdateJob([FromBody] JobModel jobModel)
+    {
+        if (!ModelState.IsValid) return BadRequest();
         await _jobService.UpdateJob(jobModel);
+        return NoContent();
     }
 
     [HttpDelete("{id:int}", Name = "DeleteJob")]
-    public async Task<bool> DeleteJob(int id)
+    public async Task<ActionResult<bool>> DeleteJob(int id)
     {
-        return await _jobService.DeleteJob(id);
+        if (id <= 0) return BadRequest();
+        return Ok(await _jobService.DeleteJob(id));
     }
 }
-

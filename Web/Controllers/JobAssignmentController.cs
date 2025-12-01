@@ -1,4 +1,6 @@
-﻿using Core;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Core;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web;
@@ -15,33 +17,38 @@ public class JobAssignmentController : ControllerBase
     }
 
     [HttpGet("", Name = "GetAllJobAssignments")]
-    public async Task<IEnumerable<JobAssignmentModel>> GetAllJobAssignments()
+    public async Task<ActionResult<IEnumerable<JobAssignmentModel>>> GetAllJobAssignments()
     {
-        return await _jobAssignmentService.GetAllJobAssignments();
+        if (!ModelState.IsValid) return BadRequest();
+        return Ok(await _jobAssignmentService.GetAllJobAssignments());
     }
 
     [HttpGet("{id:int}", Name = "GetJobAssignmentById")]
-    public async Task<JobAssignmentModel?> GetJobAssignmentById(int id)
+    public async Task<ActionResult<JobAssignmentModel?>> GetJobAssignmentById(int id)
     {
-        return await _jobAssignmentService.GetJobAssignmentById(id);
+        if (id <= 0) return BadRequest();
+        return Ok(await _jobAssignmentService.GetJobAssignmentById(id));
     }
 
     [HttpPost("", Name = "CreateJobAssignment")]
-    public async Task<JobAssignmentModel> CreateJobAssignment([FromBody] JobAssignmentModel jobAssignmentModel)
+    public async Task<ActionResult<JobAssignmentModel>> CreateJobAssignment([FromBody] JobAssignmentModel jobAssignmentModel)
     {
-        return await _jobAssignmentService.CreateJobAssignment(jobAssignmentModel);
+        if (!ModelState.IsValid) return BadRequest();
+        return Ok(await _jobAssignmentService.CreateJobAssignment(jobAssignmentModel));
     }
 
     [HttpPut("", Name = "UpdateJobAssignment")]
-    public async Task UpdateJobAssignment([FromBody] JobAssignmentModel jobAssignmentModel)
-    { 
+    public async Task<ActionResult> UpdateJobAssignment([FromBody] JobAssignmentModel jobAssignmentModel)
+    {
+        if (!ModelState.IsValid) return BadRequest();
         await _jobAssignmentService.UpdateJobAssignment(jobAssignmentModel);
+        return NoContent();
     }
 
     [HttpDelete("{id:int}", Name = "DeleteJobAssignment")]
-    public async Task<bool> DeleteJobAssignment(int id)
+    public async Task<ActionResult<bool>> DeleteJobAssignment(int id)
     {
-        return await _jobAssignmentService.DeleteJobAssignment(id);
+        if (id <= 0) return BadRequest();
+        return Ok(await _jobAssignmentService.DeleteJobAssignment(id));
     }
 }
-

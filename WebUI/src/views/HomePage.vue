@@ -1,12 +1,44 @@
 <template>
-  <div class="flex column homePageBody">
-    <div class="flex row pageHeader">
-        <div class = "flex column leftPanel">
-            <h2 style="margin: 0%;">Dashboard</h2>
-            <p style="margin: 0;">Welcome back! Here's what's happening with your painting business.</p>
-        </div>        
+  <div v-if="state.loading" class="flex column homePageBody skeletonDashboard">
+
+    <!-- Title -->
+    <Skeleton width="12rem" height="2.2rem" class="mb-3" />
+
+    <!-- 4 dashboard cards -->
+    <div class="elementContainer flex row">
+      <div v-for="n in 4" :key="n" class="dashboardElementSkeleton">
+        <Skeleton height="100%" width="100%" borderRadius="12px" />
+      </div>
     </div>
-    
+
+    <!-- Job Completion section -->
+    <div class="flex column jobCompletion">
+
+      <!-- Header row -->
+      <div class="flex row justify-between">
+        <Skeleton width="14rem" height="1.8rem" />
+        <Skeleton width="6rem" height="1.5rem" />
+      </div>
+
+      <!-- Progress bar -->
+      <Skeleton height="1.8rem" class="mt-3" borderRadius="8px" />
+
+      <!-- Legend row (3 items) -->
+      <div class="flex row bottomBar mt-3">
+        <Skeleton width="8rem" height="1.4rem" class="mr-2" />
+        <Skeleton width="8rem" height="1.4rem" class="mr-2" />
+        <Skeleton width="8rem" height="1.4rem" />
+      </div>
+
+    </div>
+  </div>
+  <div v-else class="flex column homePageBody">
+    <div class="flex row pageHeader">
+      <div class="flex column leftPanel">
+        <h2 style="margin: 0%">Dashboard</h2>
+      </div>
+    </div>
+
     <div class="flex column dashboardContainer">
       <div class="elementContainer flex row">
         <!--Total Customers-->
@@ -56,7 +88,7 @@
             </div>
           </template>
         </Card>
-        
+
         <!--Revenue-->
         <Card class="dashboardElement">
           <template #header>
@@ -76,61 +108,82 @@
 
       <div class="flex column jobCompletion justify-between">
         <div class="flex row justify-between">
-          <div class="title">
-            Job Completion Progress
-          </div>
+          <div class="title">Job Completion Progress</div>
           <div>
             <p class="compeltionTitle">Total: {{ state.totalJobs }}</p>
           </div>
         </div>
         <!--Status bar-->
         <div class="jobCompletionBar">
-          <!--completion bar-->
-          <div class="jobCompletionStatus">
-
-          </div>
+          <div
+            class="jobCompletionStatus completed"
+            :style="{ width: completedPercent + '%' }"
+          ></div>
+          <div
+            class="jobCompletionStatus inProgress bar"
+            :style="{ width: inProgressPercent + '%' }"
+          ></div>
+          <div
+            class="jobCompletionStatus pending bar"
+            :style="{ width: pendingPercent + '%' }"
+          ></div>
         </div>
 
         <div class="flex row bottomBar">
           <div class="flex row completionTitle">
-            <div class = "circle completed"></div>
-            <p class="compeltionTitle">Completed</p>
+            <div class="circle completed"></div>
+            <p class="completionTitle">Completed</p>
           </div>
           <div class="flex row completionTitle">
-            <div class = "circle inProgress"></div>
-            <p class="compeltionTitle">In Progress</p>
+            <div class="circle inProgress"></div>
+            <p class="completionTitle">In Progress</p>
           </div>
           <div class="flex row completionTitle">
-            <div class = "circle pending"></div>
-            <p class="compeltionTitle">Pending</p>
+            <div class="circle pending"></div>
+            <p class="completionTitle">Pending</p>
           </div>
-        </div>        
+        </div>
       </div>
     </div>
-
   </div>
-
 </template>
 
 <script setup lang="ts">
 import Card from 'primevue/card'
-import { Client, CustomerModel, AddressModel} from '../client/client'
+import { Client, CustomerModel, AddressModel } from '../client/client'
 import { onMounted, reactive } from 'vue'
+import { computed } from 'vue'
+import { JobStatus } from '@/enums/JobStatus'
 
 const client = new Client(import.meta.env.VITE_API_BASE_URL)
 const state = reactive({
   totalCustomers: 0,
   activeJobs: 0,
   pendingJobs: 0,
+  completedJobs: 0,
   totalRevenue: 0,
   totalJobs: 0,
   loading: false,
   error: null as string | null,
 })
 
+const completedPercent = computed(() =>
+  state.totalJobs
+    ? ((state.totalJobs - state.activeJobs - state.pendingJobs) / state.totalJobs) * 100
+    : 0,
+)
+
+const inProgressPercent = computed(() =>
+  state.totalJobs ? (state.activeJobs / state.totalJobs) * 100 : 0,
+)
+
+const pendingPercent = computed(() =>
+  state.totalJobs ? (state.pendingJobs / state.totalJobs) * 100 : 0,
+)
+
 onMounted(() => {
-  console.log('AboutView mounted')
   fetchCustomers()
+  fetchJobs()
 })
 
 function fetchCustomers() {
@@ -139,7 +192,7 @@ function fetchCustomers() {
   client
     .getAllCustomers()
     .then((response) => {
-      state.totalCustomers = response.length;
+      state.totalCustomers = response.length
     })
     .catch((error) => {
       state.error = error.message || 'An error occurred'
@@ -148,165 +201,256 @@ function fetchCustomers() {
       state.loading = false
     })
 }
+
+function fetchJobs() {
+  state.loading = true
+  state.error = null
+  client
+    .getAllJobs()
+    .then((jobs) => {
+      state.totalJobs = jobs.length
+      state.activeJobs = jobs.filter((j) => j.status === JobStatus.IN_PROGRESS).length
+      state.completedJobs = jobs.filter((j) => j.status === JobStatus.COMPLETED).length
+      // Anything NOT completed or in-progress is pending
+      state.pendingJobs = jobs.filter(
+        (j) => j.status !== JobStatus.IN_PROGRESS && j.status !== JobStatus.COMPLETED,
+      ).length
+    })
+    .catch((error) => (state.error = error.message || 'An error occurred'))
+    .finally(() => {
+      state.loading = false
+    })
+}
 </script>
 
 <style scoped>
-  
-  .flex{
-    display: flex;
-  }
-  .row{
-    flex-direction: row;
-  }
+.skeletonDashboard {
+  padding: 3%;
+  width: 85vw;
+  margin-left: 15vw;
+  margin-top: 1vh;
+  gap: 20px;
+}
 
-  .column{
-    flex-direction: column;
-  }
-  .pageHeader{
-      height: 15vh;
-      width: 100%;
-      justify-content: space-between;
-  }
-  .leftPanel{
-      flex-grow: 5;
-  }
-  .rightPanel{
-    flex-grow: 1;
-    align-content: center;
-    text-align: right;
-  }
-  .homePageBody{
-    width: 90vw;
-    height: 90%;
-    position: absolute;
-    padding: 3%;
-    flex-grow: 2;
-    gap: 10px;
-    margin-top: 1vh;
-    margin-left: 10%;
-    border-radius: 10px;
+.dashboardElementSkeleton {
+  width: 24%;
+  height: 160px;
+  border-radius: 12px;
+}
 
-  }
-  .dashboardContainer{
-    border: solid;
-    border-width: 1px;
-    border-color: rgb(222, 222, 222);
-    box-shadow: var(--p-card-shadow);
-    background-color: rgb(248, 251, 255);
+/* Flex utilities */
+.flex {
+  display: flex;
+}
 
-    border-radius: 10px;
-    padding: 2%;
-    height: 100vh;
-    gap: 5%;
-  } 
-  .elementContainer{
-    height: 25vh;
-    width: 100%;
-    gap: 5%;
-  }
-  .dashboardElement{
-    width: 25%;
-    border: solid;
-    border-width: 1px;
-    border-color: rgb(222, 222, 222);
-    border-radius: 10px;
-  }
-  .header{
-    padding: var(--p-card-body-padding);
-    padding-bottom: 0;
-  }
-  .justify-between{
-    justify-content: space-between;
-  }
-  .title{
-    margin: 0;
-    flex-grow: 2; 
-    font-size: 1.2rem; 
-    font-weight: bold;
-    color: var(--p-card-color);
-  }
-  .compeltionTitle{
-    margin:0%;
-    color: var(--p-card-color);
-  }
-  .icon{
-    font-size: 1.4rem;
-    font-weight: bold;
-  }
-  .calloutValue{
-    font-size: 2rem;
-  }
-  .jobCompletion{
-    height: 25vh;
-    border: solid;
-    border-width: 1px;
-    border-color: rgb(222, 222, 222);
-    background-color: white;
-    border-radius: 10px;
-    padding: var(--p-card-body-padding);
-    box-shadow: var(--p-card-shadow);
-    gap: 5%;
-  }
-  .jobCompletionBar{
-    width: 100%;
-    height: 10%;
-    border: solid;
-    background-color: rgb(211, 211, 211);
-    border-color: rgb(211, 211, 211);
-    border-width: 1px;
-    border-radius: 10px;
-  }
-  .jobCompletionStatus{
-    /*width: var(--job-completion-percentage);*/
-    width: 10%;
-    height: 100%;
-    background-color: black;
-    border-color: black;
-    border-width: 1px;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-  }
-  .bottomBar{
-    gap:2%;
-    height: 5vh;
-  }
-  .completionTitle{
-    height: 100%;
-    gap: 0.5vw;
-  }
-  .circle{
-    margin-top: 5%;
-    width: 10px;
-    height: 10px;
-    border-width: 1px;
-    border-radius: 50%;
-  } 
-  .completed{
-    background-color: green;
-  }
-  .inProgress{
-    background-color: blue;
-  }
-  .pending{
-    background-color: orange;
-  }
+.row {
+  flex-direction: row;
+}
 
-@media (prefers-color-scheme: dark) {
-  .jobCompletionBar{
-    background-color: black;
+.column {
+  flex-direction: column;
+}
+
+/* Page layout */
+.homePageBody {
+  width: 80vw;
+  min-height: 90vh;
+  padding: 2rem;
+  margin: 1vh auto 0 auto;
+  margin-left: 15vw;
+
+  border-radius: var(--radius-lg);
+  gap: 1rem;
+  box-sizing: border-box;
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* Header */
+.pageHeader {
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.leftPanel h2,
+.leftPanel p {
+  margin: 0;
+}
+
+/* Dashboard container */
+.dashboardContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background-color: var(--card);
+  box-shadow: var(--p-card-shadow);
+}
+
+/* Cards row */
+.elementContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: space-between;
+}
+
+/* Individual dashboard element */
+.dashboardElement {
+  flex: 1 1 23%;
+  min-width: 200px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: var(--card);
+  color: var(--foreground);
+}
+
+/* Card header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--foreground);
+  flex-grow: 1;
+}
+
+.icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  color: var(--primary);
+}
+
+/* Callout values */
+.calloutValue {
+  font-size: 2rem;
+  margin-top: 0.5rem;
+  color: var(--foreground);
+}
+
+/* Job completion section */
+.jobCompletion {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  background-color: var(--card);
+  box-shadow: var(--p-card-shadow);
+  color: var(--foreground);
+}
+
+/* Completion bar */
+.jobCompletionBar {
+  width: 100%;
+  height: 20px;
+  border-radius: var(--radius-md);
+  background-color: var(--secondary);
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+}
+
+.jobCompletionStatus {
+  width: 10%; /* dynamically adjust */
+  height: 100%;
+  transition: width 0.6s ease;
+  background-color: var(--primary);
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+/* Bottom bar legend */
+.bottomBar {
+  display: flex;
+  gap: 2rem;
+  margin-top: 0.5rem;
+}
+
+.completionTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--foreground);
+}
+
+.circle {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.completed {
+  background-color: var(--chart-2);
+}
+
+.inProgress {
+  background-color: var(--chart-1);
+}
+
+.pending {
+  background-color: var(--chart-3);
+}
+
+.bar {
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .dashboardElement {
+    flex: 1 1 48%;
   }
-  .jobCompletionStatus{
-    background-color: rgb(222, 222, 222);
-  }
-  .dashboardContainer{
-    background-color: #18181b;
-  }
-  .jobCompletion{
-    background-color: #1c1b22;
-  }
-  .dashboardElement{
-    background-color: #1c1b22;
+  .dashboardElementSkeleton {
+    width: 48%;
   }
 }
-  
+
+@media (max-width: 768px) {
+  .elementContainer {
+    flex-direction: column;
+  }
+  .dashboardElement {
+    flex: 1 1 100%;
+  }
+  .dashboardElementSkeleton {
+    width: 100%;
+  }
+}
+
+/* Dark mode support via theme.css */
+.dark .dashboardContainer,
+.dark .dashboardElement,
+.dark .jobCompletion {
+  background-color: var(--card);
+  color: var(--foreground);
+}
+
+.dark .jobCompletionBar {
+  background-color: var(--secondary);
+}
+
+.dark .jobCompletionStatus {
+  background-color: var(--primary);
+}
+
+.dark .icon {
+  color: var(--primary);
+}
 </style>
