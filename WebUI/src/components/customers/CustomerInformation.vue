@@ -61,7 +61,7 @@
                 </div>
             </div>
 
-            <div class="addAddress">
+            <div class="addEmail">
                 <button @click="addEmail" class="cancelUpdateButton">
                     <p class="buttonText" data-testid="addEmailButton">Add Email</p>
                 </button>
@@ -219,16 +219,36 @@
   .editButton:hover {
   transform: scale(1.25);
   }
-  .addAddress {
-  height: 5vh;
-  margin-bottom: 5%;
+  .addAddress, .addEmail {
   width: 100%;
+  margin-top: 0;
   }
-  .buttons {
+.addressField:last-child h3.fieldTitle {
+  margin-bottom: 0;
+}
+.buttons {
+  display: flex;
+  gap: 1rem;
   width: 100%;
-  justify-content: flex-end;
-  gap: 5%;
-  }
+}
+.buttons button {
+  flex: 1;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+}
+.buttons button p.buttonText {
+  margin: 0;
+  text-align: center;
+  line-height: 1;
+  width: 100%;
+}
   .updateInfoButton {
   width: 20%;
   height: 5vh;
@@ -237,21 +257,46 @@
   background-color: var(--primary);
   color: var(--primary-foreground);
   }
-  .cancelUpdateButton {
-  width: 20%;
-  height: 5vh;
-  border: none;
-  border-radius: var(--radius-md);
-  background-color: var(--secondary);
-  color: var(--foreground);
-  }
-  .buttonText {
-  margin: 0;
+.cancelUpdateButton {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 5px;
   text-align: center;
   display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  cursor: pointer;
+  border: none;
+  font-size: 1rem;
+}
+.buttons {
+  margin-top: 1rem; /* adjust as needed */
+}
+.cancelUpdateButton p.buttonText {
+  margin: 0;
+}
+.cancelUpdateButton,
+.updateInfoButton,
+.addEmail button,
+.addAddress button,
+.editButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.cancelUpdateButton p.buttonText,
+.updateInfoButton p.buttonText,
+.addEmail button p,
+.addAddress button p {
+  margin: 0;
   width: 100%;
-  }
-
+  text-align: center;
+  line-height: 1;
+  display: block; /* or flex if you want */
+}
   /* Input & Form Fields */
   .multipleFields {
   justify-content: space-between;
@@ -261,7 +306,6 @@
   margin-bottom: 1vh;
   }
   .inputValue {
-  margin-bottom: 2vh;
   width: 100%;
   }
   .p-inputnumber-input {

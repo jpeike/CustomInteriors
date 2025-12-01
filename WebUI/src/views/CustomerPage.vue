@@ -28,7 +28,7 @@
 
       <div class="rightPanel">
           <button class="addButton" @click="createCustomerDisplay()" data-testid="addCustomerButton">
-              <p style="margin: 0; text-align: center;">+ Add Customers</p>
+              <p style="margin: 0; text-align: center;">+New Customer</p>
           </button>
           <ToggleButton
             v-model="showActiveOnly"

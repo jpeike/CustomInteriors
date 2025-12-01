@@ -57,7 +57,6 @@ export function useCustomerModals({addressesStore, emailsStore, customersStore}:
     customerModalLoading.value = false;
 
     customerTitle.value = 'Update Customer';
-    customerDescription.value = 'Update customer information and contact details';
     customerButtonDesc.value = 'Update';
   }
 
