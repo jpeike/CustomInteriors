@@ -39,7 +39,6 @@ export function useCustomerModals({addressesStore, emailsStore, customersStore}:
     displayCustomerDetails.value = true;
 
     customerTitle.value = 'Create Customer';
-    customerDescription.value = 'Create customer information and contact details';
     customerButtonDesc.value = 'Create';
   }
 

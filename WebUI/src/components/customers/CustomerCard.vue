@@ -37,8 +37,8 @@
             <br />
             <p style="margin: 0;" data-testid="customerCompany">Company: {{ customer.companyName }}</p>
             <br />
-            <p style="margin: 0;" data-testid="customerStatus">Status: {{ customer.status }}</p>
-            <br />
+            <!-- <p style="margin: 0;" data-testid="customerStatus">Status: {{ customer.status }}</p>
+            <br /> -->
             <p style="margin: 0;" data-testid="customerNotes">Notes: {{ customer.customerNotes }}</p>
         </template>
     </Card>

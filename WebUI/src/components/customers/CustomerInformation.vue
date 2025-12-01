@@ -42,9 +42,9 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="sectionMargin" v-for="(emailsAdresses, index) in state.listOfEmails" data-testid="customerEmailForm" :data-email-id="emailsAdresses.emailId">
-                
+
                 <div class="flex row addressHeader">
                     <h2 class="sectionHeader">Email {{ index + 1 }}</h2>
                     <i class="pi pi-trash editButton" @click="deleteEmail(state.listOfEmails[index]); state.listOfEmails.splice(index, 1);" data-testid="removeEmailButton"></i>
@@ -57,8 +57,8 @@
                     <div>
                         <h3 class="fieldTitle">Type * </h3>
                         <InputText v-model="emailsAdresses.emailType" type="text" class="inputValue" :placeholder="state.listOfEmails[index].emailType" data-testid="customerFormEmailType"></InputText>
-                    </div>  
-                </div>                  
+                    </div>
+                </div>
             </div>
 
             <div class="addAddress">
@@ -134,7 +134,7 @@
             <div class="flex row buttons">
                 <button class = "cancelUpdateButton" @click="$emit('closePage')" data-testid="cancelFormButton">
                     <p class="buttonText">Cancel</p>
-                </button>  
+                </button>
                 <button class = "updateInfoButton" @click="testInfo()" data-testid="updateFormButton">
                     <p class="buttonText">{{buttonDesctipnion}}</p>
                 </button>
@@ -222,6 +222,7 @@
   .addAddress {
   height: 5vh;
   margin-bottom: 5%;
+  width: 100%;
   }
   .buttons {
   width: 100%;
@@ -247,6 +248,8 @@
   .buttonText {
   margin: 0;
   text-align: center;
+  display: flex;
+  width: 100%;
   }
 
   /* Input & Form Fields */
@@ -343,10 +346,10 @@
     const newPhone = ref('');
     const message = ref('');
     const customer = ref(new CustomerModel);;
-    
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    let removedAddresses = [0];    
+    let removedAddresses = [0];
     let removedEmails = [0];
 
     if (props.currentCustomerInformation != undefined){
@@ -389,7 +392,7 @@
             showWarning('Customer information not valid');
             return;
         }
-        
+
         for (let i = 0; i < state.listOfEmails.length; i++){
             if (!emailRegex.test(state.listOfEmails[i].emailAddress!)){
                 showWarning("Email " + (i+1) + " 's address is not valid")
@@ -400,7 +403,7 @@
                 return;
             }
         }
-    
+
         for (let i = 0; i < state.listOfAddresses.length; i++){
             if (!state.listOfAddresses[i].city || !state.listOfAddresses[i].postalCode || !state.listOfAddresses[i].addressType || !state.listOfAddresses[i].state){
                 showWarning("Address " + (i+1) + " has one or more fields that are not valid");
@@ -412,9 +415,9 @@
                 return;
             }
         }
-        
+
         checkForNoChanges();
-        
+
         message.value = 'Address Successfully Created'
         console.log(customer.value);
         emit('updateCustomerInformation', customer.value, state.listOfAddresses, removedAddresses, state.listOfEmails, removedEmails);

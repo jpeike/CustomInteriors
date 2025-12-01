@@ -1,9 +1,41 @@
 <template>
-  <div class="flex column homePageBody">
+  <div v-if="state.loading" class="flex column homePageBody skeletonDashboard">
+
+    <!-- Title -->
+    <Skeleton width="12rem" height="2.2rem" class="mb-3" />
+
+    <!-- 4 dashboard cards -->
+    <div class="elementContainer flex row">
+      <div v-for="n in 4" :key="n" class="dashboardElementSkeleton">
+        <Skeleton height="100%" width="100%" borderRadius="12px" />
+      </div>
+    </div>
+
+    <!-- Job Completion section -->
+    <div class="flex column jobCompletion">
+
+      <!-- Header row -->
+      <div class="flex row justify-between">
+        <Skeleton width="14rem" height="1.8rem" />
+        <Skeleton width="6rem" height="1.5rem" />
+      </div>
+
+      <!-- Progress bar -->
+      <Skeleton height="1.8rem" class="mt-3" borderRadius="8px" />
+
+      <!-- Legend row (3 items) -->
+      <div class="flex row bottomBar mt-3">
+        <Skeleton width="8rem" height="1.4rem" class="mr-2" />
+        <Skeleton width="8rem" height="1.4rem" class="mr-2" />
+        <Skeleton width="8rem" height="1.4rem" />
+      </div>
+
+    </div>
+  </div>
+  <div v-else class="flex column homePageBody">
     <div class="flex row pageHeader">
       <div class="flex column leftPanel">
         <h2 style="margin: 0%">Dashboard</h2>
-        <p style="margin: 0">Welcome back! Here's what's happening with your painting business.</p>
       </div>
     </div>
 
@@ -192,6 +224,20 @@ function fetchJobs() {
 </script>
 
 <style scoped>
+.skeletonDashboard {
+  padding: 3%;
+  width: 85vw;
+  margin-left: 15vw;
+  margin-top: 1vh;
+  gap: 20px;
+}
+
+.dashboardElementSkeleton {
+  width: 24%;
+  height: 160px;
+  border-radius: 12px;
+}
+
 /* Flex utilities */
 .flex {
   display: flex;
@@ -371,6 +417,9 @@ function fetchJobs() {
   .dashboardElement {
     flex: 1 1 48%;
   }
+  .dashboardElementSkeleton {
+    width: 48%;
+  }
 }
 
 @media (max-width: 768px) {
@@ -379,6 +428,9 @@ function fetchJobs() {
   }
   .dashboardElement {
     flex: 1 1 100%;
+  }
+  .dashboardElementSkeleton {
+    width: 100%;
   }
 }
 
