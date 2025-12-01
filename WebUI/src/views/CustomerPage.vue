@@ -1,60 +1,84 @@
 <template>
-  <div class="flex column customerBody">
-    <div class="flex row pageHeader">
-        <div class = "flex column leftPanel">
-            <h2 style="margin: 0;">Customers</h2>
-            <p style="margin: 0;">Manage your customer information and contact details.</p>
-        </div>
-        <div class = "rightPanel">
-            <button class = "addButton" @click="createCustomerDisplay()" data-testid="addCustomerButton">
-                <p style="margin: 0; text-align: center;"> + Add Customers</p>
-            </button>
-        </div>
-    </div>
+  <div v-if="isLoading" class="skeletonPage">
+  <Skeleton width="12rem" height="2rem" class="mb-3" />
 
-    <div class = "flex row searchBarWrapper">
-        <i class="pi pi-search"> </i>
-      <InputText v-model="searchValue"  type="text" class="searchBar" placeholder="Search" data-testid="customerSearchInput"/>
-    </div>
- 
-    <div v-if="!isLoading" class="flex row customerDisplay">
-        <CustomerCard
-          v-for="customer in filteredCustomers" 
-          :key="customer.customerId"
-          :customer="customer"
-          :email="formatEmail(customer.emails?.[0])"
-          :address="formatAddress(customer.addresses?.[0])"
-          @edit="editCustomerUI"
-          @delete="openDeleteModal(); getCustomerIndex(customer.customerId ?? 0);"
-        />
-      
-    </div>
-    <div v-else-if="isError">{{ isError }}</div>
-    <div v-else>
-      <p>Loading...</p>
+  <div class="flex row pageHeader">
+    <Skeleton height="2.8rem" class="flex-grow-1" style="border-radius: 10px;" />
+    <Skeleton width="150px" height="2.8rem" style="margin-left: 1rem; border-radius: 10px;" />
+  </div>
+
+  <div class="flex row customerDisplay">
+    <div v-for="n in 8" :key="n" class="customerSkeleton">
+      <Skeleton height="100%" width="100%" borderRadius="10px" />
     </div>
   </div>
 
-  <div v-if="displayCustomerDetails" class="flex row customerWindowBlur">
-    <CustomerInformation 
-      :currentCustomerInformation="currentCustomer" 
-      :currentEmails="currentEmailAddresses" 
-      :currentAddresses = "currentCustomerAddresses" 
-      :title="customerTitle" 
-      :description="customerDescription" 
-      :buttonDesctipnion="customerButtonDesc" 
-      @closePage="closePage" 
-      @updateCustomerInformation="updateCustomerInformation">
-    </CustomerInformation>
-  </div>
+</div>
+  <div v-else>
+    <div class="flex column customerBody">
+      <div class="flex row pageHeader">
+      <div class="flex column leftPanel">
+          <h2 style="margin: 0;">Customers</h2>
+      </div>
 
-  <div v-if="deleteConfirmation" class="flex row customerWindowBlur">
-    <deleteConfirmation 
-      :currentCustomerInformation="customers[currentCustomerIndex]" 
-      :title="(customers[currentCustomerIndex].firstName + ' ' + customers[currentCustomerIndex].lastName)" 
-      @closePage="closeDeleteModal" 
-      @deleteCustomer="handleDelete">
-    </deleteConfirmation>
+      <div class="searchBarWrapper">
+          <i class="pi pi-search"></i>
+          <InputText v-model="searchValue" type="text" class="searchBar" placeholder="Search" />
+      </div>
+
+      <div class="rightPanel">
+          <button class="addButton" @click="createCustomerDisplay()" data-testid="addCustomerButton">
+              <p style="margin: 0; text-align: center;">+New Customer</p>
+          </button>
+          <ToggleButton
+            v-model="showActiveOnly"
+            onLabel="Active Only"
+            offLabel="All Customers"
+            onIcon="pi pi-check"
+            offIcon="pi pi-filter"
+            class="ml-3"
+          />
+      </div>
+  </div>
+      <div v-if="!isLoading" class="flex row customerDisplay">
+          <CustomerCard
+            v-for="customer in filteredAndStatusCustomers"
+            :key="customer.customerId"
+            :customer="customer"
+            :email="formatEmail(customer.emails?.[0])"
+            :address="formatAddress(customer.addresses?.[0])"
+            @edit="editCustomerUI"
+            @delete="openDeleteModal(); getCustomerIndex(customer.customerId ?? 0);"
+          />
+
+      </div>
+      <div v-else-if="isError">{{ isError }}</div>
+      <div v-else>
+        <p>Loading...</p>
+      </div>
+    </div>
+
+    <div v-if="displayCustomerDetails" class="flex row customerWindowBlur">
+      <CustomerInformation
+        :currentCustomerInformation="currentCustomer"
+        :currentEmails="currentEmailAddresses"
+        :currentAddresses = "currentCustomerAddresses"
+        :title="customerTitle"
+        :description="customerDescription"
+        :buttonDesctipnion="customerButtonDesc"
+        @closePage="closePage"
+        @updateCustomerInformation="updateCustomerInformation">
+      </CustomerInformation>
+    </div>
+
+    <div v-if="deleteConfirmation" class="flex row customerWindowBlur">
+      <deleteConfirmation
+        :currentCustomerInformation="customers[currentCustomerIndex]"
+        :title="(customers[currentCustomerIndex].firstName + ' ' + customers[currentCustomerIndex].lastName)"
+        @closePage="closeDeleteModal"
+        @deleteCustomer="handleDelete">
+      </deleteConfirmation>
+    </div>
   </div>
 </template>
 
@@ -64,8 +88,9 @@ import CustomerInformation from '../components/customers/CustomerInformation.vue
 import DeleteConfirmation from '../components/DeleteConfirmation.vue';
 import CustomerCard from '../components/customers/CustomerCard.vue'
 import { CustomerModel, AddressModel, EmailModel} from '../client/client'
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { onMounted } from 'vue'
+import ToggleButton from 'primevue/togglebutton';
 import InputText from 'primevue/inputtext';
 import 'primeicons/primeicons.css'
 import { useAddresses } from '@/composables/useAddresses.ts'
@@ -76,26 +101,26 @@ import { useCustomerEditFlow } from '@/composables/useCustomerEditFlow'
 import { useCustomerModals } from '@/composables/useCustomerModals'
 
 const customersStore = useCustomers()
-const { 
-  customers, 
-  customersLoading, 
-  customersError, 
-  fetchCustomersWithDetails, 
+const {
+  customers,
+  customersLoading,
+  customersError,
+  fetchCustomersWithDetails,
 } = customersStore
 
 
 const addressesStore = useAddresses()
-const { 
-  addressesLoading, 
+const {
+  addressesLoading,
   addressesError,
-  formatAddress 
+  formatAddress
 } = addressesStore
 
 const emailsStore = useEmails()
-const { 
-  emailsLoading, 
-  emailsError, 
-  formatEmail 
+const {
+  emailsLoading,
+  emailsError,
+  formatEmail
 } = emailsStore
 
 const customerModalsStore = useCustomerModals({
@@ -134,6 +159,13 @@ const customerEditFlow = useCustomerEditFlow({
 const {updateCustomerInformation, handleDelete}  = customerEditFlow
 const { searchValue, filteredCustomers } = useCustomerSearch(customers)
 
+const showActiveOnly = ref(false)
+const filteredAndStatusCustomers = computed(() => {
+  return filteredCustomers.value.filter(c =>
+    !showActiveOnly.value || c.status === 'Active'
+  )
+})
+
 onMounted(() => {
   console.log('AboutView mounted')
   fetchCustomersWithDetails()
@@ -155,6 +187,19 @@ const isError = computed(() =>
 </script>
 
 <style scoped>
+.skeletonPage {
+  width: 85vw;
+  margin-left: 15vw;
+  padding: 3%;
+}
+
+.customerSkeleton {
+  width: 23.5%;
+  height: 50vh;
+  margin-bottom: 2%;
+  border-radius: 10px;
+}
+
  /* Flex helpers */
 .flex {
   display: flex;
@@ -182,19 +227,19 @@ const isError = computed(() =>
 }
 
 .pageHeader {
-  height: 15vh;
   width: 100%;
-  justify-content: space-between;
+  display: flex;
   align-items: center;
-  margin-bottom: 1rem;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .leftPanel {
-  flex-grow: 5;
-}
+  flex-basis: 100%;
+  margin-bottom: 1rem;}
 
 .rightPanel {
-  flex-grow: 1;
+  flex-grow: 0;
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -224,6 +269,7 @@ const isError = computed(() =>
 
 /* Search bar */
 .searchBarWrapper {
+  flex-grow: 2;
   display: flex;
   align-items: center;
   padding: 0.5rem;
@@ -313,10 +359,17 @@ const isError = computed(() =>
   .mb-3 {
     width: 48%;
   }
+     .customerSkeleton {
+    width: 48%;
+  }
 }
 
 @media (max-width: 768px) {
   .mb-3 {
+    width: 100%;
+  }
+
+  .customerSkeleton {
     width: 100%;
   }
 

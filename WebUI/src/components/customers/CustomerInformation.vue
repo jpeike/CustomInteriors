@@ -42,9 +42,9 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="sectionMargin" v-for="(emailsAdresses, index) in state.listOfEmails" data-testid="customerEmailForm" :data-email-id="emailsAdresses.emailId">
-                
+
                 <div class="flex row addressHeader">
                     <h2 class="sectionHeader">Email {{ index + 1 }}</h2>
                     <i class="pi pi-trash editButton" @click="deleteEmail(state.listOfEmails[index]); state.listOfEmails.splice(index, 1);" data-testid="removeEmailButton"></i>
@@ -57,11 +57,11 @@
                     <div>
                         <h3 class="fieldTitle">Type * </h3>
                         <InputText v-model="emailsAdresses.emailType" type="text" class="inputValue" :placeholder="state.listOfEmails[index].emailType" data-testid="customerFormEmailType"></InputText>
-                    </div>  
-                </div>                  
+                    </div>
+                </div>
             </div>
 
-            <div class="addAddress">
+            <div class="addEmail">
                 <button @click="addEmail" class="cancelUpdateButton">
                     <p class="buttonText" data-testid="addEmailButton">Add Email</p>
                 </button>
@@ -134,7 +134,7 @@
             <div class="flex row buttons">
                 <button class = "cancelUpdateButton" @click="$emit('closePage')" data-testid="cancelFormButton">
                     <p class="buttonText">Cancel</p>
-                </button>  
+                </button>
                 <button class = "updateInfoButton" @click="testInfo()" data-testid="updateFormButton">
                     <p class="buttonText">{{buttonDesctipnion}}</p>
                 </button>
@@ -219,15 +219,36 @@
   .editButton:hover {
   transform: scale(1.25);
   }
-  .addAddress {
-  height: 5vh;
-  margin-bottom: 5%;
-  }
-  .buttons {
+  .addAddress, .addEmail {
   width: 100%;
-  justify-content: flex-end;
-  gap: 5%;
+  margin-top: 0;
   }
+.addressField:last-child h3.fieldTitle {
+  margin-bottom: 0;
+}
+.buttons {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+}
+.buttons button {
+  flex: 1;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+}
+.buttons button p.buttonText {
+  margin: 0;
+  text-align: center;
+  line-height: 1;
+  width: 100%;
+}
   .updateInfoButton {
   width: 20%;
   height: 5vh;
@@ -236,19 +257,46 @@
   background-color: var(--primary);
   color: var(--primary-foreground);
   }
-  .cancelUpdateButton {
-  width: 20%;
-  height: 5vh;
-  border: none;
-  border-radius: var(--radius-md);
-  background-color: var(--secondary);
-  color: var(--foreground);
-  }
-  .buttonText {
-  margin: 0;
+.cancelUpdateButton {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 5px;
   text-align: center;
-  }
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  cursor: pointer;
+  border: none;
+  font-size: 1rem;
+}
+.buttons {
+  margin-top: 1rem; /* adjust as needed */
+}
+.cancelUpdateButton p.buttonText {
+  margin: 0;
+}
+.cancelUpdateButton,
+.updateInfoButton,
+.addEmail button,
+.addAddress button,
+.editButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.cancelUpdateButton p.buttonText,
+.updateInfoButton p.buttonText,
+.addEmail button p,
+.addAddress button p {
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  line-height: 1;
+  display: block; /* or flex if you want */
+}
   /* Input & Form Fields */
   .multipleFields {
   justify-content: space-between;
@@ -258,7 +306,6 @@
   margin-bottom: 1vh;
   }
   .inputValue {
-  margin-bottom: 2vh;
   width: 100%;
   }
   .p-inputnumber-input {
@@ -343,10 +390,10 @@
     const newPhone = ref('');
     const message = ref('');
     const customer = ref(new CustomerModel);;
-    
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    let removedAddresses = [0];    
+    let removedAddresses = [0];
     let removedEmails = [0];
 
     if (props.currentCustomerInformation != undefined){
@@ -389,7 +436,7 @@
             showWarning('Customer information not valid');
             return;
         }
-        
+
         for (let i = 0; i < state.listOfEmails.length; i++){
             if (!emailRegex.test(state.listOfEmails[i].emailAddress!)){
                 showWarning("Email " + (i+1) + " 's address is not valid")
@@ -400,7 +447,7 @@
                 return;
             }
         }
-    
+
         for (let i = 0; i < state.listOfAddresses.length; i++){
             if (!state.listOfAddresses[i].city || !state.listOfAddresses[i].postalCode || !state.listOfAddresses[i].addressType || !state.listOfAddresses[i].state){
                 showWarning("Address " + (i+1) + " has one or more fields that are not valid");
@@ -412,9 +459,9 @@
                 return;
             }
         }
-        
+
         checkForNoChanges();
-        
+
         message.value = 'Address Successfully Created'
         console.log(customer.value);
         emit('updateCustomerInformation', customer.value, state.listOfAddresses, removedAddresses, state.listOfEmails, removedEmails);
