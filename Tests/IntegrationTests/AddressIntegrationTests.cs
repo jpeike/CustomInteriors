@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 using Core;
 using DeepEqual.Syntax;
@@ -56,10 +57,10 @@ public class AddressIntegrationTests : IClassFixture<TestApplicationEntry>
         IEnumerable<AddressModel>? originalGetAddresses = JsonSerializer.Deserialize<AddressModel[]>(originalGetString, jsonOptions);
 
         Assert.NotNull(originalGetAddresses);
+        int numberOfAddresses = originalGetAddresses.Count();
 
         // create new address
-        HttpResponseMessage post = await _client.PostAsync("/api/addresses",
-            new StringContent(JsonSerializer.Serialize(AddressModel1), new UTF8Encoding(), "application/json"));
+        HttpResponseMessage post = await _client.PostAsJsonAsync("/api/addresses", AddressModel1);
 
         Assert.True(post.IsSuccessStatusCode);
         Assert.NotNull(originalGet.Content.Headers.ContentType);
@@ -91,5 +92,47 @@ public class AddressIntegrationTests : IClassFixture<TestApplicationEntry>
         AddressModel? compAddress = getIdAddresses.FirstOrDefault(x => x.AddressId == postAddress.AddressId);
 
         postAddress.ShouldDeepEqual(compAddress);
+        
+        // try to delete address
+        HttpResponseMessage delete = await _client.DeleteAsync($"/api/addresses/{postAddress.AddressId}");
+        
+        Assert.True(delete.IsSuccessStatusCode);
+        Assert.NotNull(delete.Content.Headers.ContentType);
+        Assert.Equal("application/json", delete.Content.Headers.ContentType.MediaType);
+        Assert.Equal("utf-8", delete.Content.Headers.ContentType.CharSet);
+        
+        string deleteString = await delete.Content.ReadAsStringAsync();
+        bool deleteSuccess = JsonSerializer.Deserialize<bool>(deleteString, jsonOptions);
+        
+        Assert.True(deleteSuccess);
+        
+        // see if delete returns false if already deleted
+        HttpResponseMessage delete2 = await _client.DeleteAsync($"/api/addresses/{postAddress.AddressId}");
+        
+        Assert.True(delete2.IsSuccessStatusCode);
+        Assert.NotNull(delete2.Content.Headers.ContentType);
+        Assert.Equal("application/json", delete2.Content.Headers.ContentType.MediaType);
+        Assert.Equal("utf-8", delete2.Content.Headers.ContentType.CharSet);
+        
+        string deleteString2 = await delete2.Content.ReadAsStringAsync();
+        bool deleteSuccess2 = JsonSerializer.Deserialize<bool>(deleteString2, jsonOptions);
+        
+        Assert.False(deleteSuccess2);
+        
+        // get all again to see if any changes
+        HttpResponseMessage endGet = await _client.GetAsync("/api/addresses");
+
+        Assert.True(endGet.IsSuccessStatusCode);
+        Assert.NotNull(endGet.Content.Headers.ContentType);
+        Assert.Equal("application/json", endGet.Content.Headers.ContentType.MediaType);
+        Assert.Equal("utf-8", endGet.Content.Headers.ContentType.CharSet);
+
+        string endGetString = await endGet.Content.ReadAsStringAsync();
+        IEnumerable<AddressModel>? endGetAddresses = JsonSerializer.Deserialize<AddressModel[]>(endGetString, jsonOptions);
+
+        Assert.NotNull(endGetAddresses);
+        int endNumberOfAddresses = endGetAddresses.Count();
+        
+        Assert.Equal(numberOfAddresses, endNumberOfAddresses);
     }
 }
