@@ -11,11 +11,11 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        var builder = WebApplication.CreateBuilder(args);
+        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-        var configPath = Path.Combine(AppContext.BaseDirectory, "BaseDefaultSettings.config");
+        string configPath = Path.Combine(AppContext.BaseDirectory, "BaseDefaultSettings.config");
 
-        var env = builder.Environment.EnvironmentName switch
+        string env = builder.Environment.EnvironmentName switch
         {
             "Development" => "Dev",
             "Staging" => "Test",
@@ -25,13 +25,12 @@ public class Program
 
         builder.Configuration.AddXmlConfig(configPath, env);
 
-// 1. Add JWT bearer authentication
+        // 1. Add JWT bearer authentication
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
                 options.Authority = builder.Configuration["CognitoAuthority"];
                 options.Audience = builder.Configuration["CognitoUserPoolId"];
-                ;
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -47,7 +46,7 @@ public class Program
                 {
                     OnTokenValidated = context =>
                     {
-                        var clientIdClaim = context.Principal?.Claims
+                        string? clientIdClaim = context.Principal?.Claims
                             .FirstOrDefault(c => c.Type == "client_id")?.Value;
 
                         if (clientIdClaim != builder.Configuration["CognitoUserPoolId"])
@@ -112,23 +111,18 @@ public class Program
         builder.Services.AddScoped<IUserService, UserService>();
 
         // todo fix environment naming stuff
-        if (builder.Environment.IsEnvironment("IntegrationTesting"))
-        {
-            builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseInMemoryDatabase("TestDb"));
-        }
-        else
+        // if in integration testing environment, db setup is handled by a web app factory
+        if (!builder.Environment.IsEnvironment("IntegrationTesting"))
         {
             builder.Services.AddDbContext<AppDbContext>(options =>
             {
-                var aspnetEnv = builder.Environment.EnvironmentName; // "Development", "Test", "Production"
+                string aspnetEnv = builder.Environment.EnvironmentName; // "Development", "Test", "Production"
 
-                var connectionString = aspnetEnv switch
+                string? connectionString = aspnetEnv switch
                 {
                     "Test" => builder.Configuration.GetConnectionString("E2ETestConnection"), // Playwright DB
                     "Development" => builder.Configuration.GetConnectionString("DefaultConnection"), // Dev DB
-                    "Production" => builder.Configuration
-                        .GetConnectionString("DefaultConnection"), // Prod DB (usually same key)
+                    "Production" => builder.Configuration.GetConnectionString("DefaultConnection"), // Prod DB (usually same key)
                     _ => builder.Configuration.GetConnectionString("DefaultConnection")
                 };
 
@@ -153,7 +147,7 @@ public class Program
                 });
         });
 
-        var app = builder.Build();
+        WebApplication app = builder.Build();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
