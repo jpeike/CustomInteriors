@@ -64,7 +64,7 @@
         :currentEmails="currentEmailAddresses"
         :currentAddresses = "currentCustomerAddresses"
         :title="customerTitle"
-        :description="customerDescription"
+        description="Create a customer"
         :buttonDesctipnion="customerButtonDesc"
         @closePage="closePage"
         @updateCustomerInformation="updateCustomerInformation">
@@ -73,7 +73,7 @@
 
     <div v-if="deleteConfirmation" class="flex row customerWindowBlur">
       <deleteConfirmation
-        :currentCustomerInformation="customers[currentCustomerIndex]"
+        :currentInfo="customers[currentCustomerIndex]"
         :title="(customers[currentCustomerIndex].firstName + ' ' + customers[currentCustomerIndex].lastName)"
         @closePage="closeDeleteModal"
         @deleteCustomer="handleDelete">

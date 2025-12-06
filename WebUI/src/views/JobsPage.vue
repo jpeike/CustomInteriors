@@ -23,7 +23,7 @@
 
       <div class="searchBarWrapper">
           <i class="pi pi-search"></i>
-          <InputText type="text" class="searchBar" placeholder="Search" />
+          <InputText type="text" v-model="searchValue" class="searchBar" placeholder="Search" />
       </div>
 
       <div class="rightPanel">
@@ -31,6 +31,7 @@
               <p style="margin: 0; text-align: center;">+New Job</p>
           </button>
           <ToggleButton
+            v-model="showActiveOnly"
             onLabel="Active Only"
             offLabel="All Jobs"
             onIcon="pi pi-check"
@@ -41,7 +42,7 @@
   </div>
       <div v-if="!isLoading" class="flex row customerDisplay">
           <JobsCard
-            v-for="job in jobs"
+            v-for="job in filteredAndStatusJobs"
             :key="job.customerId"
             :job="job"
             @edit="editJobUI"
@@ -61,7 +62,7 @@
         :currentJobInformation="currentJob"
         :customers="customers"
         :title="jobTitle"
-        :description="jobDescription"
+        description="Create a Job"
         :buttonDesctipnion="jobButtonDesc"
         @closePage="closePage"
         @updateJobInformation="updateJobInformation">
@@ -70,7 +71,11 @@
 
     
     <div v-if="deleteConfirmation" class="flex row customerWindowBlur">
-      <deleteConfirmation>
+      <deleteConfirmation
+        :currentInfo="jobs[currentJobIndex]"
+        :title="(jobs[currentJobIndex].jobDescription)"
+        @closePage="closeDeleteModal"
+        @deleteCustomer="handleDelete(jobs[currentJobIndex].jobId!)">
       </deleteConfirmation>
     </div>
     
@@ -91,6 +96,7 @@ import { useJobModals } from '@/composables/useJobModals'
 import { useJob } from '@/composables/useJobs';
 import { useJobEditFlow } from '@/composables/useJobEditFlow'
 import JobsInformation from '../components/jobs/JobsInformation.vue';
+import { useJobSearch } from '@/composables/useJobSearch'
 
 import { useCustomerModals } from '@/composables/useCustomerModals'
 import { useCustomers } from '@/composables/useCustomers.ts'
@@ -103,11 +109,12 @@ const {
   jobsLoading,
   jobsError,
   fetchJobWithDetails,
+  checkPastDueJobs
 } = jobStore
 
 const {
   customers,
-  fetchCustomersWithDetails
+  fetchCustomersWithDetails,
 } = customersStore
 
 const jobModalsStore = useJobModals({
@@ -138,12 +145,19 @@ const jobEditFlow = useJobEditFlow({
 })
 
 const {updateJobInformation, handleDelete}  = jobEditFlow
+const { searchValue, filteredJobs } = useJobSearch(jobs)
 
 const showActiveOnly = ref(false)
 
-onMounted(() => {
+const filteredAndStatusJobs = computed(() => {
+  return filteredJobs.value.filter(c =>
+    !showActiveOnly.value || c.status === 'In Progress' || c.status === 'Past Due'
+  )
+})
+
+onMounted(async () => {
   console.log('AboutView mounted')
-  fetchJobWithDetails()
+  await fetchJobWithDetails()
   fetchCustomersWithDetails()
 })
 

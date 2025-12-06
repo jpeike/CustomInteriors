@@ -6,7 +6,8 @@ export interface JobStore {
     jobsLoading: Ref<boolean>
     jobsError: Ref<string | null>
     fetchJobWithDetails: () => Promise<void>
-    createJob: (c: JobModel) => Promise<JobModel | undefined>
+    createJob: (c: JobModel) => Promise<JobModel | undefined>,
+    checkPastDueJobs: () => void,
     updateJob: (c: JobModel) => Promise<void>
     deleteJob: (id: number) => Promise<void>
 }

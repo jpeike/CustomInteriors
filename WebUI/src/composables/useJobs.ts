@@ -8,7 +8,7 @@ export function useJob() {
     const jobsError = ref<string | null>(null)
     const jobs = ref<JobModel[]>([])
     const client = new Client(import.meta.env.VITE_API_BASE_URL)
-    const { showSuccess, showError } = useToast()
+    const { showSuccess, showError, showInfo } = useToast()
 
     async function fetchJobWithDetails() {
         jobsLoading.value = true
@@ -23,6 +23,7 @@ export function useJob() {
         })
         .finally(() => {
             jobsLoading.value = false
+            checkPastDueJobs()
         })
     }
 
@@ -32,7 +33,7 @@ export function useJob() {
         if (newJob.jobDescription) {
             try {
                 const created: JobModel = await client.createJob(newJob)
-                showSuccess("Customer Created Successfully")
+                showSuccess("Job Created Successfully")
                 return created
             } catch (err: any) {
                 jobsError.value = err.message
@@ -44,20 +45,25 @@ export function useJob() {
         }
         // ensure function always returns CustomerModel|null and that loading is reset
         jobsLoading.value = false
-        jobsError.value = 'Missing required customer fields'
+        jobsError.value = 'Missing required job fields'
         return undefined
     }
 
     async function updateJob(newJob: JobModel) {
         jobsLoading.value = true;
-        jobsError.value = null
 
         try {
             if (newJob.jobDescription) {
                 await client
                     .updateJob(newJob)
                     .then(() => {
-                        showSuccess('Customer Updated Successfully');
+                        if (jobsError.value == "Change"){
+                            showInfo("Job " + newJob.jobDescription + " is past due. The status has been changed to Past Due")
+                            jobsError.value = null
+                        }
+                        else{
+                            showSuccess('Job Updated Successfully');
+                        }
                     })
                     .catch((jobsError) => {
                         showError(jobsError)
@@ -94,11 +100,25 @@ export function useJob() {
             })
     }
 
+    function checkPastDueJobs(){
+        const pastDueDate = new Date();
+        pastDueDate.setDate(pastDueDate.getDate() - 1)
+
+        for (let i = 0; i < jobs.value.length; i++){
+            if (Date.parse(jobs.value[i].endDate?.toLocaleDateString()!) < Date.parse(pastDueDate.toLocaleDateString()) && jobs.value[i].status == "In Progress"){
+                jobsError.value = "Change"
+                jobs.value[i].status = "Past Due"
+                updateJob(jobs.value[i]);
+            }
+        }
+    }
+
     return {
         jobs,
         jobsLoading,
         jobsError,
         fetchJobWithDetails,
+        checkPastDueJobs,
         createJob,
         updateJob,
         deleteJob

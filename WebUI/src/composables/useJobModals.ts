@@ -29,7 +29,7 @@ export function useJobModals({jobStore}: {
     currentJobIndex.value = -1;
     displayJobDetails.value = true;
 
-    jobTitle.value = 'Create Job';
+    jobTitle.value = 'Create a Job';
     jobButtonDesc.value = 'Create';
   }
 
@@ -44,7 +44,7 @@ export function useJobModals({jobStore}: {
     displayJobDetails.value = true;
     jobModalLoading.value = false;
 
-    jobTitle.value = 'Update Customer';
+    jobTitle.value = 'Update a Job';
     jobButtonDesc.value = 'Update';
   }
 
@@ -81,6 +81,5 @@ export function useJobModals({jobStore}: {
     getJobIndex,
     closeDeleteModal,
     openDeleteModal,
-
   }
 }

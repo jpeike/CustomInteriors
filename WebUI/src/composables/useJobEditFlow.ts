@@ -26,7 +26,7 @@ export function useJobEditFlow({ jobStore: jobStore, jobModalsStore}: {
         const newJobId = createdJob.jobId
 
         if (newJobId == null) {
-          showInfo("Failed to create customer: missing customerId");
+          showInfo("Failed to create job: missing jobId");
           return
         }
       }

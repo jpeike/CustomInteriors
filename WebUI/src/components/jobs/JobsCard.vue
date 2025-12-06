@@ -1,5 +1,5 @@
 <template>
-    <Card class="mb-3" :data-customer-id="job.customerId">
+    <Card class="mb-3">
         <template #header>
             <div class="flex row customCardHeader">
                 <p style="margin: 0; flex-grow: 2; font-size: 1.2rem; font-weight: bold;">{{ job.jobDescription }}</p>
@@ -14,19 +14,11 @@
         </template>
         <template #content>
             <p style="margin: 0;">Start Date: 
-              {{ ((job.startDate!.getMonth() > 8) ? 
-              (job.startDate!.getMonth() + 1) : 
-              ('0' + (job.startDate!.getMonth() + 1))) + '/' + ((job.startDate!.getDate() > 9) ? 
-              job.startDate!.getDate() : 
-              ('0' + job.startDate!.getDate())) + '/' + job.startDate!.getFullYear() }}
+              {{getStartDate()}}
             </p>
             <br/>
             <p style="margin: 0;">End Date: 
-              {{ ((job.endDate!.getMonth() > 8) ? 
-              (job.endDate!.getMonth() + 1) : 
-              ('0' + (job.endDate!.getMonth() + 1))) + '/' + ((job.endDate!.getDate() > 9) ? 
-              job.endDate!.getDate() : 
-              ('0' + job.endDate!.getDate())) + '/' + job.endDate!.getFullYear() }}
+              {{getEndDate()}}
             </p>
 
             <br/>
@@ -63,6 +55,21 @@ function statusColor() {
     return getComputedStyle(document.documentElement).getPropertyValue('--chart-3');
   }
 };
+
+function getStartDate(){
+  if (props.job.startDate != null){
+    return props.job.startDate?.toLocaleDateString()
+  }
+
+  return ("No Start Date")
+}
+
+function getEndDate(){
+    if (props.job.endDate != null){
+      return props.job.endDate?.toLocaleDateString()
+    }
+    return ("No End Date")
+}
 
 </script>
 

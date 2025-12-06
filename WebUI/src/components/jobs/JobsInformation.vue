@@ -4,42 +4,45 @@
             <div class="flex row customerInfoBar">
                 <div class="flex column customerInfoTitle">
                     <h2 class="titleText">{{ title }}</h2>
-                    <p class="subtitleText">{{ description }}</p>
                 </div>
+            </div>
+
+            <div class="addEmail">
+                <h3 class="fieldTitle">Title *</h3>
+                <InputText v-model="job.jobDescription" required="true" type="text" class="inputValue" :placeholder="props.currentJobInformation?.jobDescription"></InputText>
+            </div>
+            
+            <div class="flex row multipleFields">
+              <div style="width: 50%;">
+                  <h3 class="fieldTitle">Start Date</h3>
+                  <DatePicker v-model="job.startDate" type="text" class="inputValue"></DatePicker>
+              </div>
+              <div style="width: 50%;">
+                  <h3 class="fieldTitle">End Date</h3>
+                  <DatePicker v-model="job.endDate" type="text" class="inputValue"></DatePicker>
+              </div>
             </div>
 
             <div class="flex row multipleFields">
-                <div>
-                    <h3 class="fieldTitle">Decription*</h3>
-                    <InputText v-model="job.jobDescription" required="true" type="text" class="inputValue" :placeholder="props.currentJobInformation?.jobDescription"></InputText>
-                </div>
-            </div>
-
-            <div>
-                <h3 class="fieldTitle">Start Date*</h3>
-                <DatePicker v-model="job.startDate" type="text" class="inputValue"></DatePicker>
-            </div>
-            <div>
-                <h3 class="fieldTitle">End Date*</h3>
-                <DatePicker v-model="job.endDate" type="text" class="inputValue"></DatePicker>
-            </div>
-            <div>
-                <h3 class="fieldTitle">Customer Name*</h3>
-                <Select v-model="job.customerId" 
-                  :options="props.customers" :optionLabel="getCustomerFullName" 
-                  optionValue="customerId"
-                  placeholder="Select a Customer">
-                </Select>
-            </div>
-
-            <div>
-                <h3 class="fieldTitle">Status*</h3>
-                <Select v-model="job.status" 
-                  :options="statusOptions"
-                  optionValue="status"
-                  optionLabel="status"
-                  placeholder="Select a Status">
-                </Select>
+              <div style="width: 50%;">
+                  <h3 class="fieldTitle">Customer Name *</h3>
+                  <Select v-model="job.customerId" 
+                    :options="props.customers" :optionLabel="getCustomerFullName" 
+                    optionValue="customerId"
+                    placeholder="Select a Customer"
+                    style="width: 100%;">
+                  </Select>
+              </div>
+              <div style="width: 50%;">
+                  <h3 class="fieldTitle">Status</h3>
+                  <Select v-model="job.status" 
+                    :options="statusOptions"
+                    optionValue="status"
+                    optionLabel="status"
+                    placeholder="Pending"
+                    style="width: 100%;">
+                  </Select>
+              </div>
             </div>
 
             <div class="flex row buttons">
@@ -131,10 +134,7 @@
   .editButton:hover {
   transform: scale(1.25);
   }
-  .addAddress, .addEmail {
-  width: 100%;
-  margin-top: 0;
-  }
+
 .addressField:last-child h3.fieldTitle {
   margin-bottom: 0;
 }
@@ -212,6 +212,7 @@
   /* Input & Form Fields */
   .multipleFields {
   justify-content: space-between;
+  gap: 1rem;
   }
   .fieldTitle {
   margin: 0vh;
@@ -295,9 +296,7 @@
 
     const state = reactive({
         loading: false,
-    })
-
-    
+    })    
 
     const message = ref('');
     const job = ref(new JobModel);
@@ -305,14 +304,18 @@
       { status: 'Completed'},
       { status: 'In Progress'},
       { status: 'Past Due'},
-      { status: 'Unassigned'}
+      { status: 'Pending'}
     ]);
     
     const customersList = ref([new CustomerModel])
+    const testDate = ref(new Date)
 
     if (props.currentJobInformation != undefined){
       var temp = JSON.stringify(props.currentJobInformation);
       job.value = JSON.parse(temp);
+      job.value.startDate = new Date(job.value.startDate!);
+      job.value.endDate = new Date(job.value.endDate!)
+
     }
     if (props.customers != undefined){
       for (let i = 0; i < props.customers.length; i++){
@@ -321,24 +324,30 @@
     }
 
     function testInfo(){
+      const todaysDate = new Date();
+      
       if (!job.value.jobDescription){
         showWarning('This job needs a description');
         return;
       }
 
-      const todaysDate = new Date();
-
-      if (job.value.startDate! > todaysDate){
-        showWarning('Start date must be in the past');
-        return;
-      }
-      if (job.value.endDate! > todaysDate){
-        showWarning('End date must be in the past');
-        return;
-      }
       if (job.value.endDate! <= job.value.startDate!){
         showWarning('End date must be after the start date');
         return;
+      }
+
+      if (job.value.status == "In Progress" && job.value.endDate! < todaysDate){
+        showWarning("End date must be after today's date for in progress jobs")
+        return
+      }
+
+      if (job.value.status == "In Progress" && job.value.startDate! > todaysDate){
+        showWarning("Start date must be before today's date for in progress jobs")
+        return
+      }
+
+      if (job.value.status == undefined){
+        job.value.status = "Pending";
       }
 
       checkForNoChanges();
