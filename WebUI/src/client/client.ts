@@ -1315,7 +1315,6 @@ export class Client {
     createJob(body?: JobModel | undefined): Promise<JobModel> {
         let url_ = this.baseUrl + "/api/jobs";
         url_ = url_.replace(/[?&]$/, "");
-
         const content_ = JSON.stringify(body);
 
         let options_: RequestInit = {
