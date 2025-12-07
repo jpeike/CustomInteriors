@@ -8,16 +8,14 @@ using Web;
 
 public abstract class IntegrationTestBase : IAsyncLifetime
 {
-    protected WebApplicationFactory<Program> Factory;
+    private WebApplicationFactory<Program> _factory;
     protected HttpClient Client { get; private set; }
-    protected AppDbContext DbContext { get; private set; }
+    private AppDbContext DbContext { get; set; }
     private SqliteConnection _connection;
 
     protected IntegrationTestBase()
     {
-        //Factory = new WebApplicationFactory<Program>();
-        
-        Factory = new WebApplicationFactory<Program>()
+        _factory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(builder =>
             {
                 builder.UseEnvironment("IntegrationTesting");
@@ -30,7 +28,7 @@ public abstract class IntegrationTestBase : IAsyncLifetime
         await _connection.OpenAsync();
 
         // Override DbContext in the DI container
-        Factory = Factory.WithWebHostBuilder(builder =>
+        _factory = _factory.WithWebHostBuilder(builder =>
         {
             builder.ConfigureServices(services =>
             {
@@ -46,21 +44,21 @@ public abstract class IntegrationTestBase : IAsyncLifetime
         });
 
         // Create a scope and ensure DB schema
-        IServiceScope scope = Factory.Services.CreateScope();
+        IServiceScope scope = _factory.Services.CreateScope();
         DbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         await DbContext.Database.EnsureCreatedAsync();
 
         // HttpClient for testing
-        Client = Factory.CreateClient();
+        Client = _factory.CreateClient();
     }
 
     public async Task DisposeAsync()
     {
         await DbContext.DisposeAsync();
         await _connection.CloseAsync();
-        _connection.Dispose();
+        await _connection.DisposeAsync();
         Client.Dispose();
-        Factory.Dispose();
+        await _factory.DisposeAsync();
     }
 
     /// <summary>
