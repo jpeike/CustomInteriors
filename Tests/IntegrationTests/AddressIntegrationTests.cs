@@ -1,17 +1,23 @@
 ﻿using System.Net.Http.Json;
-using System.Text.Json;
 using Core;
 using DeepEqual.Syntax;
-using Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Testing.IntegrationTests;
 
-public class AddressIntegrationTests : IClassFixture<TestApplicationEntry>
+public class AddressIntegrationTests : IntegrationTestBase
 {
-    private readonly TestApplicationEntry _factory;
-    private readonly HttpClient _client;
-
+    private Customer Customer1 { get; } = new()
+    {
+        CustomerId = 1,
+        FirstName = "FIRST_NAME",
+        LastName = "LAST_NAME",
+        CompanyName = "COMPANY_NAME",
+        PrefferedContactMethod = "PREFERRED_CONTACT_METHOD",
+        CustomerType = "CUSTOMER_TYPE",
+        Status = "STATUS",
+        CustomerNotes = "CUSTOMER_NOTES",
+    };
+    
     private AddressModel AddressModel1 { get; } = new()
     {
         CustomerId = 1,
@@ -23,40 +29,14 @@ public class AddressIntegrationTests : IClassFixture<TestApplicationEntry>
         AddressType = "TEST_ADDRESS_TYPE",
     };
     
-    private readonly JsonSerializerOptions _jsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
-    public AddressIntegrationTests(TestApplicationEntry factory)
-    {
-        _factory = factory;
-        _client = _factory.CreateClient();
-    }
-
-    /// <summary>
-    /// directly insert a model into the db
-    /// </summary>
-    /// <returns> model return from db </returns>
-    private async Task<AddressModel> SeedDb()
-    {
-        // set db to be scoped to just this test
-        using IServiceScope scope = _factory.Services.CreateScope();
-        AppDbContext db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        AddressModel setModel = (await db.AddAsync(AddressModel1.ToEntity())).Entity.ToModel();
-        await db.SaveChangesAsync();
-        return setModel;
-    }
-
     [Fact]
     public async Task GetAllAddresses_ReturnsEmptyWhenEmpty()
     {
-        HttpResponseMessage response = await _client.GetAsync("/api/addresses");
+        HttpResponseMessage response = await Client.GetAsync("/api/addresses");
 
         AssertHelpers.IsValidResponse(response);
         
-        string getAllString = await response.Content.ReadAsStringAsync();
-        IEnumerable<AddressModel>? getAllModels = JsonSerializer.Deserialize<IEnumerable<AddressModel>>(getAllString, _jsonOptions);
+        IEnumerable<AddressModel>? getAllModels = await response.Content.ReadFromJsonAsync<IEnumerable<AddressModel>>();
         
         Assert.NotNull(getAllModels);
         Assert.Empty(getAllModels);
@@ -65,17 +45,15 @@ public class AddressIntegrationTests : IClassFixture<TestApplicationEntry>
     [Fact]
     public async Task GetAllAddresses_ReturnsModels()
     {
-        using IServiceScope scope = _factory.Services.CreateScope();
-        AppDbContext db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        AddressModel setModel = (await db.AddAsync(AddressModel1.ToEntity())).Entity.ToModel();
-        await db.SaveChangesAsync();
+        Customer customer = (await SeedAsync(Customer1));
+        AddressModel1.CustomerId = customer.CustomerId;
+        AddressModel setModel = (await SeedAsync(AddressModel1.ToEntity())).ToModel();
         
-        HttpResponseMessage response = await _client.GetAsync("/api/addresses");
-
+        HttpResponseMessage response = await Client.GetAsync("/api/addresses");
+    
         AssertHelpers.IsValidResponse(response);
         
-        string getAllString = await response.Content.ReadAsStringAsync();
-        IEnumerable<AddressModel>? getAllModels = JsonSerializer.Deserialize<IEnumerable<AddressModel>>(getAllString, _jsonOptions);
+        IEnumerable<AddressModel>? getAllModels = await response.Content.ReadFromJsonAsync<IEnumerable<AddressModel>>();
         
         Assert.NotNull(getAllModels);
         AddressModel? compAddress = getAllModels.FirstOrDefault(x => x.AddressId == setModel.AddressId);
@@ -85,12 +63,13 @@ public class AddressIntegrationTests : IClassFixture<TestApplicationEntry>
     [Fact]
     public async Task Create_ReturnsModel()
     {
-        HttpResponseMessage response = await _client.PostAsJsonAsync("/api/addresses", AddressModel1);
-
+        Customer customer = (await SeedAsync(Customer1));
+        AddressModel1.CustomerId = customer.CustomerId;
+        HttpResponseMessage response = await Client.PostAsJsonAsync("/api/addresses", AddressModel1);
+    
         AssertHelpers.IsValidResponse(response);
         
-        string postString = await response.Content.ReadAsStringAsync();
-        AddressModel? postModel = JsonSerializer.Deserialize<AddressModel>(postString, _jsonOptions);
+        AddressModel? postModel = await response.Content.ReadFromJsonAsync<AddressModel>();
         
         Assert.NotNull(postModel);
         AddressModel1.WithDeepEqual(postModel)
@@ -101,73 +80,63 @@ public class AddressIntegrationTests : IClassFixture<TestApplicationEntry>
     [Fact]
     public async Task GetById_ReturnsModel()
     {
-        using IServiceScope scope = _factory.Services.CreateScope();
-        AppDbContext db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        AddressModel setModel = (await db.AddAsync(AddressModel1.ToEntity())).Entity.ToModel();
-        await db.SaveChangesAsync();
+        Customer customer = (await SeedAsync(Customer1));
+        AddressModel1.CustomerId = customer.CustomerId;
+        AddressModel setModel = (await SeedAsync(AddressModel1.ToEntity())).ToModel();
         
-        // see if you can use the customer id to get the address again
-        HttpResponseMessage getId = await _client.GetAsync($"/api/addresses/{setModel.CustomerId}");
+        HttpResponseMessage response = await Client.GetAsync($"/api/addresses/{setModel.CustomerId}");
         
-        AssertHelpers.IsValidResponse(getId);
+        AssertHelpers.IsValidResponse(response);
         
-        string getIdString = await getId.Content.ReadAsStringAsync();
-        IEnumerable<AddressModel>? getIdModel = JsonSerializer.Deserialize<IEnumerable<AddressModel>>(getIdString, _jsonOptions);
+        IEnumerable<AddressModel>? getIdModel = await response.Content.ReadFromJsonAsync<IEnumerable<AddressModel>>();
         
         Assert.NotNull(getIdModel);
         AddressModel? compAddress = getIdModel.FirstOrDefault(x => x.AddressId == setModel.AddressId);
-
+    
         setModel.ShouldDeepEqual(compAddress);
     }
     
     [Fact]
     public async Task Update_ReturnsModel()
     {
-        using IServiceScope scope = _factory.Services.CreateScope();
-        AppDbContext db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        AddressModel setModel = (await db.AddAsync(AddressModel1.ToEntity())).Entity.ToModel();
-        await db.SaveChangesAsync();
+        Customer customer = (await SeedAsync(Customer1));
+        AddressModel1.CustomerId = customer.CustomerId;
+        AddressModel setModel = (await SeedAsync(AddressModel1.ToEntity())).ToModel();
         
-        // see if you can use the customer id to get the address again
-        HttpResponseMessage getId = await _client.GetAsync($"/api/addresses/{setModel.CustomerId}");
+        HttpResponseMessage response = await Client.GetAsync($"/api/addresses/{setModel.CustomerId}");
         
-        AssertHelpers.IsValidResponse(getId);
+        AssertHelpers.IsValidResponse(response);
         
-        string getIdString = await getId.Content.ReadAsStringAsync();
-        IEnumerable<AddressModel>? getIdAddresses = JsonSerializer.Deserialize<IEnumerable<AddressModel>>(getIdString, _jsonOptions);
+        IEnumerable<AddressModel>? putModel = await response.Content.ReadFromJsonAsync<IEnumerable<AddressModel>>();
         
-        Assert.NotNull(getIdAddresses);
-        AddressModel? compAddress = getIdAddresses.FirstOrDefault(x => x.AddressId == setModel.AddressId);
-
+        Assert.NotNull(putModel);
+        AddressModel? compAddress = putModel.FirstOrDefault(x => x.AddressId == setModel.AddressId);
+    
         setModel.ShouldDeepEqual(compAddress);
     }
     
     [Fact]
     public async Task Delete_ReturnsTrueThenFalse()
     {
-        using IServiceScope scope = _factory.Services.CreateScope();
-        AppDbContext db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        AddressModel setModel = (await db.AddAsync(AddressModel1.ToEntity())).Entity.ToModel();
-        await db.SaveChangesAsync();
+        Customer customer = (await SeedAsync(Customer1));
+        AddressModel1.CustomerId = customer.CustomerId;
+        AddressModel setModel = (await SeedAsync(AddressModel1.ToEntity())).ToModel();
         
-        // see if you can use the customer id to get the address again
-        HttpResponseMessage delete = await _client.DeleteAsync($"/api/addresses/{setModel.AddressId}");
+        HttpResponseMessage response = await Client.DeleteAsync($"/api/addresses/{setModel.AddressId}");
         
-        AssertHelpers.IsValidResponse(delete);
+        AssertHelpers.IsValidResponse(response);
         
-        string deleteString = await delete.Content.ReadAsStringAsync();
-        bool deleteBool = JsonSerializer.Deserialize<bool>(deleteString, _jsonOptions);
+        bool deleteModel = await response.Content.ReadFromJsonAsync<bool>();
         
-        Assert.True(deleteBool);
+        Assert.True(deleteModel);
         
         // try to delete again, should return false
-        HttpResponseMessage delete2 = await _client.DeleteAsync($"/api/addresses/{setModel.AddressId}");
+        HttpResponseMessage response2 = await Client.DeleteAsync($"/api/addresses/{setModel.AddressId}");
         
-        AssertHelpers.IsValidResponse(delete2);
+        AssertHelpers.IsValidResponse(response2);
         
-        string delete2String = await delete.Content.ReadAsStringAsync();
-        bool delete2Bool = JsonSerializer.Deserialize<bool>(delete2String, _jsonOptions);
+        bool deleteModel2 = await response2.Content.ReadFromJsonAsync<bool>();
         
-        Assert.True(delete2Bool);
+        Assert.False(deleteModel2);
     }
 }

@@ -8,7 +8,7 @@ namespace Testing.IntegrationTests;
 
 public class TestApplicationEntry : WebApplicationFactory<Web.Program>
 {
-    public AppDbContext DbContext { get; private set; }
+    private AppDbContext DbContext { get; set; }
     
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -18,19 +18,20 @@ public class TestApplicationEntry : WebApplicationFactory<Web.Program>
         builder.ConfigureServices(services =>
         {
             // Remove existing DbContext
-            var descriptor = services.SingleOrDefault(
+            ServiceDescriptor? descriptor = services.SingleOrDefault(
                 d => d.ServiceType == typeof(DbContextOptions<AppDbContext>));
             if (descriptor != null) services.Remove(descriptor);
 
             // Add in-memory DbContext
-            services.AddDbContext<AppDbContext>(options =>
-                options.UseInMemoryDatabase("TestDb"));
+            //services.AddDbContext<AppDbContext>(options =>
+                //options.UseInMemoryDatabase(Guid.NewGuid().ToString()));
+                //options.UseSqlite("Filename=:memory:"));
 
             // Build service provider to access DbContext
-            var sp = services.BuildServiceProvider();
-            using var scope = sp.CreateScope();
-            DbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            DbContext.Database.EnsureCreated();
+            // ServiceProvider sp = services.BuildServiceProvider();
+            // using IServiceScope scope = sp.CreateScope();
+            // DbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            // DbContext.Database.EnsureCreated();
         });
     }
 }
