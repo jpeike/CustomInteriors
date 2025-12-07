@@ -19,6 +19,7 @@ public class EmailModel
     [StringLength(100)]
     public required string EmailType { get; set; }
     
+    // remove from model and let entity handle date
     //[DateBeforeNow]
-    public DateTime CreatedOn { get; set; }
+    //public DateTime CreatedOn { get; set; }
 }
