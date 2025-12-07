@@ -18,7 +18,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("", Name = "GetAllUsers")]
-    [Authorize(Policy = "AdminOnly")]
+    [Authorize(Policy = Policies.AdminOnly)]
     public async Task<ActionResult<IEnumerable<UserModel>>> GetAllUsers()
     {
         if (!ModelState.IsValid) return BadRequest();
@@ -26,7 +26,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{id:int}", Name = "GetUserById")]
-    [Authorize(Policy = "AdminOnly")]
+    [Authorize(Policy = Policies.AdminOnly)]
     public async Task<ActionResult<UserModel?>> GetUserById(int id)
     {
         if (id <= 0) return BadRequest();
