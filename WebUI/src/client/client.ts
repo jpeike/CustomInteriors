@@ -2981,7 +2981,6 @@ export class EmailModel implements IEmailModel {
     customerId!: number;
     emailAddress!: string;
     emailType!: string;
-    createdOn?: Date;
 
     constructor(data?: IEmailModel) {
         if (data) {
@@ -2998,7 +2997,6 @@ export class EmailModel implements IEmailModel {
             this.customerId = _data["customerId"];
             this.emailAddress = _data["emailAddress"];
             this.emailType = _data["emailType"];
-            this.createdOn = _data["createdOn"] ? new Date(_data["createdOn"].toString()) : undefined as any;
         }
     }
 
@@ -3015,7 +3013,6 @@ export class EmailModel implements IEmailModel {
         data["customerId"] = this.customerId;
         data["emailAddress"] = this.emailAddress;
         data["emailType"] = this.emailType;
-        data["createdOn"] = this.createdOn ? this.createdOn.toISOString() : undefined as any;
         return data;
     }
 }
@@ -3025,7 +3022,6 @@ export interface IEmailModel {
     customerId: number;
     emailAddress: string;
     emailType: string;
-    createdOn?: Date;
 }
 
 export class EmployeeModel implements IEmployeeModel {
