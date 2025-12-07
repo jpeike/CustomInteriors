@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Core;
+﻿using Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web;
 
 [ApiController]
+[Authorize(Policy = Policies.EmployeeOrAdmin)]
 [Route("api/users")]
 public class UsersController : ControllerBase
 {
@@ -18,7 +17,6 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("", Name = "GetAllUsers")]
-    [Authorize(Policy = Policies.AdminOnly)]
     public async Task<ActionResult<IEnumerable<UserModel>>> GetAllUsers()
     {
         if (!ModelState.IsValid) return BadRequest();
@@ -26,7 +24,6 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{id:int}", Name = "GetUserById")]
-    [Authorize(Policy = Policies.AdminOnly)]
     public async Task<ActionResult<UserModel?>> GetUserById(int id)
     {
         if (id <= 0) return BadRequest();
