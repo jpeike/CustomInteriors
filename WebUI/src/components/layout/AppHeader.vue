@@ -18,40 +18,40 @@
       @click="isOpen = false">
       <i class="pi pi-times"></i>
     </button>
-    <button class="btn-primary navButton" @click="router.push(RoutePaths.HOME)">
-      <i class="pi pi-home"></i><label>Home</label>
+    <button class="btn-primary navButton" @click="router.push(RoutePaths.DASHBOARD)">
+      <i class="pi pi-home"></i><label> Dashboard</label>
     </button>
 
     <button class="btn-primary navButton" @click="router.push(RoutePaths.ABOUT)">
-      <i class="pi pi-info-circle"></i><label>About</label>
+      <i class="pi pi-info-circle"></i><label> About</label>
     </button>
 
     <button class="btn-primary navButton" @click="router.push(RoutePaths.USERS)">
-      <i class="pi pi-users"></i><label>Users</label>
+      <i class="pi pi-users"></i><label> Users</label>
     </button>
 
     <button class="btn-primary navButton" @click="router.push(RoutePaths.JOBS)">
-      <i class="pi pi-briefcase"></i><label>Jobs</label>
+      <i class="pi pi-briefcase"></i><label> Jobs</label>
     </button>
 
     <button class="btn-primary navButton" @click="router.push('/billing')">
-      <i class="pi pi-wallet"></i><label>Billing</label>
+      <i class="pi pi-wallet"></i><label> Billing</label>
     </button>
 
     <button class="btn-primary navButton" @click="router.push(RoutePaths.CUSTOMERS)">
-      <i class="pi pi-address-book"></i><label>Customers</label>
+      <i class="pi pi-address-book"></i><label> Customers</label>
     </button>
 
     <button class="btn-primary navButton" @click="router.push(RoutePaths.EMPLOYEES)">
-      <i class="pi pi-sitemap"></i><label>Employees</label>
+      <i class="pi pi-sitemap"></i><label> Employees</label>
     </button>
 
     <button v-if="!auth.isLoggedIn" class="btn-primary navButton" @click="auth.login()">
-      <i class="pi pi-sign-in"></i><label>Login</label>
+      <i class="pi pi-sign-in"></i><label> Login</label>
     </button>
 
     <button v-else class="btn-primary navButton" @click="auth.logout()">
-      <i class="pi pi-sign-out"></i><label>Logout</label>
+      <i class="pi pi-sign-out"></i><label> Logout</label>
     </button>
   </div>
 </template>
@@ -73,7 +73,7 @@ const router = useRouter()
 // Define your navigation items
 // Define your navigation items using enums
 const items = ref([
-  { label: 'Home', icon: 'pi pi-home', command: () => router.push(RoutePaths.HOME) },
+  { label: 'Dashboard', icon: 'pi pi-home', command: () => router.push(RoutePaths.DASHBOARD) },
   { label: 'About', icon: 'pi pi-info-circle', command: () => router.push(RoutePaths.ABOUT) },
   { label: 'Users', icon: 'pi pi-users', command: () => router.push(RoutePaths.USERS) },
   { label: 'Jobs', icon: 'pi pi-briefcase', command: () => router.push(RoutePaths.JOBS) }, 
@@ -85,8 +85,10 @@ const items = ref([
   },
   { label: 'Employees', icon: 'pi pi-sitemap', command: () => router.push(RoutePaths.EMPLOYEES) },
   {
-    label: 'Logout', icon: 'pi pi-sitemap', command: () => auth.logout()
-  }
+    label: 'Logout',
+    icon: 'pi pi-sitemap',
+    command: () => auth.logout(),
+  },
 ])
 
 const auth = useAuthStore()
@@ -129,8 +131,9 @@ watch(() => router.currentRoute.value.fullPath, () => {
   cursor: pointer;
   background-color: var(--primary);
   color: var(--primary-foreground);
-  transition: 0.2s ease;
-  font-size: 1rem;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .navButton:hover {
