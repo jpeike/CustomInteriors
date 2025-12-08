@@ -24,7 +24,7 @@
 
       <div class="searchBarWrapper">
           <i class="pi pi-search"></i>
-          <InputText v-model="searchValue" type="text" class="searchBar" placeholder="Search" />
+          <InputText v-model="searchValue" type="text" class="searchBar" placeholder="Search" data-testid="customerSearchInput"/>
       </div>
 
       <div class="rightPanel">
