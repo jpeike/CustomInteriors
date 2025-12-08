@@ -1,5 +1,8 @@
 export enum RouteNames {
-  HOME = 'Home',
+  DASHBOARD = 'Dashboard',
+  LANDING_REDIRECT = 'LandingRedirect',
+  QUOTE_REQUEST = 'QuoteRequest',
+  LANDING = 'Landing',
   ABOUT = 'About',
   USERS = 'Users',
   EMPLOYEES = 'Employees',

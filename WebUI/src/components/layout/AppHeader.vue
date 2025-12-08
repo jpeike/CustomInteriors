@@ -1,9 +1,8 @@
 <template>
-
   <div class="sideNav">
     <h3 class="logo">Custom Interiors</h3>
-    <button class="btn-primary navButton" v-on:click="router.push(RoutePaths.HOME)">
-      <i class="pi pi-home"></i> <label>Home</label>
+    <button class="btn-primary navButton" v-on:click="router.push(RoutePaths.DASHBOARD)">
+      <i class="pi pi-home"></i> <label>Dashboard</label>
     </button>
 
     <button class="btn-primary navButton" v-on:click="router.push(RoutePaths.ABOUT)">
@@ -51,14 +50,14 @@ import { useRouter } from 'vue-router'
 import 'primeicons/primeicons.css'
 import { RouteNames } from '@/enums/RouteNames'
 import { RoutePaths } from '@/enums/RoutePaths'
-import '../style/Theme.css';
+import '../style/Theme.css'
 
 const router = useRouter()
 
 // Define your navigation items
 // Define your navigation items using enums
 const items = ref([
-  { label: 'Home', icon: 'pi pi-home', command: () => router.push(RoutePaths.HOME) },
+  { label: 'Dashboard', icon: 'pi pi-home', command: () => router.push(RoutePaths.DASHBOARD) },
   { label: 'About', icon: 'pi pi-info-circle', command: () => router.push(RoutePaths.ABOUT) },
   { label: 'Users', icon: 'pi pi-users', command: () => router.push(RoutePaths.USERS) },
   { label: 'Jobs', icon: 'pi pi-briefcase', command: () => router.push('/jobs') }, // if Jobs not yet in enum
@@ -70,15 +69,16 @@ const items = ref([
   },
   { label: 'Employees', icon: 'pi pi-sitemap', command: () => router.push(RoutePaths.EMPLOYEES) },
   {
-    label: 'Logout', icon: 'pi pi-sitemap', command: () => auth.logout()
-  }
+    label: 'Logout',
+    icon: 'pi pi-sitemap',
+    command: () => auth.logout(),
+  },
 ])
 
 import { useAuthStore } from '@/stores/auth'
 import { label } from '@primeuix/themes/aura/metergroup'
 
 const auth = useAuthStore()
-
 </script>
 
 <style scoped>
@@ -117,7 +117,9 @@ const auth = useAuthStore()
   /* Theme colors */
   background-color: var(--primary);
   color: var(--primary-foreground);
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .navButton:hover {
