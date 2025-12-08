@@ -88,8 +88,8 @@ public class JobInvoiceIntegrationTests : IntegrationTestBase
         Job1.CustomerId =  customer.CustomerId;
         Job job = await SeedAsync(Job1);
         Invoice invoice = await SeedAsync(Invoice1);
-        JobInvoice1.JobId = job.JobId;
-        JobInvoice1.InvoiceId = invoice.InvoiceId;
+        JobInvoiceModel1.JobId = job.JobId;
+        JobInvoiceModel1.InvoiceId = invoice.InvoiceId;
         
         HttpResponseMessage response = await Client.PostAsJsonAsync("/api/jobInvoices", JobInvoiceModel1);
 
@@ -115,7 +115,7 @@ public class JobInvoiceIntegrationTests : IntegrationTestBase
         JobInvoice1.InvoiceId = invoice.InvoiceId;
         JobInvoiceModel setModel = (await SeedAsync(JobInvoice1)).ToModel();
 
-        HttpResponseMessage response = await Client.GetAsync($"/api/jobInvoices/{setModel.InvoiceId}");
+        HttpResponseMessage response = await Client.GetAsync($"/api/jobInvoices/by-id?jobId={setModel.JobId}&invoiceId={setModel.InvoiceId}");
 
         AssertHelpers.IsValidResponse(response);
 
@@ -136,7 +136,7 @@ public class JobInvoiceIntegrationTests : IntegrationTestBase
         JobInvoice1.InvoiceId = invoice.InvoiceId;
         JobInvoiceModel setModel = (await SeedAsync(JobInvoice1)).ToModel();
 
-        HttpResponseMessage response = await Client.GetAsync($"/api/jobInvoices/{setModel.InvoiceId}");
+        HttpResponseMessage response = await Client.GetAsync($"/api/jobInvoices/by-id?jobId={setModel.JobId}&invoiceId={setModel.InvoiceId}");
 
         AssertHelpers.IsValidResponse(response);
 
@@ -157,7 +157,7 @@ public class JobInvoiceIntegrationTests : IntegrationTestBase
         JobInvoice1.InvoiceId = invoice.InvoiceId;
         JobInvoiceModel setModel = (await SeedAsync(JobInvoice1)).ToModel();
 
-        HttpResponseMessage response = await Client.DeleteAsync($"/api/jobInvoices/{setModel.InvoiceId}");
+        HttpResponseMessage response = await Client.DeleteAsync($"/api/jobInvoices?jobId={setModel.JobId}&invoiceId={setModel.InvoiceId}");
 
         AssertHelpers.IsValidResponse(response);
 
@@ -166,7 +166,7 @@ public class JobInvoiceIntegrationTests : IntegrationTestBase
         Assert.True(deleteModel);
 
         // try to delete again, should return false
-        HttpResponseMessage response2 = await Client.DeleteAsync($"/api/jobInvoices/{setModel.InvoiceId}");
+        HttpResponseMessage response2 = await Client.DeleteAsync($"/api/jobInvoices?jobId={setModel.JobId}&invoiceId={setModel.InvoiceId}");
 
         AssertHelpers.IsValidResponse(response2);
 

@@ -12,9 +12,9 @@ public class JobInvoiceRepository : IJobInvoiceRepository
         _dbContext = dbContext;
     }
 
-    public async Task<JobInvoice?> GetJobInvoiceById(int id)
+    public async Task<JobInvoice?> GetJobInvoiceById(int jobId, int invoiceId)
     {
-        return await _dbContext.JobInvoices.FindAsync(id);
+        return await _dbContext.JobInvoices.FindAsync(jobId, invoiceId);
     }
 
     public async Task<IEnumerable<JobInvoice>> GetAllJobInvoices()
@@ -35,9 +35,9 @@ public class JobInvoiceRepository : IJobInvoiceRepository
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task<bool> DeleteJobInvoice(int id)
+    public async Task<bool> DeleteJobInvoice(int jobId, int invoiceId)
     {
-        JobInvoice? jobInvoice = await _dbContext.JobInvoices.FindAsync(id);
+        JobInvoice? jobInvoice = await _dbContext.JobInvoices.FindAsync(jobId, invoiceId);
         if (jobInvoice != null)
         {
             _dbContext.Remove(jobInvoice);
