@@ -17,8 +17,9 @@
   <div v-else>
     <div class="flex column customerBody">
       <div class="flex row pageHeader">
+
       <div class="flex column leftPanel">
-          <h2 style="margin: 0;">Customers</h2>
+          <h2 style="margin: 0; padding:0;">Customers</h2>
       </div>
 
       <div class="searchBarWrapper">
@@ -36,8 +37,7 @@
             offLabel="All Customers"
             onIcon="pi pi-check"
             offIcon="pi pi-filter"
-            class="ml-3"
-          />
+            class="ml-3"/>
       </div>
   </div>
       <div v-if="!isLoading" class="flex row customerDisplay">
@@ -249,13 +249,12 @@ const isError = computed(() =>
 .addButton {
   border: none;
   height: 50%;
-  width: 150px;
+  width: 12vw;
   border-radius: 7px;
   padding: 0.5rem 1rem;
   margin-left: 1rem;
+  margin-right: 1rem;
   cursor: pointer;
-
-  /* Theme colors */
   background-color: var(--primary);
   color: var(--primary-foreground);
   transition: background-color 0.2s ease, transform 0.2s ease;
@@ -279,7 +278,7 @@ const isError = computed(() =>
 }
 
 .searchBar {
-  width: 100%;
+  width: 40vw;
   border: none;
   box-shadow: none;
   padding: 0.5rem;
