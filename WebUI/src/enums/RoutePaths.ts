@@ -1,5 +1,8 @@
 export enum RoutePaths {
-  HOME = '/',
+  DASHBOARD = '/dashboard',
+  LANDING = '/landing',
+  QUOTE_REQUEST = '/quoterequest',
+  LANDING_REDIRECT = '/',
   ABOUT = '/about',
   USERS = '/users',
   EMPLOYEES = '/employees',
