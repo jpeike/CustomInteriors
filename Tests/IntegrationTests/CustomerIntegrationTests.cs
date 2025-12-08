@@ -60,8 +60,6 @@ public class CustomerIntegrationTests : IntegrationTestBase
     [Fact]
     public async Task Create_ReturnsModel()
     {
-        Customer customer = (await SeedAsync(Customer1));
-        CustomerModel1.CustomerId = customer.CustomerId;
         HttpResponseMessage response = await Client.PostAsJsonAsync("/api/customers", CustomerModel1);
 
         AssertHelpers.IsValidResponse(response);

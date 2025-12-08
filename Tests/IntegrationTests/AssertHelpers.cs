@@ -6,7 +6,7 @@ public class AssertHelpers
     {
         string content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
         
-        Assert.True(response.IsSuccessStatusCode);
+        Assert.True(response.IsSuccessStatusCode, content);
         Assert.NotNull(response.Content.Headers.ContentType);
         Assert.Equal("application/json", response.Content.Headers.ContentType.MediaType);
         Assert.Equal("utf-8", response.Content.Headers.ContentType.CharSet);
