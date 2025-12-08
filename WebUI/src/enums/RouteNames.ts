@@ -4,6 +4,7 @@ export enum RouteNames {
   USERS = 'Users',
   EMPLOYEES = 'Employees',
   CUSTOMERS = 'Customers',
+  JOBS = 'Jobs',
   EMAILS = 'Emails',
   CALLBACK = 'Callback',
   ERROR_PAGE = 'ErrorPage',
