@@ -9,6 +9,6 @@ public class Email
     public int CustomerId { get; set; } // Foreign Key -> Customer(CustomerId)
     public required string EmailAddress { get; set; }
     public required string EmailType { get; set; }
-    public DateTime CreatedOn { get; set; } // Defaults to GETDATE() in SQL
+    [JsonIgnore] public DateTime CreatedOn { get; set; } // Defaults to GETDATE() in SQL
     [JsonIgnore] public Customer Customer { get; set; } = null!; // Navigation property
 }

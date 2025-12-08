@@ -8,7 +8,7 @@ public static class EmailExtensions
         CustomerId = email.CustomerId,
         EmailAddress = email.EmailAddress,
         EmailType = email.EmailType,
-        CreatedOn = email.CreatedOn,
+        // CreatedOn = email.CreatedOn,
         // Customer = email.Customer.ToModel()
     };
 
@@ -23,7 +23,8 @@ public static class EmailExtensions
         CustomerId = model.CustomerId,
         EmailAddress = model.EmailAddress,
         EmailType = model.EmailType,
-        CreatedOn = model.CreatedOn,
+        CreatedOn = DateTime.UtcNow,
+        // CreatedOn = model.CreatedOn,
         // Customer = model.Customer.ToEntity()
     };
 }

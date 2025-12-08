@@ -35,7 +35,7 @@ public class EmailsController : ControllerBase
     public async Task<ActionResult<EmailModel>> CreateEmail([FromBody] EmailModel emailModel)
     {
         if (!ModelState.IsValid) return BadRequest();
-        emailModel.CreatedOn = DateTime.UtcNow;
+        //emailModel.CreatedOn = DateTime.UtcNow;
         return Ok(await _emailService.CreateEmail(emailModel));
     }
 
