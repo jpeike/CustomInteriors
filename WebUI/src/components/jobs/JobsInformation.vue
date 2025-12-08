@@ -7,7 +7,7 @@
                 </div>
             </div>
 
-            <div class="addEmail">
+            <div class="title">
                 <h3 class="fieldTitle">Title *</h3>
                 <InputText v-model="job.jobDescription" required="true" type="text" class="inputValue" :placeholder="props.currentJobInformation?.jobDescription"></InputText>
             </div>
@@ -191,7 +191,7 @@
 }
 .cancelUpdateButton,
 .updateInfoButton,
-.addEmail button,
+.title button,
 .addAddress button,
 .editButton {
   display: flex;
@@ -199,9 +199,13 @@
   align-items: center;
   text-align: center;
 }
+
+.title{
+  margin-bottom: 2vh;
+}
 .cancelUpdateButton p.buttonText,
 .updateInfoButton p.buttonText,
-.addEmail button p,
+.title button p,
 .addAddress button p {
   margin: 0;
   width: 100%;
@@ -213,6 +217,7 @@
   .multipleFields {
   justify-content: space-between;
   gap: 1rem;
+  margin-bottom: 2vh;
   }
   .fieldTitle {
   margin: 0vh;
@@ -327,7 +332,7 @@
       const todaysDate = new Date();
       
       if (!job.value.jobDescription){
-        showWarning('This job needs a description');
+        showWarning('This job needs a title');
         return;
       }
 

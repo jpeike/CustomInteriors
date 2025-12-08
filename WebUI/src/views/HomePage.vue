@@ -177,9 +177,8 @@ const state = reactive({
 })
 
 const completedPercent = computed(() =>
-  state.totalJobs
-    ? ((state.totalJobs - state.activeJobs - state.pendingJobs) / state.totalJobs) * 100
-    : 0,
+    state.totalJobs ? (state.completedJobs / state.completedJobs) * 100 : 0,
+
 )
 
 const inProgressPercent = computed(() =>
