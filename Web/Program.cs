@@ -24,7 +24,7 @@ public class Program
         };
 
         builder.Configuration.AddXmlConfig(configPath, env);
-
+        
         // 1. Add JWT bearer authentication
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -69,6 +69,7 @@ public class Program
                     context.User.HasClaim("cognito:groups", Roles.Admin) ||
                     context.User.HasClaim("cognito:groups", Roles.Manager)));
         });
+
 
         // Add services to the container.
         builder.Services.AddScoped<IAddressRepository, AddressRepository>();
@@ -122,7 +123,8 @@ public class Program
                 {
                     "Test" => builder.Configuration.GetConnectionString("E2ETestConnection"), // Playwright DB
                     "Development" => builder.Configuration.GetConnectionString("DefaultConnection"), // Dev DB
-                    "Production" => builder.Configuration.GetConnectionString("DefaultConnection"), // Prod DB (usually same key)
+                    "Production" => builder.Configuration
+                        .GetConnectionString("DefaultConnection"), // Prod DB (usually same key)
                     _ => builder.Configuration.GetConnectionString("DefaultConnection")
                 };
 

@@ -1,9 +1,15 @@
-﻿using Infrastructure;
+﻿using System.Net.Http.Headers;
+using Infrastructure;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Testing.IntegrationTests;
 using Web;
 
 public abstract class IntegrationTestBase : IAsyncLifetime
@@ -40,6 +46,38 @@ public abstract class IntegrationTestBase : IAsyncLifetime
                 // Add SQLite in-memory DbContext
                 services.AddDbContext<AppDbContext>(options =>
                     options.UseSqlite(_connection));
+                
+                // Remove all authentication handlers added by Program.cs
+                List<ServiceDescriptor> authHandlers = services
+                    .Where(s => s.ServiceType == typeof(IConfigureOptions<JwtBearerOptions>))
+                    .ToList();
+
+                foreach (ServiceDescriptor handler in authHandlers)
+                    services.Remove(handler);
+                
+                List<ServiceDescriptor> authOptions = services
+                    .Where(s => s.ServiceType == typeof(IConfigureOptions<AuthenticationOptions>))
+                    .ToList();
+
+                foreach (ServiceDescriptor opt in authOptions)
+                    services.Remove(opt);
+                
+                List<ServiceDescriptor> authZ = services
+                    .Where(s => s.ServiceType == typeof(IAuthorizationHandler)
+                                || s.ServiceType == typeof(IAuthorizationPolicyProvider)
+                                || s.ServiceType == typeof(IConfigureOptions<AuthorizationOptions>))
+                    .ToList();
+
+                foreach (ServiceDescriptor svc in authZ)
+                    services.Remove(svc);
+                
+                // add our own authentication
+                services.AddAuthentication("IntegrationTestScheme")
+                    .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("IntegrationTestScheme", options => { });
+                services.AddAuthorization(options =>
+                {
+                    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+                });
             });
         });
 
@@ -50,6 +88,8 @@ public abstract class IntegrationTestBase : IAsyncLifetime
 
         // HttpClient for testing
         Client = _factory.CreateClient();
+        Client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("IntegrationTestScheme");
     }
 
     public async Task DisposeAsync()

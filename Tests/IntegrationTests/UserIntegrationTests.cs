@@ -24,6 +24,7 @@ public class UserIntegrationTests : IntegrationTestBase
         Username = "USERNAME",
         Email =  "EMAIL@ADDRESS.COM",
         CreatedOn =  DateTime.Today,
+        PasswordHash = "PASSWORD_HASH",
     };
     
     private UserModel UserModel1 { get; } = new()
