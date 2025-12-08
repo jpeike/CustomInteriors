@@ -42,10 +42,10 @@ public class JobInvoiceControllerTests
     [Fact]
     public async Task GetJobInvoiceById_IdGreaterThanEqualsOne_ReturnsOk()
     {
-        _service.Setup(s => s.GetJobInvoiceById(It.IsAny<int>()))
+        _service.Setup(s => s.GetJobInvoiceById(It.IsAny<int>(), It.IsAny<int>()))
             .ReturnsAsync(JobInvoice);
 
-        var result = await _controller.GetJobInvoiceById(1);
+        var result = await _controller.GetJobInvoiceById(1, 1);
 
         Assert.IsType<OkObjectResult>(result.Result);
     }
@@ -53,10 +53,10 @@ public class JobInvoiceControllerTests
     [Fact]
     public async Task GetJobInvoiceById_IdLessThanOne_ReturnsBadRequest()
     {
-        _service.Setup(s => s.GetJobInvoiceById(It.IsAny<int>()))
+        _service.Setup(s => s.GetJobInvoiceById(It.IsAny<int>(), It.IsAny<int>()))
             .ReturnsAsync(JobInvoice);
 
-        var result = await _controller.GetJobInvoiceById(0);
+        var result = await _controller.GetJobInvoiceById(0, 0);
 
         Assert.IsType<BadRequestResult>(result.Result);
     }
@@ -86,10 +86,10 @@ public class JobInvoiceControllerTests
     [Fact]
     public async Task DeleteJobInvoice_IdGreaterThanEqualOne_Exists_ReturnsOkTrue()
     {
-        _service.Setup(s => s.DeleteJobInvoice(It.IsAny<int>()))
+        _service.Setup(s => s.DeleteJobInvoice(It.IsAny<int>(), It.IsAny<int>()))
             .ReturnsAsync(true);
 
-        var result = await _controller.DeleteJobInvoice(1);
+        var result = await _controller.DeleteJobInvoice(1, 1);
         Assert.IsType<OkObjectResult>(result.Result);
 
         var resultObj = result.Result as OkObjectResult;
@@ -102,10 +102,10 @@ public class JobInvoiceControllerTests
     [Fact]
     public async Task DeleteJobInvoice_IdGreaterThanEqualOne_DoesNotExists_ReturnsOkFalse()
     {
-        _service.Setup(s => s.DeleteJobInvoice(It.IsAny<int>()))
+        _service.Setup(s => s.DeleteJobInvoice(It.IsAny<int>(), It.IsAny<int>()))
             .ReturnsAsync(false);
 
-        var result = await _controller.DeleteJobInvoice(1);
+        var result = await _controller.DeleteJobInvoice(1, 1);
         Assert.IsType<OkObjectResult>(result.Result);
 
         var resultObj = result.Result as OkObjectResult;
@@ -118,10 +118,10 @@ public class JobInvoiceControllerTests
     [Fact]
     public async Task DeleteJobInvoice_IdLessThanOne_DoesNotExists_ReturnsBadRequest()
     {
-        _service.Setup(s => s.DeleteJobInvoice(It.IsAny<int>()))
+        _service.Setup(s => s.DeleteJobInvoice(It.IsAny<int>(), It.IsAny<int>()))
             .ReturnsAsync(false);
 
-        var result = await _controller.DeleteJobInvoice(0);
+        var result = await _controller.DeleteJobInvoice(0, 0);
 
         Assert.IsType<BadRequestResult>(result.Result);
     }
