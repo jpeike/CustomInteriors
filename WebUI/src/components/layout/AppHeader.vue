@@ -14,7 +14,7 @@
       <i class="pi pi-users"></i> <label>Users</label>
     </button>
 
-    <button class="btn-primary navButton" v-on:click="router.push('/jobs')">
+    <button class="btn-primary navButton" v-on:click="router.push(RoutePaths.JOBS)">
       <i class="pi pi-briefcase"></i> <label>Jobs</label>
     </button>
 
@@ -61,7 +61,7 @@ const items = ref([
   { label: 'Home', icon: 'pi pi-home', command: () => router.push(RoutePaths.HOME) },
   { label: 'About', icon: 'pi pi-info-circle', command: () => router.push(RoutePaths.ABOUT) },
   { label: 'Users', icon: 'pi pi-users', command: () => router.push(RoutePaths.USERS) },
-  { label: 'Jobs', icon: 'pi pi-briefcase', command: () => router.push('/jobs') }, // if Jobs not yet in enum
+  { label: 'Jobs', icon: 'pi pi-briefcase', command: () => router.push(RoutePaths.JOBS) }, 
   { label: 'Billing', icon: 'pi pi-wallet', command: () => router.push('/billing') }, // same
   {
     label: 'Customers',

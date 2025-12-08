@@ -127,6 +127,10 @@
             class="jobCompletionStatus pending bar"
             :style="{ width: pendingPercent + '%' }"
           ></div>
+          <div
+            class="jobCompletionStatus pastDue bar"
+            :style="{ width: pastDuePercent + '%' }"
+          ></div>
         </div>
 
         <div class="flex row bottomBar">
@@ -141,6 +145,10 @@
           <div class="flex row completionTitle">
             <div class="circle pending"></div>
             <p class="completionTitle">Pending</p>
+          </div>
+          <div class="flex row completionTitle">
+            <div class="circle pastDue"></div>
+            <p class="completionTitle">Past Due</p>
           </div>
         </div>
       </div>
@@ -161,6 +169,7 @@ const state = reactive({
   activeJobs: 0,
   pendingJobs: 0,
   completedJobs: 0,
+  pastDueJobs: 0,
   totalRevenue: 0,
   totalJobs: 0,
   loading: false,
@@ -168,9 +177,8 @@ const state = reactive({
 })
 
 const completedPercent = computed(() =>
-  state.totalJobs
-    ? ((state.totalJobs - state.activeJobs - state.pendingJobs) / state.totalJobs) * 100
-    : 0,
+    state.totalJobs ? (state.completedJobs / state.completedJobs) * 100 : 0,
+
 )
 
 const inProgressPercent = computed(() =>
@@ -179,6 +187,10 @@ const inProgressPercent = computed(() =>
 
 const pendingPercent = computed(() =>
   state.totalJobs ? (state.pendingJobs / state.totalJobs) * 100 : 0,
+)
+
+const pastDuePercent = computed(() =>
+  state.totalJobs ? (state.pastDueJobs / state.totalJobs) * 100 : 0,
 )
 
 onMounted(() => {
@@ -211,9 +223,10 @@ function fetchJobs() {
       state.totalJobs = jobs.length
       state.activeJobs = jobs.filter((j) => j.status === JobStatus.IN_PROGRESS).length
       state.completedJobs = jobs.filter((j) => j.status === JobStatus.COMPLETED).length
+      state.pastDueJobs = jobs.filter((j) => j.status === JobStatus.PAST_DUE).length
       // Anything NOT completed or in-progress is pending
       state.pendingJobs = jobs.filter(
-        (j) => j.status !== JobStatus.IN_PROGRESS && j.status !== JobStatus.COMPLETED,
+        (j) => j.status !== JobStatus.IN_PROGRESS && j.status !== JobStatus.COMPLETED && j.status !== JobStatus.PAST_DUE,
       ).length
     })
     .catch((error) => (state.error = error.message || 'An error occurred'))
@@ -405,6 +418,9 @@ function fetchJobs() {
 
 .pending {
   background-color: var(--chart-3);
+}
+.pastDue{
+  background-color: var(--chart-4);
 }
 
 .bar {
