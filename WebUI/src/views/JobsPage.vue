@@ -17,38 +17,36 @@
   <div v-else>
     <div class="flex column customerBody">
       <div class="flex row pageHeader">
-
       <div class="flex column leftPanel">
-          <h2 style="margin: 0; padding:0;">Customers</h2>
+          <h2 style="margin: 0;">Jobs</h2>
       </div>
 
       <div class="searchBarWrapper">
           <i class="pi pi-search"></i>
-          <InputText v-model="searchValue" type="text" class="searchBar" placeholder="Search" />
+          <InputText type="text" v-model="searchValue" class="searchBar" placeholder="Search" />
       </div>
 
       <div class="rightPanel">
-          <button class="addButton" @click="createCustomerDisplay()" data-testid="addCustomerButton">
-              <p style="margin: 0; text-align: center;">+New Customer</p>
+          <button class="addButton" @click="createJobDisplay()" data-testid="addCustomerButton">
+              <p style="margin: 0; text-align: center;">+New Job</p>
           </button>
           <ToggleButton
             v-model="showActiveOnly"
             onLabel="Active Only"
-            offLabel="All Customers"
+            offLabel="All Jobs"
             onIcon="pi pi-check"
             offIcon="pi pi-filter"
-            class="ml-3"/>
+            class="ml-3"
+            />
       </div>
   </div>
       <div v-if="!isLoading" class="flex row customerDisplay">
-          <CustomerCard
-            v-for="customer in filteredAndStatusCustomers"
-            :key="customer.customerId"
-            :customer="customer"
-            :email="formatEmail(customer.emails?.[0])"
-            :address="formatAddress(customer.addresses?.[0])"
-            @edit="editCustomerUI"
-            @delete="openDeleteModal(); getCustomerIndex(customer.customerId ?? 0);"
+          <JobsCard
+            v-for="job in filteredAndStatusJobs"
+            :key="job.customerId"
+            :job="job"
+            @edit="editJobUI"
+            @delete="openDeleteModal(); getJobIndex(job.jobId ?? 0);"
           />
 
       </div>
@@ -57,131 +55,118 @@
         <p>Loading...</p>
       </div>
     </div>
-
-    <div v-if="displayCustomerDetails" class="flex row customerWindowBlur">
-      <CustomerInformation
-        :currentCustomerInformation="currentCustomer"
-        :currentEmails="currentEmailAddresses"
-        :currentAddresses = "currentCustomerAddresses"
-        :title="customerTitle"
-        description="Create a customer"
-        :buttonDesctipnion="customerButtonDesc"
+    
+    
+    <div v-if="displayJobDetails" class="flex row customerWindowBlur">
+      <JobsInformation
+        :currentJobInformation="currentJob"
+        :customers="customers"
+        :title="jobTitle"
+        description="Create a Job"
+        :buttonDesctipnion="jobButtonDesc"
         @closePage="closePage"
-        @updateCustomerInformation="updateCustomerInformation">
-      </CustomerInformation>
+        @updateJobInformation="updateJobInformation">
+      </JobsInformation>
     </div>
 
+    
     <div v-if="deleteConfirmation" class="flex row customerWindowBlur">
       <deleteConfirmation
-        :currentInfo="customers[currentCustomerIndex]"
-        :title="(customers[currentCustomerIndex].firstName + ' ' + customers[currentCustomerIndex].lastName)"
+        :currentInfo="jobs[currentJobIndex]"
+        :title="(jobs[currentJobIndex].jobDescription)"
         @closePage="closeDeleteModal"
-        @deleteCustomer="handleDelete">
+        @deleteCustomer="handleDelete(jobs[currentJobIndex].jobId!)">
       </deleteConfirmation>
     </div>
+    
   </div>
 </template>
 
 <script setup lang="ts">
 
-import CustomerInformation from '../components/customers/CustomerInformation.vue';
 import DeleteConfirmation from '../components/DeleteConfirmation.vue';
-import CustomerCard from '../components/customers/CustomerCard.vue'
-import { CustomerModel, AddressModel, EmailModel} from '../client/client'
+import JobsCard from '../components/jobs/JobsCard.vue'
+import { JobAssignmentModel} from '../client/client'
 import { ref, computed } from 'vue'
 import { onMounted } from 'vue'
 import ToggleButton from 'primevue/togglebutton';
 import InputText from 'primevue/inputtext';
 import 'primeicons/primeicons.css'
-import { useAddresses } from '@/composables/useAddresses.ts'
-import { useCustomers } from '@/composables/useCustomers.ts'
-import { useEmails } from '@/composables/useEmails.ts'
-import { useCustomerSearch } from '@/composables/useCustomerSearch'
-import { useCustomerEditFlow } from '@/composables/useCustomerEditFlow'
-import { useCustomerModals } from '@/composables/useCustomerModals'
+import { useJobModals } from '@/composables/useJobModals'
+import { useJob } from '@/composables/useJobs';
+import { useJobEditFlow } from '@/composables/useJobEditFlow'
+import JobsInformation from '../components/jobs/JobsInformation.vue';
+import { useJobSearch } from '@/composables/useJobSearch'
 
+import { useCustomerModals } from '@/composables/useCustomerModals'
+import { useCustomers } from '@/composables/useCustomers.ts'
+
+const jobStore = useJob()
 const customersStore = useCustomers()
+
+const {
+  jobs,
+  jobsLoading,
+  jobsError,
+  fetchJobWithDetails,
+  checkPastDueJobs
+} = jobStore
+
 const {
   customers,
-  customersLoading,
-  customersError,
   fetchCustomersWithDetails,
 } = customersStore
 
-
-const addressesStore = useAddresses()
-const {
-  addressesLoading,
-  addressesError,
-  formatAddress
-} = addressesStore
-
-const emailsStore = useEmails()
-const {
-  emailsLoading,
-  emailsError,
-  formatEmail
-} = emailsStore
-
-const customerModalsStore = useCustomerModals({
-  customersStore,
-  addressesStore,
-  emailsStore,
+const jobModalsStore = useJobModals({
+  jobStore
 })
 
 const {
-    currentCustomer,
-    currentCustomerAddresses,
-    currentEmailAddresses,
-    currentCustomerIndex,
-    displayCustomerDetails,
-    customerModalLoading,
-    customerTitle,
-    customerDescription,
-    customerButtonDesc,
+    currentJob,
+    currentJobIndex,
+    displayJobDetails,
+    jobModalLoading,
+    jobTitle,
+    jobDescription,
+    jobButtonDesc,
     deleteConfirmation,
 
     closePage,
-    createCustomerDisplay,
-    editCustomerUI,
-    getCustomerIndex,
+    createJobDisplay,
+    editJobUI,
+    getJobIndex,
     openDeleteModal,
     closeDeleteModal
-   } = customerModalsStore
+} = jobModalsStore
 
-const customerEditFlow = useCustomerEditFlow({
-  customersStore,
-  addressesStore,
-  emailsStore,
-  customerModalsStore,
+const jobEditFlow = useJobEditFlow({
+  jobStore,
+  jobModalsStore,
 })
 
-const {updateCustomerInformation, handleDelete}  = customerEditFlow
-const { searchValue, filteredCustomers } = useCustomerSearch(customers)
+const {updateJobInformation, handleDelete}  = jobEditFlow
+const { searchValue, filteredJobs } = useJobSearch(jobs)
 
 const showActiveOnly = ref(false)
-const filteredAndStatusCustomers = computed(() => {
-  return filteredCustomers.value.filter(c =>
-    !showActiveOnly.value || c.status === 'Active'
+
+const filteredAndStatusJobs = computed(() => {
+  return filteredJobs.value.filter(c =>
+    !showActiveOnly.value || c.status === 'In Progress' || c.status === 'Past Due'
   )
 })
 
-onMounted(() => {
+onMounted(async () => {
   console.log('AboutView mounted')
+  await fetchJobWithDetails()
   fetchCustomersWithDetails()
 })
 
 const isLoading = computed(() =>
-  customersLoading.value ||
-  addressesLoading.value ||
-  emailsLoading.value    ||
-  customerModalLoading.value
+  jobsLoading.value
 )
 
 const isError = computed(() =>
-  customersError.value ||
-  addressesError.value ||
-  emailsError.value
+  jobsError.value
 )
 
 </script>
@@ -249,12 +234,13 @@ const isError = computed(() =>
 .addButton {
   border: none;
   height: 50%;
-  width: 12vw;
+  width: 150px;
   border-radius: 7px;
   padding: 0.5rem 1rem;
   margin-left: 1rem;
-  margin-right: 1rem;
   cursor: pointer;
+
+  /* Theme colors */
   background-color: var(--primary);
   color: var(--primary-foreground);
   transition: background-color 0.2s ease, transform 0.2s ease;
@@ -278,7 +264,7 @@ const isError = computed(() =>
 }
 
 .searchBar {
-  width: 40vw;
+  width: 100%;
   border: none;
   box-shadow: none;
   padding: 0.5rem;

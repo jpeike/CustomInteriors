@@ -7,6 +7,7 @@ export enum RoutePaths {
   USERS = '/users',
   EMPLOYEES = '/employees',
   CUSTOMERS = '/customers',
+  JOBS = '/jobs',
   EMAILS = '/emails',
   CALLBACK = '/callback',
   ERROR_PAGE = '/error/:code?',
