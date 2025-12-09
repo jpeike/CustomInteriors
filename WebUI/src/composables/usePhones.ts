@@ -1,13 +1,12 @@
 import { ref } from 'vue'
-import { PhoneModel, Client } from '@/client/client'
+import { PhoneModel } from '@/client/client'
 import { useToast } from '@/composables/useToast.ts'
+import { Client as client} from '@/client/apiClient'
 import type { PhonesStore } from '@/types/customerStores'
 
 export function usePhones() {
     const phonesLoading = ref(false)
     const phonesError = ref<string | null>(null)
-
-    const client = new Client(import.meta.env.VITE_API_BASE_URL)
 
     const { showSuccess, showError, showInfo, showWarning } = useToast()
 
