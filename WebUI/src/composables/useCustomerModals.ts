@@ -1,16 +1,18 @@
 import { ref } from 'vue'
-import { type CustomerModel, type AddressModel, type EmailModel, Client } from '@/client/client'
-import type { CustomersStore, AddressesStore, EmailsStore } from '@/types/customerStores'
+import { type CustomerModel, type AddressModel, type EmailModel, type PhoneModel, Client } from '@/client/client'
+import type { CustomersStore, AddressesStore, EmailsStore, PhonesStore } from '@/types/customerStores'
 
-export function useCustomerModals({addressesStore, emailsStore, customersStore}: {
+export function useCustomerModals({addressesStore, emailsStore, phonesStore, customersStore}: {
   customersStore: CustomersStore
   addressesStore: AddressesStore
   emailsStore: EmailsStore
+  phonesStore: PhonesStore
 }) {
 
   const currentCustomer = ref<CustomerModel | undefined>(undefined)
   const currentCustomerAddresses = ref<AddressModel[] | undefined>(undefined)
   const currentEmailAddresses = ref<EmailModel[] | undefined>(undefined)
+  const currentPhoneNumbers = ref<PhoneModel[] | undefined>(undefined)
   const currentCustomerIndex = ref(0)
   const displayCustomerDetails = ref<boolean | undefined>(undefined)
   const customerModalLoading = ref(false)
@@ -31,6 +33,7 @@ export function useCustomerModals({addressesStore, emailsStore, customersStore}:
     currentCustomer.value = undefined;
     currentEmailAddresses.value = undefined;
     currentCustomerAddresses.value = undefined;
+    currentPhoneNumbers.value = undefined;
   }
 
   function createCustomerDisplay() {
@@ -38,7 +41,7 @@ export function useCustomerModals({addressesStore, emailsStore, customersStore}:
     currentCustomerIndex.value = -1;
     displayCustomerDetails.value = true;
 
-    customerTitle.value = 'Create Customer';
+    customerTitle.value = 'Create a Customer';
     customerButtonDesc.value = 'Create';
   }
 
@@ -51,12 +54,14 @@ export function useCustomerModals({addressesStore, emailsStore, customersStore}:
     currentCustomer.value = selected
     currentCustomerAddresses.value = JSON.parse(JSON.stringify(selected!.addresses ?? []))
     currentEmailAddresses.value = JSON.parse(JSON.stringify(selected!.emails ?? []))
+    currentPhoneNumbers.value = JSON.parse(JSON.stringify(selected!.phones ?? []))
+    console.log(currentPhoneNumbers.value);
 
     customerModalLoading.value = true;
     displayCustomerDetails.value = true;
     customerModalLoading.value = false;
 
-    customerTitle.value = 'Update Customer';
+    customerTitle.value = 'Update a Customer';
     customerButtonDesc.value = 'Update';
   }
 
@@ -80,6 +85,7 @@ export function useCustomerModals({addressesStore, emailsStore, customersStore}:
     currentCustomer,
     currentCustomerAddresses,
     currentEmailAddresses,
+    currentPhoneNumbers,
     currentCustomerIndex,
     displayCustomerDetails,
     deleteConfirmation,

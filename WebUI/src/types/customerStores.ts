@@ -1,4 +1,4 @@
-import type { AddressModel, CustomerModel, EmailModel } from "@/client/client"
+import type { AddressModel, CustomerModel, EmailModel, PhoneModel } from "@/client/client"
 import type { Ref } from "vue"
 
 export interface CustomersStore {
@@ -14,7 +14,6 @@ export interface CustomersStore {
 export interface AddressesStore {
     addressesLoading: Ref<boolean>
     addressesError: Ref<string | null>
-    //fetchAddresses: () => Promise<void>
     formatAddress: (addr: AddressModel | undefined) => string
     createAddress: (a: AddressModel) => Promise<void>
     updateAddress: (a: AddressModel) => Promise<void>
@@ -24,10 +23,18 @@ export interface AddressesStore {
 export interface EmailsStore {
     emailsLoading: Ref<boolean>
     emailsError: Ref<string | null>
-    //fetchEmails: () => Promise<void>
     formatEmail: (addr: EmailModel | undefined) => string
     createEmail: (e: EmailModel) => Promise<void>
     updateEmail: (e: EmailModel) => Promise<void>
     deleteEmail: (id: number) => Promise<void>
+}
+
+export interface PhonesStore {
+    phonesLoading: Ref<boolean>
+    phonesError: Ref<string | null>
+    formatPhone: (addr: PhoneModel | undefined) => string
+    createPhone: (e: PhoneModel) => Promise<void>
+    updatePhone: (e: PhoneModel) => Promise<void>
+    deletePhone: (id: number) => Promise<void>
 }
 

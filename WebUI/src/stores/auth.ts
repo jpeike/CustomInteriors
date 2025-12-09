@@ -14,22 +14,18 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     init() {
       this.userManager = new UserManager({
-        authority: 'https://us-east-1jpmu56ifb.auth.us-east-1.amazoncognito.com',
-        client_id: '574mvan5pjeoifpt063t473se6',
+        authority: import.meta.env.VITE_COGNITO_DOMAIN,
+        client_id: import.meta.env.VITE_COGNITO_CLIENT_ID,
         redirect_uri: window.location.origin + '/callback',
         response_type: 'code',
         scope: 'openid profile email',
         post_logout_redirect_uri: window.location.origin,
         metadata: {
-          issuer: 'https://us-east-1jpmu56ifb.auth.us-east-1.amazoncognito.com',
-          authorization_endpoint:
-            'https://us-east-1jpmu56ifb.auth.us-east-1.amazoncognito.com/oauth2/authorize',
-          end_session_endpoint:
-            'https://us-east-1jpmu56ifb.auth.us-east-1.amazoncognito.com/logout',
-          token_endpoint:
-            'https://us-east-1jpmu56ifb.auth.us-east-1.amazoncognito.com/oauth2/token',
-          userinfo_endpoint:
-            'https://us-east-1jpmu56ifb.auth.us-east-1.amazoncognito.com/oauth2/userInfo',
+          issuer: import.meta.env.VITE_COGNITO_DOMAIN,
+          authorization_endpoint: import.meta.env.VITE_COGNITO_DOMAIN + '/oauth2/authorize',
+          end_session_endpoint: import.meta.env.VITE_COGNITO_DOMAIN + '/logout',
+          token_endpoint: import.meta.env.VITE_COGNITO_DOMAIN + '/oauth2/token',
+          userinfo_endpoint: import.meta.env.VITE_COGNITO_DOMAIN + '/oauth2/userInfo',
           jwks_uri:
             'https://cognito-idp.us-east-1.amazonaws.com/us-east-1_JPMU56Ifb/.well-known/jwks.json',
         },
@@ -71,8 +67,8 @@ export const useAuthStore = defineStore('auth', {
       this.userManager.clearStaleState() // cleans any pending state
 
       // redirect to Cognito logout
-      const domain = 'https://us-east-1jpmu56ifb.auth.us-east-1.amazoncognito.com'
-      const clientId = '574mvan5pjeoifpt063t473se6'
+      const domain = import.meta.env.VITE_COGNITO_DOMAIN
+      const clientId = import.meta.env.VITE_COGNITO_CLIENT_ID
       const logoutUri = encodeURIComponent(window.location.origin)
 
       window.location.href = `${domain}/logout?client_id=${clientId}&logout_uri=${logoutUri}`

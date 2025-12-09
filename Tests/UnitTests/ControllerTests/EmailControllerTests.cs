@@ -13,7 +13,7 @@ public class EmailControllerTests
     private EmailModel Email { get; } = new()
     {
         EmailId = 1,
-        CreatedOn = DateTime.Now,
+        //CreatedOn = DateTime.Now,
         CustomerId = 1,
         EmailAddress = "Email@Address.com",
         EmailType = "EmailType",

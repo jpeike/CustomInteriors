@@ -20,7 +20,7 @@ const customHttp = {
 }
 
 // Instantiate the NSwag-generated client with our custom http wrapper
-export const proxiedApi = new GeneratedApiClient('https://localhost:44351', customHttp)
+export const proxiedApi = new GeneratedApiClient(import.meta.env.VITE_API_BASE_URL, customHttp)
 
 // Example usage (optional helper functions)
 export async function getAllUsers(): Promise<UserModel[]> {
