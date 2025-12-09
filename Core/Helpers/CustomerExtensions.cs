@@ -13,7 +13,9 @@ public static class CustomerExtensions
         Status = customer.Status,
         CustomerNotes = customer.CustomerNotes,
         Addresses = includeDetails ? customer.Addresses?.Select(a => a.ToModel()).ToList() : null,
-        Emails = includeDetails ? customer.Emails?.Select(e => e.ToModel()).ToList() : null
+        Emails = includeDetails ? customer.Emails?.Select(e => e.ToModel()).ToList() : null,
+        Phones = includeDetails ? customer.Phones?.Select(e => e.ToModel()).ToList() : null
+
     };
 
     public static IEnumerable<CustomerModel> ToModels(this IEnumerable<Customer> customer, bool includeDetails = false)

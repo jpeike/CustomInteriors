@@ -22,7 +22,7 @@
                     {{ email }}
                 </div>
                 <div v-else-if="customer.prefferedContactMethod == 'Phone'" data-testid="customerPhone">
-                    Temp Phone
+                    {{ phone }}
                 </div>
                 <div v-else>
                     Not Listed
@@ -52,6 +52,7 @@ const props = defineProps<{
     customer: CustomerModel
     email: string | undefined
     address: string | undefined
+    phone: string | undefined
 }>()
 
 const emit = defineEmits<{

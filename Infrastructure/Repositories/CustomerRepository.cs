@@ -33,10 +33,11 @@ public class CustomerRepository : ICustomerRepository
             return await _dbContext.Customers
                        .Include(c => c.Addresses)
                        .Include(c => c.Emails)
+                       .Include(c => c.Phones)
                        .ToListAsync();
         }
 
-        return await _dbContext.Customers.Include(c => c.Emails).ToListAsync();
+        return await _dbContext.Customers.ToListAsync();
     }
 
     public async Task<Customer> AddCustomer(Customer customer)
