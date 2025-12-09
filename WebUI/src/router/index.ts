@@ -19,7 +19,7 @@ const router = createRouter({
       beforeEnter: async () => {
         const auth = useAuthStore()
         const roles = extractRoles(auth.user)
-        if (roles.includes(Roles.ADMIN)) {
+        if (roles.includes(Roles.ADMIN) || roles.includes(Roles.EMPLOYEE)) {
           return RoutePaths.DASHBOARD
         }
         if (roles.includes(Roles.CUSTOMER)) {
