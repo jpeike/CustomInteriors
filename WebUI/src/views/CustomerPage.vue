@@ -17,13 +17,14 @@
   <div v-else>
     <div class="flex column customerBody">
       <div class="flex row pageHeader">
+
       <div class="flex column leftPanel">
-          <h2 style="margin: 0;">Customers</h2>
+          <h2 style="margin: 0; padding:0;">Customers</h2>
       </div>
 
       <div class="searchBarWrapper">
           <i class="pi pi-search"></i>
-          <InputText v-model="searchValue" type="text" class="searchBar" placeholder="Search" />
+          <InputText v-model="searchValue" type="text" class="searchBar" placeholder="Search" data-testid="customerSearchInput"/>
       </div>
 
       <div class="rightPanel">
@@ -36,8 +37,7 @@
             offLabel="All Customers"
             onIcon="pi pi-check"
             offIcon="pi pi-filter"
-            class="ml-3"
-          />
+            class="ml-3"/>
       </div>
   </div>
       <div v-if="!isLoading" class="flex row customerDisplay">
@@ -47,6 +47,7 @@
             :customer="customer"
             :email="formatEmail(customer.emails?.[0])"
             :address="formatAddress(customer.addresses?.[0])"
+            :phone="formatPhone(customer.phones?.[0])"
             @edit="editCustomerUI"
             @delete="openDeleteModal(); getCustomerIndex(customer.customerId ?? 0);"
           />
@@ -63,8 +64,9 @@
         :currentCustomerInformation="currentCustomer"
         :currentEmails="currentEmailAddresses"
         :currentAddresses = "currentCustomerAddresses"
+        :currentPhones = "currentPhoneNumbers"
         :title="customerTitle"
-        :description="customerDescription"
+        description="Create a customer"
         :buttonDesctipnion="customerButtonDesc"
         @closePage="closePage"
         @updateCustomerInformation="updateCustomerInformation">
@@ -73,7 +75,7 @@
 
     <div v-if="deleteConfirmation" class="flex row customerWindowBlur">
       <deleteConfirmation
-        :currentCustomerInformation="customers[currentCustomerIndex]"
+        :currentInfo="customers[currentCustomerIndex]"
         :title="(customers[currentCustomerIndex].firstName + ' ' + customers[currentCustomerIndex].lastName)"
         @closePage="closeDeleteModal"
         @deleteCustomer="handleDelete">
@@ -96,6 +98,7 @@ import 'primeicons/primeicons.css'
 import { useAddresses } from '@/composables/useAddresses.ts'
 import { useCustomers } from '@/composables/useCustomers.ts'
 import { useEmails } from '@/composables/useEmails.ts'
+import { usePhones } from '@/composables/usePhones.ts'
 import { useCustomerSearch } from '@/composables/useCustomerSearch'
 import { useCustomerEditFlow } from '@/composables/useCustomerEditFlow'
 import { useCustomerModals } from '@/composables/useCustomerModals'
@@ -123,16 +126,25 @@ const {
   formatEmail
 } = emailsStore
 
+const phonesStore = usePhones()
+const {
+  phonesLoading,
+  phonesError,
+  formatPhone
+} = phonesStore
+
 const customerModalsStore = useCustomerModals({
   customersStore,
   addressesStore,
   emailsStore,
+  phonesStore
 })
 
 const {
     currentCustomer,
     currentCustomerAddresses,
     currentEmailAddresses,
+    currentPhoneNumbers,
     currentCustomerIndex,
     displayCustomerDetails,
     customerModalLoading,
@@ -153,6 +165,7 @@ const customerEditFlow = useCustomerEditFlow({
   customersStore,
   addressesStore,
   emailsStore,
+  phonesStore,
   customerModalsStore,
 })
 
@@ -249,13 +262,12 @@ const isError = computed(() =>
 .addButton {
   border: none;
   height: 50%;
-  width: 150px;
+  width: 12vw;
   border-radius: 7px;
   padding: 0.5rem 1rem;
   margin-left: 1rem;
+  margin-right: 1rem;
   cursor: pointer;
-
-  /* Theme colors */
   background-color: var(--primary);
   color: var(--primary-foreground);
   transition: background-color 0.2s ease, transform 0.2s ease;
@@ -279,7 +291,7 @@ const isError = computed(() =>
 }
 
 .searchBar {
-  width: 100%;
+  width: 40vw;
   border: none;
   box-shadow: none;
   padding: 0.5rem;

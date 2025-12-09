@@ -1,5 +1,6 @@
 import { ref } from 'vue'
-import { CustomerModel, CustomerUpdateModel, CustomerCreateModel, AddressModel, EmailModel, Client } from '@/client/client'
+import { CustomerModel, CustomerUpdateModel, CustomerCreateModel, AddressModel, EmailModel } from '@/client/client'
+import { Client as client } from '@/client/apiClient'
 import { useToast } from '@/composables/useToast.ts'
 import type { CustomersStore } from '@/types/customerStores'
 
@@ -7,7 +8,6 @@ export function useCustomers() {
     const customersLoading = ref(false)
     const customersError = ref<string | null>(null)
     const customers = ref<CustomerModel[]>([])
-    const client = new Client(import.meta.env.VITE_API_BASE_URL)
     const { showSuccess, showError } = useToast()
 
     async function fetchCustomersWithDetails() {

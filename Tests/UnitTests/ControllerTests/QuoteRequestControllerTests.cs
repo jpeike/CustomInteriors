@@ -67,8 +67,8 @@ public class QuoteRequestControllerTests
     {
         _service.Setup(s => s.CreateQuoteRequest(It.IsAny<QuoteRequestModel>()))
             .ReturnsAsync(QuoteRequest);
-
-        var result = await _controller.CreateQuoteRequest(QuoteRequest);
+        var toReturn = new CreateQuoteRequestModel();
+        var result = await _controller.CreateQuoteRequest(toReturn);
 
         Assert.IsType<OkObjectResult>(result.Result);
     }

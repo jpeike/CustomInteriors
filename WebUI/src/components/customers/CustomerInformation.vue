@@ -4,7 +4,6 @@
             <div class="flex row customerInfoBar">
                 <div class="flex column customerInfoTitle">
                     <h2 class="titleText">{{ title }}</h2>
-                    <p class="subtitleText">{{ description }}</p>
                 </div>
             </div>
 
@@ -66,6 +65,31 @@
                     <p class="buttonText" data-testid="addEmailButton">Add Email</p>
                 </button>
             </div>
+        <!-- Phone Section -->
+
+        <div class="sectionMargin" v-for="(phoneNumbers, index) in state.listOfPhones" data-testid="customerPhoneForm" :data-phone-id="phoneNumbers.phoneId">
+
+                <div class="flex row addressHeader">
+                    <h2 class="sectionHeader">Phone {{ index + 1 }}</h2>
+                    <i class="pi pi-trash editButton" @click="deletePhone(state.listOfPhones[index]); state.listOfPhones.splice(index, 1);" data-testid="removePhoneButton"></i>
+                    </div>
+                <div class="flex row multipleFields">
+                    <div>
+                        <h3 class="fieldTitle">Phone Number * </h3>
+                        <InputText v-model="phoneNumbers.phoneNumber" type="text" class="inputValue" :placeholder="state.listOfPhones[index].phoneNumber" data-testid="customerFormPhoneAddress"></InputText>
+                    </div>
+                    <div>
+                        <h3 class="fieldTitle">Type * </h3>
+                        <InputText v-model="phoneNumbers.phoneType" type="text" class="inputValue" :placeholder="state.listOfPhones[index].phoneType" data-testid="customerFormPhoneType"></InputText>
+                    </div>
+                </div>
+            </div>
+
+            <div class="addPhone">
+                <button @click="addPhone" class="cancelUpdateButton">
+                    <p class="buttonText" data-testid="addPhoneButton">Add Phone</p>
+                </button>
+            </div>
 
         <!--Address Section-->
             <div class="addressField" v-for="(address, index) in state.listOfAddresses" data-testid="customerAddressForm" :data-address-id="address.addressId">
@@ -76,24 +100,24 @@
 
                 <div>
                     <h3 class="fieldTitle">Street Address *</h3>
-                    <InputText v-model="address.street" required type="text" class="inputValue"
+                    <InputText v-model="address.street" v-google-autocomplete="address" required type="text" class="inputValue"
                         :placeholder="address.street ?? 'Street'" data-testid="customerFormStreet" />
                 </div>
                 <div>
                     <h3 class="fieldTitle">Country</h3>
-                    <InputText v-model="address.country" type="text" class="inputValue"
+                    <InputText v-model="address.country" v-google-autocomplete="address"type="text" class="inputValue"
                         :placeholder="address.country ?? 'Country'" data-testid="customerFormCountry" />
                 </div>
 
                 <div class="flex row multipleFields">
                     <div class="tripleField">
                         <h3 class="fieldTitle">City *</h3>
-                        <InputText v-model="address.city" required type="text" class="inputValue"
+                        <InputText v-model="address.city" v-google-autocomplete="address"required type="text" class="inputValue"
                             :placeholder="address.city ?? 'City'" data-testid="customerFormCity" />
                     </div>
                     <div class="tripleField">
                         <h3 class="fieldTitle">State *</h3>
-                        <InputText v-model="address.state" required type="text" class="inputValue"
+                        <InputText v-model="address.state" v-google-autocomplete="address"required type="text" class="inputValue"
                             :placeholder="address.state ?? 'State'" data-testid="customerFormState" />
                     </div>
                     <div class="tripleField">
@@ -359,10 +383,11 @@
 
 <script setup lang="ts">
     import 'primeicons/primeicons.css';
-    import { Client, CustomerModel, AddressModel, EmailModel} from '../../client/client'
+    import { Client, CustomerModel, AddressModel, EmailModel, PhoneModel} from '../../client/client'
     import InputText from 'primevue/inputtext';
     import {reactive, ref} from 'vue'
     import { useToast } from '@/composables/useToast.ts'
+import { list } from '@primeuix/themes/aura/autocomplete';
 
     const { showWarning } = useToast()
 
@@ -370,6 +395,7 @@
         currentCustomerInformation: CustomerModel | undefined,
         currentAddresses: AddressModel[] | undefined,
         currentEmails: EmailModel[] | undefined,
+        currentPhones: PhoneModel[] | undefined,
         title: String,
         description: String,
         buttonDesctipnion: String
@@ -377,13 +403,14 @@
 
     const emit = defineEmits<{
         closePage: []
-        updateCustomerInformation: [customer: CustomerModel, listOfAddresses: AddressModel[], removedAddresses: number[], listOfEmails: EmailModel[], removedEmails: number[]]
+        updateCustomerInformation: [customer: CustomerModel, listOfAddresses: AddressModel[], removedAddresses: number[], listOfEmails: EmailModel[], removedEmails: number[], listOfPhones: PhoneModel[], removedPhones: number[]]
     }>()
 
     const state = reactive({
         loading: false,
         listOfEmails: ref([new EmailModel]),
-        listOfAddresses: ref([new AddressModel])
+        listOfAddresses: ref([new AddressModel]),
+        listOfPhones: ref([new PhoneModel])
     })
 
     const newEmail = ref('');
@@ -395,6 +422,7 @@
 
     let removedAddresses = [0];
     let removedEmails = [0];
+    let removedPhones = [0];
 
     if (props.currentCustomerInformation != undefined){
         var temp = JSON.stringify(props.currentCustomerInformation);
@@ -409,6 +437,11 @@
     if (props.currentEmails != undefined){
         var temp = JSON.stringify(props.currentEmails);
         state.listOfEmails = JSON.parse(temp);
+    }
+
+    if (props.currentPhones != undefined){
+        var temp = JSON.stringify(props.currentPhones);
+        state.listOfPhones = JSON.parse(temp);
     }
 
     function addAddress(){
@@ -428,6 +461,16 @@
     function deleteEmail(email: EmailModel){
         if (email.emailId! != undefined){
             removedEmails.push(email.emailId);
+        }
+    }
+
+    function addPhone(){
+        state.listOfPhones.push(new PhoneModel);
+    }
+
+    function deletePhone(phone: PhoneModel){
+        if (phone.phoneId! != undefined){
+            removedPhones.push(phone.phoneId);
         }
     }
 
@@ -460,12 +503,31 @@
             }
         }
 
+        for (let i = 0; i < state.listOfPhones.length; i++) {
+            const phone = state.listOfPhones[i];
+
+            if (!phone.phoneNumber || !phone.phoneType) {
+                showWarning(`Phone ${i + 1} has one or more fields that are not valid`);
+                return;
+            }
+
+            // Validate phone number
+            // Accept formats like: 1234567890, (123)456-7890, 123-456-7890, 123.456.7890
+            const phoneRegex = /^\s*(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\s*$/;
+
+            if (!phoneRegex.test(phone.phoneNumber)) {
+                showWarning(`Phone ${i + 1} number is not valid`);
+                return;
+            }
+        }
+
         checkForNoChanges();
 
         message.value = 'Address Successfully Created'
         console.log(customer.value);
-        emit('updateCustomerInformation', customer.value, state.listOfAddresses, removedAddresses, state.listOfEmails, removedEmails);
+        emit('updateCustomerInformation', customer.value, state.listOfAddresses, removedAddresses, state.listOfEmails, removedEmails, state.listOfPhones, removedPhones);
     }
+    
 
     function checkForNoChanges(){
         if (props.currentCustomerInformation != undefined){
@@ -489,6 +551,16 @@
                 for (let j = i; j < props.currentEmails.length; j++){
                     if (JSON.stringify(state.listOfEmails[i]) == JSON.stringify(props.currentEmails[j])){
                         state.listOfEmails.splice(i, 1);
+                    }
+                }
+            }
+        }
+
+        for (let i = 0; i < state.listOfPhones.length; i++){
+            if (props.currentPhones != undefined){
+                for (let j = i; j < props.currentPhones.length; j++){
+                    if (JSON.stringify(state.listOfPhones[i]) == JSON.stringify(props.currentPhones[j])){
+                        state.listOfPhones.splice(i, 1);
                     }
                 }
             }

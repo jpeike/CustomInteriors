@@ -1,5 +1,6 @@
 import { ref } from 'vue'
-import { AddressModel, Client } from '@/client/client'
+import { AddressModel } from '@/client/client'
+import { Client as client} from '@/client/apiClient'
 import { useToast } from '@/composables/useToast.ts'
 import type { AddressesStore } from '@/types/customerStores'
 
@@ -7,7 +8,6 @@ export function useAddresses() {
     const addressesLoading = ref(false)
     const addressesError = ref<string | null>(null)
 
-    const client = new Client(import.meta.env.VITE_API_BASE_URL)
 
     const { showSuccess, showError, showInfo, showWarning } = useToast()
 

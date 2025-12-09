@@ -18,6 +18,7 @@
 
   /* Accent & Secondary */
   --secondary: #f0f1ff;
+  --secondary-foreground: #1a1f36;
   --accent: #f0fdfa;
 
   /* Destructive */
@@ -27,13 +28,6 @@
   /* Borders & Inputs */
   --border: #e2e8f0;
   --input-background: #f8fafc;
-
-  /* Charts */
-  --chart-1: #6366f1;
-  --chart-2: #14b8a6;
-  --chart-3: #f59e0b;
-  --chart-4: #ec4899;
-  --chart-5: #8b5cf6;
 
   /* Sidebar */
   --sidebar: #ffffff;
@@ -45,25 +39,35 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* Chart colors */
+  --chart-1: #6366f1;
+  --chart-2: #14b8a6;
+  --chart-3: #f59e0b;
+  --chart-4: #d91737;
+  --chart-5: #8b5cf6;
 }
 
-/* Dark mode overrides */
-.dark {
-  --background: oklch(0.145 0 0);
-  --card: oklch(0.145 0 0);
-  --popover: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --accent: oklch(0.269 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
-  --input-background: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
+/* Dark mode for users with dark preference */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: oklch(0.145 0 0);
+    --card: oklch(0.145 0 0);
+    --popover: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --primary: oklch(0.985 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+    --secondary: oklch(0.269 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+    --accent: oklch(0.269 0 0);
+    --destructive: oklch(0.396 0.141 25.723);
+    --destructive-foreground: oklch(0.637 0.237 25.331);
+    --border: oklch(0.269 0 0);
+    --input-background: oklch(0.269 0 0);
+    --sidebar: oklch(0.205 0 0);
+    --sidebar-primary: oklch(0.488 0.243 264.376);
+  }
 }
 
 /* Typography */
@@ -78,28 +82,15 @@ h1, h2, h3, h4, p, label, button, input {
   margin-bottom: 0.75rem;
 }
 
-h1 {
-  font-size: 2rem;
-  font-weight: var(--font-weight-medium);
-}
-
-h2 {
-  font-size: 1.5rem;
-  font-weight: var(--font-weight-medium);
-}
-
-h3 {
-  font-size: 1.25rem;
-  font-weight: var(--font-weight-medium);
-}
-
-h4, p, label, button, input {
-  font-size: 1rem;
-  font-weight: var(--font-weight-normal);
-}
+h1 { font-size: 2rem; font-weight: var(--font-weight-medium); }
+h2 { font-size: 1.5rem; font-weight: var(--font-weight-medium); }
+h3 { font-size: 1.25rem; font-weight: var(--font-weight-medium); }
+h4, p, label, button, input { font-size: 1rem; font-weight: var(--font-weight-normal); }
 
 body {
   font-family: 'Inter', 'Roboto', system-ui, sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
 }
 
 /* Base Styling */
@@ -108,21 +99,83 @@ body {
   outline-color: var(--primary);
 }
 
-body {
-  background-color: var(--background);
-  color: var(--foreground);
-}
-
-/* Example Button */
+/* Buttons */
 .btn-primary {
   background-color: var(--primary);
   color: var(--primary-foreground);
   border-color: var(--primary);
   border-radius: var(--radius-lg);
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .btn-primary:hover {
   background-color: var(--secondary);
   color: var(--secondary-foreground);
+}
+
+/* SideNav */
+.sideNav {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 15vw;
+  padding: 0.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--sidebar);
+  border: 1px solid var(--border);
+  border-radius: 0 10px 10px 0;
+  box-shadow: var(--p-card-shadow);
+  transition: transform 0.25s ease, width 0.25s ease;
+}
+
+/* Buttons inside SideNav */
+.navButton {
+  width: 100%;
+  border: none;
+  border-radius: 7px;
+  padding: 0.5rem;
+  cursor: pointer;
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  transition: 0.2s ease;
+  font-size: 1rem;
+}
+
+.navButton:hover {
+  background-color: var(--secondary);
+  color: var(--secondary-foreground);
+  transform: scale(1.05);
+}
+
+/* Hamburger & Close buttons */
+.hamburger {
+  display: none;
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 999;
+}
+
+.closeButton {
+  display: none;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: var(--foreground);
+  background: var(--card);
+  border: none;
+  padding: 0.4rem 0.6rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 1001;
 }

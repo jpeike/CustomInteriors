@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Core;
+﻿using Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 // https://www.geeksforgeeks.org/system-design/difference-between-rest-api-and-rpc-api/
 //https://restfulapi.net/resource-naming/
@@ -10,6 +11,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace Web;
 
 [ApiController]
+[Authorize(Policy = Policies.EmployeeOrAdmin)]
 [Route("api/addresses")]
 public class AddressController : ControllerBase
 {

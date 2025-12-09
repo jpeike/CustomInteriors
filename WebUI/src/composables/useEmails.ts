@@ -1,14 +1,13 @@
 
 import { ref } from 'vue'
-import { EmailModel, Client } from '@/client/client'
+import { EmailModel } from '@/client/client'
+import { Client as client} from '@/client/apiClient'
 import { useToast } from '@/composables/useToast.ts'
 import type { EmailsStore } from '@/types/customerStores'
 
 export function useEmails() {
     const emailsLoading = ref(false)
     const emailsError = ref<string | null>(null)
-
-    const client = new Client(import.meta.env.VITE_API_BASE_URL)
 
     const { showSuccess, showError } = useToast()
 

@@ -1,17 +1,61 @@
 import { createRouter, createWebHistory, type RouteRecordRaw, type RouteLocation } from 'vue-router'
-import HomePage from '../views/HomePage.vue'
+import Dashboard from '../views/Dashboard.vue'
 import { Roles } from '@/enums/Roles'
 import AuthGuard from './guards/AuthGuard'
 import RoleGuard from './guards/RoleGuards'
+import LandingPage from '@/views/LandingPage.vue'
 import { RouteNames } from '@/enums/RouteNames'
 import { RoutePaths } from '@/enums/RoutePaths'
+import { useAuthStore } from '@/stores/auth'
+import QuoteRequest from '@/views/QuoteRequest.vue'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: RoutePaths.HOME,
-      name: RouteNames.HOME,
-      component: HomePage,
+      path: RoutePaths.LANDING_REDIRECT,
+      name: RouteNames.LANDING_REDIRECT,
+      component: { template: '<div></div>' },
+      beforeEnter: async () => {
+        const auth = useAuthStore()
+        const roles = extractRoles(auth.user)
+        if (roles.includes(Roles.ADMIN) || roles.includes(Roles.EMPLOYEE)) {
+          return RoutePaths.DASHBOARD
+        }
+        if (roles.includes(Roles.CUSTOMER)) {
+          return RoutePaths.QUOTE_REQUEST
+        }
+        if (!auth.isLoggedIn) {
+          return RoutePaths.LANDING
+        }
+        return RoutePaths.QUOTE_REQUEST
+      },
+    },
+    {
+      path: RoutePaths.DASHBOARD,
+      name: RouteNames.DASHBOARD,
+      component: Dashboard,
+      meta: {
+        requiresAuth: true,
+        roles: [Roles.ADMIN],
+      },
+    },
+    {
+      path: RoutePaths.LANDING,
+      name: RouteNames.LANDING,
+      component: LandingPage,
+      meta: {
+        layout: 'none',
+      },
+    },
+    {
+      path: RoutePaths.QUOTE_REQUEST,
+      name: RouteNames.QUOTE_REQUEST,
+      component: QuoteRequest,
+      meta: {
+        layout: 'none',
+        requiresAuth: true,
+      },
     },
     {
       path: RoutePaths.ABOUT,
@@ -23,11 +67,10 @@ const router = createRouter({
       name: RouteNames.USERS,
       component: () => import('../views/UserPage.vue'),
       meta: {
-        requiresAuth: false,
+        requiresAuth: true,
         roles: [Roles.ADMIN],
       },
     },
-    // ... your other routes
     {
       path: RoutePaths.CALLBACK,
       name: RouteNames.CALLBACK,
@@ -38,6 +81,15 @@ const router = createRouter({
       name: RouteNames.CUSTOMERS,
       component: () => import('../views/CustomerPage.vue'),
       meta: {
+        requiresAuth: true,
+        roles: [Roles.ADMIN, Roles.EMPLOYEE],
+      },
+    },
+    {
+      path: RoutePaths.JOBS,
+      name: RouteNames.JOBS,
+      component: () => import('../views/JobsPage.vue'),
+      meta: {
         requiresAuth: false,
       },
     },
@@ -46,8 +98,8 @@ const router = createRouter({
       name: RouteNames.EMPLOYEES,
       component: () => import('../views/EmployeePage.vue'),
       meta: {
-        requiresAuth: false,
-        roles: ['FAKE ROLE NO ONE WILL HAVE'],
+        requiresAuth: true,
+        roles: [Roles.ADMIN],
       },
     },
     {
@@ -66,6 +118,9 @@ const router = createRouter({
         params: { code: '404' },
         query: { routeName: to.fullPath },
       }),
+      meta: {
+        layout: 'none',
+      },
     },
   ] satisfies RouteRecordRaw[],
 })
@@ -74,3 +129,9 @@ router.beforeEach(AuthGuard)
 router.beforeEach(RoleGuard)
 
 export default router
+
+function extractRoles(user: any): string[] {
+  const raw = user?.profile?.['cognito:groups'] ?? []
+
+  return raw
+}

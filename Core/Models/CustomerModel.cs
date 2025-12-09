@@ -38,7 +38,9 @@ public class CustomerModel
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public ICollection<EmailModel>? Emails { get; set; }
-    //public ICollection<PhoneModel>? Phones { get; set; } = new List<PhoneModel>();
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public ICollection<PhoneModel>? Phones { get; set; } = new List<PhoneModel>();
     // public ICollection<JobModel>? Jobs { get; set; } = new List<JobModel>();
     // //public ICollection<QuoteRequestModel>? QuoteRequests { get; set; } = new List<QuoteRequestModel>();
     // public UserModel? User { get; set; }

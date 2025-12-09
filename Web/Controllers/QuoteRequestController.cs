@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Core;
+﻿using Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web;
 
 [ApiController]
+[Authorize(Policy = Policies.EmployeeOrAdmin)]
 [Route("api/quoteRequests")]
 public class QuoteRequestController : ControllerBase
 {
@@ -31,10 +31,18 @@ public class QuoteRequestController : ControllerBase
     }
 
     [HttpPost("", Name = "CreateQuoteRequest")]
-    public async Task<ActionResult<QuoteRequestModel>> CreateQuoteRequest([FromBody] QuoteRequestModel quoteRequestModel)
+    [Authorize(Policy = Policies.AnyUser)]
+    public async Task<ActionResult<QuoteRequestModel>> CreateQuoteRequest([FromBody] CreateQuoteRequestModel quoteRequestModel)
     {
+        var toAdd = new QuoteRequestModel();
+        toAdd.DescriptionOfWork = quoteRequestModel.DescriptionOfWork;
+        toAdd.EstimatedPrice = quoteRequestModel.EstimatedPrice;
+        toAdd.JobId = quoteRequestModel.JobId;
+        toAdd.QuoteId = 0;
+        toAdd.RequestDate = DateTime.Now;
+
         if (!ModelState.IsValid) return BadRequest();
-        return Ok(await _quoteRequestService.CreateQuoteRequest(quoteRequestModel));
+        return Ok(await _quoteRequestService.CreateQuoteRequest(toAdd));
     }
 
     [HttpPut("", Name = "UpdateQuoteRequest")]
