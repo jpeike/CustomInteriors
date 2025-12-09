@@ -28,7 +28,7 @@ const router = createRouter({
         if (!auth.isLoggedIn) {
           return RoutePaths.LANDING
         }
-        return RoutePaths.ABOUT
+        return RoutePaths.QUOTE_REQUEST
       },
     },
     {
