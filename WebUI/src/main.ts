@@ -13,6 +13,9 @@ import ToastService from 'primevue/toastservice'
 import { useAuthStore } from './stores/auth' // <-- make sure to import
 
 const app = createApp(App)
+// Register Pinia first
+const pinia = createPinia()
+app.use(pinia)
 
 const MyPreset = definePreset(Aura, {
   semantic: {
@@ -38,9 +41,7 @@ app.use(PrimeVue, {
   },
 })
 
-// Register Pinia first
-const pinia = createPinia()
-app.use(pinia)
+
 
 app.use(router)
 

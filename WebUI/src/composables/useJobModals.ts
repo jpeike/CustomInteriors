@@ -1,5 +1,6 @@
 import { ref } from 'vue'
-import { type JobModel, type AddressModel, type EmailModel, Client } from '@/client/client'
+import { type JobModel, type AddressModel, type EmailModel } from '@/client/client'
+import { Client as client} from '@/client/apiClient'
 import type { JobStore, AddressesStore } from '@/types/jobStore'
 
 export function useJobModals({jobStore}: {
@@ -12,7 +13,6 @@ export function useJobModals({jobStore}: {
   const jobModalLoading = ref(false)
   const selectedJobId = ref<number | null>(null)
   const deleteConfirmation = ref(false);
-  const client = new Client(import.meta.env.VITE_API_BASE_URL)
 
   const jobTitle = ref('')
   const jobDescription = ref('')

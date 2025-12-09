@@ -1,12 +1,14 @@
-﻿using System;
+﻿using Core;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Core;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Web;
 
 [ApiController]
+[Authorize(Policy = Policies.EmployeeOrAdmin)]
 [Route("api/emails")]
 public class EmailsController : ControllerBase
 {
