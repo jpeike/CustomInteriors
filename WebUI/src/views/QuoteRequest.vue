@@ -62,7 +62,7 @@ async function createQuoteRequest() {
     const newRequest = new CreateQuoteRequestModel();
     newRequest.descriptionOfWork = form.descriptionOfWork || '';
     newRequest.estimatedPrice = form.estimatedPrice ?? undefined;
-
+    newRequest.jobId = 1; // Placeholder job ID for Demo
     console.log('Creating Quote Request:', newRequest);
     await client.createQuoteRequest(newRequest);
     showSuccess('Quote Request Created Successfully');
