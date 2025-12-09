@@ -25,7 +25,7 @@
 <script setup lang="ts">
 import Card from 'primevue/card'
 import { UserModel } from '../client/client'
-import { proxiedApi as Client } from '@/client/apiClient'
+import { Client as client } from '@/client/apiClient'
 import { onMounted, reactive } from 'vue'
 
 const state = reactive({
@@ -42,7 +42,7 @@ onMounted(() => {
 function fetchUsers() {
   state.loading = true
   state.error = null
-  Client.getAllUsers()
+  client.getAllUsers()
     .then((response) => {
       state.users = response
     })

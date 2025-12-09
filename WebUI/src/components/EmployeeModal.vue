@@ -2,7 +2,6 @@
 import 'primeicons/primeicons.css';
 import { EmployeeModel } from '../client/client'
 import InputText from 'primevue/inputtext';
-import Button from 'primevue/button';
 
 
 defineEmits(['closePage', 'updateFunction', 'deleteFunction']);
@@ -37,11 +36,11 @@ if (props.selectedEmployee) employee = new EmployeeModel(props.selectedEmployee)
       </div>
       <div>
         <h3 class="fieldTitle">Email Id</h3>
-        <InputText v-model="employee.emailId" type="number" class="inputValue"></InputText>
+        <InputNumber v-model="employee.emailId" type="number" class="inputValue"></InputNumber>
       </div>
       <div>
         <h3 class="fieldTitle">Account Id</h3>
-        <InputText v-model="employee.accountId" type="number" class="inputValue"></InputText>
+        <InputNumber v-model="employee.accountId" type="number" class="inputValue"></InputNumber>
       </div>
       <div class="flex row buttons">
         <button class="cancelUpdateButton" @click="$emit('closePage')">

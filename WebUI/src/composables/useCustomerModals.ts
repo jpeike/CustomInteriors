@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { type CustomerModel, type AddressModel, type EmailModel, Client } from '@/client/client'
+import { type CustomerModel, type AddressModel, type EmailModel } from '@/client/client'
 import type { CustomersStore, AddressesStore, EmailsStore } from '@/types/customerStores'
 
 export function useCustomerModals({addressesStore, emailsStore, customersStore}: {
@@ -16,7 +16,6 @@ export function useCustomerModals({addressesStore, emailsStore, customersStore}:
   const customerModalLoading = ref(false)
   const selectedCustomerId = ref<number | null>(null)
   const deleteConfirmation = ref(false);
-  const client = new Client(import.meta.env.VITE_API_BASE_URL)
 
   const customerTitle = ref('')
   const customerDescription = ref('')

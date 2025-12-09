@@ -359,7 +359,7 @@
 
 <script setup lang="ts">
     import 'primeicons/primeicons.css';
-    import { Client, CustomerModel, AddressModel, EmailModel} from '../../client/client'
+    import { CustomerModel, AddressModel, EmailModel} from '../../client/client'
     import InputText from 'primevue/inputtext';
     import {reactive, ref} from 'vue'
     import { useToast } from '@/composables/useToast.ts'

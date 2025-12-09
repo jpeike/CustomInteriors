@@ -150,12 +150,11 @@
 
 <script setup lang="ts">
 import Card from 'primevue/card'
-import { Client, CustomerModel, AddressModel } from '../client/client'
+import { Client as client} from '../client/apiClient'
 import { onMounted, reactive } from 'vue'
 import { computed } from 'vue'
 import { JobStatus } from '@/enums/JobStatus'
 
-const client = new Client(import.meta.env.VITE_API_BASE_URL)
 const state = reactive({
   totalCustomers: 0,
   activeJobs: 0,
