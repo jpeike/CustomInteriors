@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-    import { Client, CustomerModel, JobModel } from '../client/client'
+    import { CustomerModel, JobModel } from '../client/client'
 
     const props = defineProps({
        currentInfo: Object,

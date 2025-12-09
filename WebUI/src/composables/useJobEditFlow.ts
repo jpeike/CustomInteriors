@@ -1,5 +1,5 @@
 import { useToast } from './useToast'
-import { JobModel, AddressModel, EmailModel, Client } from '@/client/client'
+import { JobModel, AddressModel, EmailModel } from '@/client/client'
 import type { JobStore, AddressesStore } from '@/types/jobStore'
 import type { useJobModals } from './useJobModals'
 

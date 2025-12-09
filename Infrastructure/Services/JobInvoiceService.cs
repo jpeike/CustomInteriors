@@ -17,9 +17,9 @@ public class JobInvoiceService : IJobInvoiceService
         return toReturn.ToModel();
     }
 
-    public async Task<bool> DeleteJobInvoice(int id)
+    public async Task<bool> DeleteJobInvoice(int jobId, int invoiceId)
     {
-        return await _jobInvoiceRepository.DeleteJobInvoice(id);
+        return await _jobInvoiceRepository.DeleteJobInvoice(jobId, invoiceId);
     }
 
     public async Task<IEnumerable<JobInvoiceModel>> GetAllJobInvoices()
@@ -28,9 +28,9 @@ public class JobInvoiceService : IJobInvoiceService
         return allJobInvoices.ToModels();
     }
 
-    public async Task<JobInvoiceModel?> GetJobInvoiceById(int id)
+    public async Task<JobInvoiceModel?> GetJobInvoiceById(int jobId, int invoiceId)
     {
-        JobInvoice? jobInvoice = await _jobInvoiceRepository.GetJobInvoiceById(id);
+        JobInvoice? jobInvoice = await _jobInvoiceRepository.GetJobInvoiceById(jobId, invoiceId);
         return jobInvoice?.ToModel();
     }
 

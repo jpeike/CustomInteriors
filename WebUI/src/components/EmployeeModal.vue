@@ -34,6 +34,7 @@ if (props.selectedEmployee) employee = new EmployeeModel(props.selectedEmployee)
       <div>
         <h3 class="fieldTitle">Email Id</h3>
         <InputNumber v-model="employee.emailId" type="number" class="inputValue"></InputNumber>
+        <InputNumber v-model="employee.emailId" type="number" class="inputValue"></InputNumber>
       </div>
       <div>
         <h3 class="fieldTitle">Account Id</h3>

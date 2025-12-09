@@ -1,5 +1,5 @@
 import { useToast } from './useToast'
-import { CustomerModel, AddressModel, EmailModel, PhoneModel, Client } from '@/client/client'
+import { CustomerModel, AddressModel, EmailModel, PhoneModel } from '@/client/client'
 import type { CustomersStore, AddressesStore, EmailsStore, PhonesStore } from '@/types/customerStores'
 import type { useCustomerModals } from './useCustomerModals'
 

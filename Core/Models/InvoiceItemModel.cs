@@ -4,8 +4,6 @@ namespace Core;
 
 public class InvoiceItemModel
 {
-    [Required]
-    [Range(1, int.MaxValue)]
     public int ItemId { get; set; }
     
     [Required]
