@@ -25,11 +25,11 @@ public class JobInvoiceController : ControllerBase
         return Ok(await _jobInvoiceService.GetAllJobInvoices());
     }
 
-    [HttpGet("{id:int}", Name = "GetJobInvoiceById")]
-    public async Task<ActionResult<JobInvoiceModel?>> GetJobInvoiceById(int id)
+    [HttpGet("by-id", Name = "GetJobInvoiceById")]
+    public async Task<ActionResult<JobInvoiceModel?>> GetJobInvoiceById([FromQuery] int jobId, [FromQuery] int invoiceId)
     {
-        if (id <= 0) return BadRequest();
-        return Ok(await _jobInvoiceService.GetJobInvoiceById(id));
+        if (jobId <= 0 || invoiceId <= 0) return BadRequest();
+        return Ok(await _jobInvoiceService.GetJobInvoiceById(jobId, invoiceId));
     }
 
     [HttpPost("", Name = "CreateJobInvoice")]
@@ -47,10 +47,10 @@ public class JobInvoiceController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id:int}", Name = "DeleteJobInvoice")]
-    public async Task<ActionResult<bool>> DeleteJobInvoice(int id)
+    [HttpDelete("", Name = "DeleteJobInvoice")]
+    public async Task<ActionResult<bool>> DeleteJobInvoice([FromQuery] int jobId, [FromQuery] int invoiceId)
     {
-        if (id <= 0) return BadRequest();
-        return Ok(await _jobInvoiceService.DeleteJobInvoice(id));
+        if (jobId <= 0 || invoiceId <= 0) return BadRequest();
+        return Ok(await _jobInvoiceService.DeleteJobInvoice(jobId, invoiceId));
     }
 }

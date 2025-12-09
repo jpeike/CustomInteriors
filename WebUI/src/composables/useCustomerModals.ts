@@ -37,7 +37,7 @@ export function useCustomerModals({addressesStore, emailsStore, customersStore}:
     currentCustomerIndex.value = -1;
     displayCustomerDetails.value = true;
 
-    customerTitle.value = 'Create Customer';
+    customerTitle.value = 'Create a Customer';
     customerButtonDesc.value = 'Create';
   }
 
@@ -55,7 +55,7 @@ export function useCustomerModals({addressesStore, emailsStore, customersStore}:
     displayCustomerDetails.value = true;
     customerModalLoading.value = false;
 
-    customerTitle.value = 'Update Customer';
+    customerTitle.value = 'Update a Customer';
     customerButtonDesc.value = 'Update';
   }
 

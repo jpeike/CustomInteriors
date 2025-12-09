@@ -6,7 +6,7 @@
               <button class="cancelUpdateButton" @click="$emit('closePage')" data-testid="deleteCancelButton">
                 <p class="buttonText">Cancel</p>
               </button>
-              <button class="updateInfoButton" @click="$emit('deleteCustomer', currentCustomerInformation?.customerId)" data-testid="deleteConfirmationButton">
+              <button class="updateInfoButton" @click="$emit('deleteCustomer', currentInfo?.customerId | currentInfo?.jobId)" data-testid="deleteConfirmationButton">
                 <p class="buttonText">Delete</p>
               </button>
             </div>
@@ -16,14 +16,14 @@
 </template>
 
 <script setup lang="ts">
-    import { CustomerModel } from '../client/client'
+    import { CustomerModel, JobModel } from '../client/client'
 
     const props = defineProps({
-       currentCustomerInformation: CustomerModel,
+       currentInfo: Object,
        title: String
     });
 
-    console.log(props.currentCustomerInformation?.customerId);
+    console.log(props.currentInfo?.customerId);
 </script>
 
 

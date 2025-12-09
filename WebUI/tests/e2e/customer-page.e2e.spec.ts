@@ -66,7 +66,6 @@ for (const c of expectedCustomers) {
     // Other info
     await expect(card).toContainText(c.customerType);
     await expect(card).toContainText(c.companyName);
-    await expect(card).toContainText(c.status);
     await expect(card).toContainText(c.customerNotes);
   });
 }

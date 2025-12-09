@@ -4,7 +4,6 @@
             <div class="flex row customerInfoBar">
                 <div class="flex column customerInfoTitle">
                     <h2 class="titleText">{{ title }}</h2>
-                    <p class="subtitleText">{{ description }}</p>
                 </div>
             </div>
 
