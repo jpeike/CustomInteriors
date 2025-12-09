@@ -47,6 +47,7 @@
             :customer="customer"
             :email="formatEmail(customer.emails?.[0])"
             :address="formatAddress(customer.addresses?.[0])"
+            :phone="formatPhone(customer.phones?.[0])"
             @edit="editCustomerUI"
             @delete="openDeleteModal(); getCustomerIndex(customer.customerId ?? 0);"
           />
@@ -63,6 +64,7 @@
         :currentCustomerInformation="currentCustomer"
         :currentEmails="currentEmailAddresses"
         :currentAddresses = "currentCustomerAddresses"
+        :currentPhones = "currentPhoneNumbers"
         :title="customerTitle"
         description="Create a customer"
         :buttonDesctipnion="customerButtonDesc"
@@ -96,6 +98,7 @@ import 'primeicons/primeicons.css'
 import { useAddresses } from '@/composables/useAddresses.ts'
 import { useCustomers } from '@/composables/useCustomers.ts'
 import { useEmails } from '@/composables/useEmails.ts'
+import { usePhones } from '@/composables/usePhones.ts'
 import { useCustomerSearch } from '@/composables/useCustomerSearch'
 import { useCustomerEditFlow } from '@/composables/useCustomerEditFlow'
 import { useCustomerModals } from '@/composables/useCustomerModals'
@@ -123,16 +126,25 @@ const {
   formatEmail
 } = emailsStore
 
+const phonesStore = usePhones()
+const {
+  phonesLoading,
+  phonesError,
+  formatPhone
+} = phonesStore
+
 const customerModalsStore = useCustomerModals({
   customersStore,
   addressesStore,
   emailsStore,
+  phonesStore
 })
 
 const {
     currentCustomer,
     currentCustomerAddresses,
     currentEmailAddresses,
+    currentPhoneNumbers,
     currentCustomerIndex,
     displayCustomerDetails,
     customerModalLoading,
@@ -153,6 +165,7 @@ const customerEditFlow = useCustomerEditFlow({
   customersStore,
   addressesStore,
   emailsStore,
+  phonesStore,
   customerModalsStore,
 })
 

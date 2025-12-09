@@ -1,22 +1,24 @@
 import { useToast } from './useToast'
-import { CustomerModel, AddressModel, EmailModel, Client } from '@/client/client'
-import type { CustomersStore, AddressesStore, EmailsStore } from '@/types/customerStores'
+import { CustomerModel, AddressModel, EmailModel, PhoneModel, Client } from '@/client/client'
+import type { CustomersStore, AddressesStore, EmailsStore, PhonesStore } from '@/types/customerStores'
 import type { useCustomerModals } from './useCustomerModals'
 
-export function useCustomerEditFlow({ customersStore, addressesStore, emailsStore, customerModalsStore }: {
+export function useCustomerEditFlow({ customersStore, addressesStore, emailsStore, phonesStore, customerModalsStore }: {
   customersStore: CustomersStore,
   addressesStore: AddressesStore,
   emailsStore: EmailsStore,
+  phonesStore: PhonesStore,
   customerModalsStore: ReturnType<typeof useCustomerModals>
 }) {
   const { customers, fetchCustomersWithDetails, createCustomer, updateCustomer } = customersStore
   const { createAddress, updateAddress, deleteAddress } = addressesStore
   const { createEmail, updateEmail, deleteEmail } = emailsStore
+  const { createPhone, updatePhone, deletePhone } = phonesStore
   const { showInfo } = useToast()
   const { closePage, selectedCustomerId } = customerModalsStore
 
-  async function updateCustomerInformation(newCustomer: CustomerModel, newAddress: AddressModel[], removedAddresses: number[], newEmails: EmailModel[], removedEmails: number[]) {
-    if (newCustomer.customerId == -1 && newAddress.length == 0 && removedAddresses.length == 1 && newEmails.length == 0 && removedEmails.length == 1) {
+  async function updateCustomerInformation(newCustomer: CustomerModel, newAddress: AddressModel[], removedAddresses: number[], newEmails: EmailModel[], removedEmails: number[], newPhones: PhoneModel[], removedPhones: number[]) {
+    if (newCustomer.customerId == -1 && newAddress.length == 0 && removedAddresses.length == 1 && newEmails.length == 0 && removedEmails.length == 1 && newPhones.length == 0 && removedPhones.length == 1) {
       showInfo("No changes made");
     }
     else {
@@ -45,6 +47,12 @@ export function useCustomerEditFlow({ customersStore, addressesStore, emailsStor
           console.log(newCustomerId);
           await createEmail(newEmails[i]);
         }
+
+        for (let i = 0; i < newPhones.length; i++) {
+          newPhones[i].customerId = newCustomerId;
+          console.log(newCustomerId);
+          await createPhone(newPhones[i]);
+        }
       }
       //update existing customer
       else {
@@ -72,34 +80,51 @@ export function useCustomerEditFlow({ customersStore, addressesStore, emailsStor
             await updateEmail(newEmails[i])
           }
         }
-      
-    }
 
-    if (removedAddresses.length > 1) {
-      for (let i = 1; i < removedAddresses.length; i++) {
-        await deleteAddress(removedAddresses[i]!);
+        for (let i = 0; i < newPhones.length; i++) {
+          if (newPhones[i].phoneId! == undefined) {
+            newPhones[i].customerId = selectedCustomerId.value!;
+            await createPhone(newPhones[i]);
+
+          }
+          else {
+            await updatePhone(newPhones[i])
+          }
+        }
+
+      }
+
+      if (removedAddresses.length > 1) {
+        for (let i = 1; i < removedAddresses.length; i++) {
+          await deleteAddress(removedAddresses[i]!);
+        }
+      }
+
+      if (removedEmails.length > 1) {
+        for (let i = 1; i < removedEmails.length; i++) {
+          await deleteEmail(removedEmails[i]!);
+        }
+      }
+
+      if (removedPhones.length > 1) {
+        for (let i = 1; i < removedPhones.length; i++) {
+          await deletePhone(removedPhones[i]!);
+        }
       }
     }
-
-    if (removedEmails.length > 1) {
-      for (let i = 1; i < removedEmails.length; i++) {
-        await deleteEmail(removedEmails[i]!);
-      }
-    }
+    await fetchCustomersWithDetails()
+    closePage();
   }
-  await fetchCustomersWithDetails()
-  closePage();
-}
 
-async function handleDelete(customerId: number) {
-  await customersStore.deleteCustomer(customerId)
-  await fetchCustomersWithDetails()
+  async function handleDelete(customerId: number) {
+    await customersStore.deleteCustomer(customerId)
+    await fetchCustomersWithDetails()
 
-  customerModalsStore.closeDeleteModal()
-}
+    customerModalsStore.closeDeleteModal()
+  }
 
-return {
-  updateCustomerInformation,
-  handleDelete
-}
+  return {
+    updateCustomerInformation,
+    handleDelete
+  }
 }

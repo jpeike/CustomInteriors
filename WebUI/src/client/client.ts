@@ -1315,6 +1315,7 @@ export class Client {
     createJob(body?: JobModel | undefined): Promise<JobModel> {
         let url_ = this.baseUrl + "/api/jobs";
         url_ = url_.replace(/[?&]$/, "");
+
         const content_ = JSON.stringify(body);
 
         let options_: RequestInit = {
@@ -2834,6 +2835,7 @@ export class CustomerModel implements ICustomerModel {
     customerNotes?: string | undefined;
     addresses?: AddressModel[] | undefined;
     emails?: EmailModel[] | undefined;
+    phones?: PhoneModel[] | undefined;
 
     constructor(data?: ICustomerModel) {
         if (data) {
@@ -2863,6 +2865,11 @@ export class CustomerModel implements ICustomerModel {
                 this.emails = [] as any;
                 for (let item of _data["emails"])
                     this.emails!.push(EmailModel.fromJS(item));
+            }
+            if (Array.isArray(_data["phones"])) {
+                this.phones = [] as any;
+                for (let item of _data["phones"])
+                    this.phones!.push(PhoneModel.fromJS(item));
             }
         }
     }
@@ -2894,6 +2901,11 @@ export class CustomerModel implements ICustomerModel {
             for (let item of this.emails)
                 data["emails"].push(item ? item.toJSON() : undefined as any);
         }
+        if (Array.isArray(this.phones)) {
+            data["phones"] = [];
+            for (let item of this.phones)
+                data["phones"].push(item ? item.toJSON() : undefined as any);
+        }
         return data;
     }
 }
@@ -2909,6 +2921,7 @@ export interface ICustomerModel {
     customerNotes?: string | undefined;
     addresses?: AddressModel[] | undefined;
     emails?: EmailModel[] | undefined;
+    phones?: PhoneModel[] | undefined;
 }
 
 export class CustomerUpdateModel implements ICustomerUpdateModel {
@@ -2980,6 +2993,7 @@ export class EmailModel implements IEmailModel {
     customerId!: number;
     emailAddress!: string;
     emailType!: string;
+    createdOn?: Date;
 
     constructor(data?: IEmailModel) {
         if (data) {
@@ -2996,6 +3010,7 @@ export class EmailModel implements IEmailModel {
             this.customerId = _data["customerId"];
             this.emailAddress = _data["emailAddress"];
             this.emailType = _data["emailType"];
+            this.createdOn = _data["createdOn"] ? new Date(_data["createdOn"].toString()) : undefined as any;
         }
     }
 
@@ -3012,6 +3027,7 @@ export class EmailModel implements IEmailModel {
         data["customerId"] = this.customerId;
         data["emailAddress"] = this.emailAddress;
         data["emailType"] = this.emailType;
+        data["createdOn"] = this.createdOn ? this.createdOn.toISOString() : undefined as any;
         return data;
     }
 }
@@ -3021,6 +3037,7 @@ export interface IEmailModel {
     customerId: number;
     emailAddress: string;
     emailType: string;
+    createdOn?: Date;
 }
 
 export class EmployeeModel implements IEmployeeModel {
