@@ -2,13 +2,14 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
 import PrimeVue from 'primevue/config'
-import Skeleton from 'primevue/skeleton';
+import Skeleton from 'primevue/skeleton'
 import Aura from '@primeuix/themes/aura'
 import { definePreset } from '@primeuix/themes'
 import App from './App.vue'
 import router from './router'
 import Toast from 'primevue/toast'
 import ToastService from 'primevue/toastservice'
+import googleAutoComplete from './types/googleAutoComplete'
 
 import { useAuthStore } from './stores/auth' // <-- make sure to import
 
@@ -50,5 +51,7 @@ app.component('Skeleton', Skeleton)
 
 const authStore = useAuthStore()
 authStore.init()
+
+app.directive('google-autocomplete', googleAutoComplete)
 
 app.mount('#app')
