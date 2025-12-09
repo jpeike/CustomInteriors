@@ -1,13 +1,13 @@
 import { ref } from 'vue'
-import { JobModel, CustomerUpdateModel, CustomerCreateModel, AddressModel, Client } from '@/client/client'
+import { JobModel, CustomerUpdateModel, CustomerCreateModel, AddressModel } from '@/client/client'
 import { useToast } from '@/composables/useToast.ts'
+import { Client as client} from '@/client/apiClient'
 import type { JobStore } from '@/types/jobStore'
 
 export function useJob() {
     const jobsLoading = ref(false)
     const jobsError = ref<string | null>(null)
     const jobs = ref<JobModel[]>([])
-    const client = new Client(import.meta.env.VITE_API_BASE_URL)
     const { showSuccess, showError, showInfo } = useToast()
 
     async function fetchJobWithDetails() {

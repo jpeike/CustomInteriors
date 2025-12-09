@@ -24,7 +24,7 @@ public class Program
         };
 
         builder.Configuration.AddXmlConfig(configPath, env);
-        
+
         // 1. Add JWT bearer authentication
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -64,10 +64,12 @@ public class Program
         {
             options.AddPolicy(Policies.AdminOnly, policy =>
                 policy.RequireClaim("cognito:groups", Roles.Admin));
-            options.AddPolicy(Policies.ManagerOrAdmin, policy =>
+            options.AddPolicy(Policies.EmployeeOrAdmin, policy =>
                 policy.RequireAssertion(context =>
                     context.User.HasClaim("cognito:groups", Roles.Admin) ||
-                    context.User.HasClaim("cognito:groups", Roles.Manager)));
+                    context.User.HasClaim("cognito:groups", Roles.Employee)));
+            options.AddPolicy(Policies.AnyUser, policy =>
+                policy.RequireAuthenticatedUser());
         });
 
 

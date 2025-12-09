@@ -2,17 +2,21 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
 import PrimeVue from 'primevue/config'
-import Skeleton from 'primevue/skeleton';
+import Skeleton from 'primevue/skeleton'
 import Aura from '@primeuix/themes/aura'
 import { definePreset } from '@primeuix/themes'
 import App from './App.vue'
 import router from './router'
 import Toast from 'primevue/toast'
 import ToastService from 'primevue/toastservice'
+import googleAutoComplete from './types/googleAutoComplete'
 
 import { useAuthStore } from './stores/auth' // <-- make sure to import
 
 const app = createApp(App)
+// Register Pinia first
+const pinia = createPinia()
+app.use(pinia)
 
 const MyPreset = definePreset(Aura, {
   semantic: {
@@ -38,9 +42,7 @@ app.use(PrimeVue, {
   },
 })
 
-// Register Pinia first
-const pinia = createPinia()
-app.use(pinia)
+
 
 app.use(router)
 
@@ -50,5 +52,7 @@ app.component('Skeleton', Skeleton)
 
 const authStore = useAuthStore()
 authStore.init()
+
+app.directive('google-autocomplete', googleAutoComplete)
 
 app.mount('#app')

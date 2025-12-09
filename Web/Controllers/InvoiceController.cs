@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Core;
+﻿using Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Web;
 
 [ApiController]
+[Authorize(Policy = Policies.AdminOnly)]
 [Route("api/invoices")]
 public class InvoiceController : ControllerBase
 {

@@ -1,12 +1,12 @@
 ﻿<script setup lang="ts">
 import Card from 'primevue/card'
-import { Client, EmployeeModel } from '../client/client'
+import { EmployeeModel } from '../client/client'
+import { Client as client} from '../client/apiClient'
 import { onMounted, reactive, ref } from 'vue'
 import CrudHeader from '../components/CrudHeader.vue'
 import EmployeeModal from '../components/EmployeeModal.vue'
 import 'primeicons/primeicons.css'
 
-const client = new Client(import.meta.env.VITE_API_BASE_URL)
 let showEmployeeModal = ref(false)
 const selectedEmployee = ref(new EmployeeModel);
 import { useToast } from '@/composables/useToast.ts'

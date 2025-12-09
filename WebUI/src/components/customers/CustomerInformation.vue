@@ -75,24 +75,24 @@
 
                 <div>
                     <h3 class="fieldTitle">Street Address *</h3>
-                    <InputText v-model="address.street" required type="text" class="inputValue"
+                    <InputText v-model="address.street" v-google-autocomplete="address" required type="text" class="inputValue"
                         :placeholder="address.street ?? 'Street'" data-testid="customerFormStreet" />
                 </div>
                 <div>
                     <h3 class="fieldTitle">Country</h3>
-                    <InputText v-model="address.country" type="text" class="inputValue"
+                    <InputText v-model="address.country" v-google-autocomplete="address"type="text" class="inputValue"
                         :placeholder="address.country ?? 'Country'" data-testid="customerFormCountry" />
                 </div>
 
                 <div class="flex row multipleFields">
                     <div class="tripleField">
                         <h3 class="fieldTitle">City *</h3>
-                        <InputText v-model="address.city" required type="text" class="inputValue"
+                        <InputText v-model="address.city" v-google-autocomplete="address"required type="text" class="inputValue"
                             :placeholder="address.city ?? 'City'" data-testid="customerFormCity" />
                     </div>
                     <div class="tripleField">
                         <h3 class="fieldTitle">State *</h3>
-                        <InputText v-model="address.state" required type="text" class="inputValue"
+                        <InputText v-model="address.state" v-google-autocomplete="address"required type="text" class="inputValue"
                             :placeholder="address.state ?? 'State'" data-testid="customerFormState" />
                     </div>
                     <div class="tripleField">
@@ -358,7 +358,7 @@
 
 <script setup lang="ts">
     import 'primeicons/primeicons.css';
-    import { Client, CustomerModel, AddressModel, EmailModel} from '../../client/client'
+    import { CustomerModel, AddressModel, EmailModel} from '../../client/client'
     import InputText from 'primevue/inputtext';
     import {reactive, ref} from 'vue'
     import { useToast } from '@/composables/useToast.ts'
@@ -465,6 +465,7 @@
         console.log(customer.value);
         emit('updateCustomerInformation', customer.value, state.listOfAddresses, removedAddresses, state.listOfEmails, removedEmails);
     }
+    
 
     function checkForNoChanges(){
         if (props.currentCustomerInformation != undefined){
