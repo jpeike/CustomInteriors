@@ -32,10 +32,17 @@ public class QuoteRequestController : ControllerBase
 
     [HttpPost("", Name = "CreateQuoteRequest")]
     [Authorize(Policy = Policies.AnyUser)]
-    public async Task<ActionResult<QuoteRequestModel>> CreateQuoteRequest([FromBody] QuoteRequestModel quoteRequestModel)
+    public async Task<ActionResult<QuoteRequestModel>> CreateQuoteRequest([FromBody] CreateQuoteRequestModel quoteRequestModel)
     {
+        var toAdd = new QuoteRequestModel();
+        toAdd.DescriptionOfWork = quoteRequestModel.DescriptionOfWork;
+        toAdd.EstimatedPrice = quoteRequestModel.EstimatedPrice;
+        toAdd.JobId = quoteRequestModel.JobId;
+        toAdd.QuoteId = 0;
+        toAdd.RequestDate = DateTime.Now;
+
         if (!ModelState.IsValid) return BadRequest();
-        return Ok(await _quoteRequestService.CreateQuoteRequest(quoteRequestModel));
+        return Ok(await _quoteRequestService.CreateQuoteRequest(toAdd));
     }
 
     [HttpPut("", Name = "UpdateQuoteRequest")]
