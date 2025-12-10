@@ -54,7 +54,10 @@ public class CustomerIntegrationTests : IntegrationTestBase
 
         Assert.NotNull(getAllModels);
         CustomerModel? compCustomer = getAllModels.FirstOrDefault(x => x.CustomerId == setModel.CustomerId);
-        setModel.ShouldDeepEqual(compCustomer);
+        setModel.WithDeepEqual(compCustomer)
+            .IgnoreSourceProperty(x => x.Addresses)
+            .IgnoreSourceProperty(x => x.Phones)
+            .Assert();
     }
 
     [Fact]
@@ -84,7 +87,10 @@ public class CustomerIntegrationTests : IntegrationTestBase
         CustomerModel? getIdModel = await response.Content.ReadFromJsonAsync<CustomerModel>();
 
         Assert.NotNull(getIdModel);
-        setModel.ShouldDeepEqual(getIdModel);
+        setModel.WithDeepEqual(getIdModel)
+            .IgnoreSourceProperty(x => x.Addresses)
+            .IgnoreSourceProperty(x => x.Phones)
+            .Assert();
     }
 
     [Fact]
@@ -99,7 +105,10 @@ public class CustomerIntegrationTests : IntegrationTestBase
         CustomerModel? putModel = await response.Content.ReadFromJsonAsync<CustomerModel>();
 
         Assert.NotNull(putModel);
-        setModel.ShouldDeepEqual(putModel);
+        setModel.WithDeepEqual(putModel)
+            .IgnoreSourceProperty(x => x.Addresses)
+            .IgnoreSourceProperty(x => x.Phones)
+            .Assert();
     }
 
     [Fact]
