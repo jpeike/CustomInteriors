@@ -22,9 +22,9 @@
       <i class="pi pi-home"></i><label> Dashboard</label>
     </button>
 
-    <button class="btn-primary navButton" @click="router.push(RoutePaths.ABOUT)">
+    <!-- <button class="btn-primary navButton" @click="router.push(RoutePaths.ABOUT)">
       <i class="pi pi-info-circle"></i><label> About</label>
-    </button>
+    </button> -->
 
     <button class="btn-primary navButton" @click="router.push(RoutePaths.USERS)">
       <i class="pi pi-users"></i><label> Users</label>
@@ -42,9 +42,9 @@
       <i class="pi pi-address-book"></i><label> Customers</label>
     </button>
 
-    <button class="btn-primary navButton" @click="router.push(RoutePaths.EMPLOYEES)">
+    <!-- <button class="btn-primary navButton" @click="router.push(RoutePaths.EMPLOYEES)">
       <i class="pi pi-sitemap"></i><label> Employees</label>
-    </button>
+    </button> -->
 
     <button v-if="!auth.isLoggedIn" class="btn-primary navButton" @click="auth.login()">
       <i class="pi pi-sign-in"></i><label> Login</label>
@@ -74,7 +74,7 @@ const router = useRouter()
 // Define your navigation items using enums
 const items = ref([
   { label: 'Dashboard', icon: 'pi pi-home', command: () => router.push(RoutePaths.DASHBOARD) },
-  { label: 'About', icon: 'pi pi-info-circle', command: () => router.push(RoutePaths.ABOUT) },
+  //{ label: 'About', icon: 'pi pi-info-circle', command: () => router.push(RoutePaths.ABOUT) },
   { label: 'Users', icon: 'pi pi-users', command: () => router.push(RoutePaths.USERS) },
   { label: 'Jobs', icon: 'pi pi-briefcase', command: () => router.push(RoutePaths.JOBS) }, 
   { label: 'Billing', icon: 'pi pi-wallet', command: () => router.push('/billing') }, // same
@@ -83,7 +83,7 @@ const items = ref([
     icon: 'pi pi-address-book',
     command: () => router.push(RoutePaths.CUSTOMERS),
   },
-  { label: 'Employees', icon: 'pi pi-sitemap', command: () => router.push(RoutePaths.EMPLOYEES) },
+  //{ label: 'Employees', icon: 'pi pi-sitemap', command: () => router.push(RoutePaths.EMPLOYEES) },
   {
     label: 'Logout',
     icon: 'pi pi-sitemap',
