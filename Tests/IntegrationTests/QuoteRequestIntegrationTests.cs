@@ -93,6 +93,8 @@ public class QuoteRequestIntegrationTests : IntegrationTestBase
         Assert.NotNull(postModel);
         QuoteRequestModel1.WithDeepEqual(postModel)
             .IgnoreSourceProperty(x => x.QuoteId)
+            // ignore date since it is auto-assigned in backend and will differ
+            .IgnoreSourceProperty(x => x.RequestDate)
             .Assert();
     }
 

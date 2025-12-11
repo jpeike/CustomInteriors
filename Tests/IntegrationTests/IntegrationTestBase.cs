@@ -77,6 +77,8 @@ public abstract class IntegrationTestBase : IAsyncLifetime
                 services.AddAuthorization(options =>
                 {
                     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+                    options.AddPolicy("EmployeeOrAdmin", policy => policy.RequireRole("Admin", "Employee"));
+                    options.AddPolicy("AnyUser", policy => policy.RequireRole("Admin", "Employee", "Customer"));
                 });
             });
         });
